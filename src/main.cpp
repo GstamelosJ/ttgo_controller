@@ -1328,6 +1328,13 @@ void setup() {
   screen6.add_line(line68);
   screen6.add_line(line69);
 
+  screen2.set_displayLineCount(4);
+  screen3.set_displayLineCount(4);
+  screen4.set_displayLineCount(4);
+  screen5.set_displayLineCount(4);
+  screen6.set_displayLineCount(4);
+
+
   menu.update();
   //@@@@@@@@@@@@@@@@@@@@@@@@@
  //%%%%%%%%%%%%%%%%%%%%
