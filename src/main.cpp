@@ -68,9 +68,11 @@ char user[] = "";
 char pass[] = "";
 uint8_t button_msg;
 uint8_t lights=0x03;
+char * light_stat[8] = {"off","off","off","off","off","off","off","off"};
 uint8_t auto_light=0;
+char * light_aut_stat[8];
 char* light_disp = (char*)"XXXXXXXX";
-char* auto_light_disp = (char*) "OOOOOOOO";
+char* auto_light_disp = (char*) "XXXXXXXX";
 void LCDwrite(String msg1, String msg2 );
 bool setPowerBoostKeepOn(int en);
 void scan_buttons(uint8_t * buttons);
@@ -777,25 +779,25 @@ LiquidLine line25(0, 3, "<Light timer>");
 LiquidScreen screen2(line21, line22, line23, line24);
 
 LiquidLine line31(0, 0, "Light Control");
-LiquidLine line32(2, 1, "Light 1:", (((lights>>0)&0x01)?"On ":"Off"));
-LiquidLine line33(2, 2, "Light 2:", (((lights>>1)&0x01)?"On ":"Off"));
-LiquidLine line34(2, 3, "Light 3:", (((lights>>2)&0x01)?"On ":"Off"));
-LiquidLine line35(2, 3, "Light 4:", (((lights>>3)&0x01)?"On ":"Off"));
-LiquidLine line36(2, 3, "Light 5:", (((lights>>4)&0x01)?"On ":"Off"));
-LiquidLine line37(2, 3, "Light 6:", (((lights>>5)&0x01)?"On ":"Off"));
-LiquidLine line38(2, 3, "Light 7:", (((lights>>6)&0x01)?"On ":"Off"));
-LiquidLine line39(2, 3, "Light 8:", (((lights>>7)&0x01)?"On ":"Off"));
+LiquidLine line32(2, 1, "Light 1:", light_stat[0]);
+LiquidLine line33(2, 2, "Light 2:", light_stat[1]);
+LiquidLine line34(2, 3, "Light 3:", light_stat[2]);
+LiquidLine line35(2, 3, "Light 4:", light_stat[3]);
+LiquidLine line36(2, 3, "Light 5:", light_stat[4]);
+LiquidLine line37(2, 3, "Light 6:", light_stat[5]);
+LiquidLine line38(2, 3, "Light 7:", light_stat[6]);
+LiquidLine line39(2, 3, "Light 8:", light_stat[7]);
 LiquidScreen screen3(line31,line32,line33,line34);
 //LiquidScreen screen31(line35,line36,line37,line38);
 LiquidLine line41(0, 0, "Light Auto control");
-LiquidLine line42(2, 1, "Light-auto 1:", (((auto_light>>0)&0x01)?"On ":"Off"));
-LiquidLine line43(2, 2, "Light-auto 2:", (((auto_light>>1)&0x01)?"On ":"Off"));
-LiquidLine line44(2, 3, "Light-auto 3:", (((auto_light>>2)&0x01)?"On ":"Off"));
-LiquidLine line45(2, 3, "Light-auto 4:", (((auto_light>>3)&0x01)?"On ":"Off"));
-LiquidLine line46(2, 3, "Light-auto 5:", (((auto_light>>4)&0x01)?"On ":"Off"));
-LiquidLine line47(2, 3, "Light-auto 6:", (((auto_light>>5)&0x01)?"On ":"Off"));
-LiquidLine line48(2, 3, "Light-auto 7:", (((auto_light>>6)&0x01)?"On ":"Off"));
-LiquidLine line49(2, 3, "Light-auto 8:", (((auto_light>>7)&0x01)?"On ":"Off"));
+LiquidLine line42(2, 1, "Light-auto 1:", light_aut_stat[0]);
+LiquidLine line43(2, 2, "Light-auto 2:", light_aut_stat[1]);
+LiquidLine line44(2, 3, "Light-auto 3:", light_aut_stat[2]);
+LiquidLine line45(2, 3, "Light-auto 4:", light_aut_stat[3]);
+LiquidLine line46(2, 3, "Light-auto 5:", light_aut_stat[4]);
+LiquidLine line47(2, 3, "Light-auto 6:", light_aut_stat[5]);
+LiquidLine line48(2, 3, "Light-auto 7:", light_aut_stat[6]);
+LiquidLine line49(2, 3, "Light-auto 8:", light_aut_stat[7]);
 LiquidScreen screen4(line41,line42,line43,line44);
 
 LiquidLine line51(0, 0, "Light timer");
@@ -874,6 +876,8 @@ void buttonsCheck() {
 void idle_function(){}
 void nextScreen()
 {
+  Serial.printf("current screen = %d \n",menu.get_currentScreen());
+  Serial.printf("focused line = %d \n",menu.get_focusedLine());
   if((menu.get_currentScreen()==&welcome_screen)&&(menu.get_focusedLine()==3))
   menu.change_screen(&screen2);
   else if((menu.get_currentScreen()==&screen2)&&(menu.get_focusedLine()==1))
@@ -881,11 +885,15 @@ void nextScreen()
   else if((menu.get_currentScreen()==&screen2)&&(menu.get_focusedLine()==2))
   menu.change_screen(&screen4);
   else if((menu.get_currentScreen()==&screen2)&&(menu.get_focusedLine()==3))
-  menu.change_screen(&screen6);
+  {
+    menu.change_screen(&screen6);
+    Serial.printf("current screen = %d \n",menu.get_currentScreen());
+  }
   else if((menu.get_currentScreen()==&screen2)&&(menu.get_focusedLine()==4))
   menu.change_screen(&screen5);
   else if(menu.get_currentScreen()!=&welcome_screen) 
   menu.change_screen(&welcome_screen);
+   
 }
 
 void nextLine()
@@ -912,7 +920,8 @@ void toggle_lights()
     Blynk.virtualWrite(channel-1,(0x01&(lights>>channel)));
     Blynk.virtualWrite(channel+9,(0x01&(lights>>channel))?255:0);
   //}
-  //menu.softUpdate();
+  light_stat[channel]=(char*)(((lights>>channel)&0x01)?"On ":"Off");
+  menu.softUpdate();
    Serial.printf("lights=%d \n", lights);
 }
 
@@ -926,7 +935,8 @@ void toggle_lights_auto()
   //Blynk.virtualWrite(channel+19,(0x01&(auto_light>>channel))?255:0);
   //EEPROM.put(1,auto_light);
   prefs.putUChar("auto_light", auto_light);
-  //menu.softUpdate();
+  light_aut_stat[channel]=(char*)(((auto_light>>channel)&0x01)?"On ":"Off");
+  menu.softUpdate();
 }
 
 void time_increment()
@@ -1184,6 +1194,23 @@ void setup() {
   ch7_hours=prefs.getUChar("ch7_hours",1);
   ch8_hours=prefs.getUChar("ch8_hours",1);
   auto_light=prefs.getUChar("auto_light", auto_light);
+ /* free(light_disp);
+  free(auto_light_disp);
+  light_disp=(char *)malloc(10*sizeof(char));
+  auto_light_disp=(char *)malloc(10*sizeof(char));*/
+  for (uint8_t i = 0; i<7; i++)
+ {
+  // if((lights>>i)&0x01)
+  // light_disp[i]='I';
+  // else light_disp[i]='X';
+  // if((auto_light>>i)&0x01)
+  // auto_light_disp[i]='I';
+  // else auto_light_disp[i]='X';
+   //auto_light_disp[i]=(((auto_light>>i)&0x01)?'I':'X');
+   light_aut_stat[i]=(char*)(((auto_light>>i)&0x01)?"On ":"Off");
+ }
+ // light_disp[8]='\0';
+ // auto_light_disp[8]='\0';
   pinMode(LED_BUILTIN, OUTPUT);
  //uncoment following 2 rows if using 7 segment display
   //disp.setDigitPins(digitNum,digits);
@@ -1314,6 +1341,8 @@ void setup() {
 	menu.add_screen(screen2);
 	menu.add_screen(screen3);
 	menu.add_screen(screen4);
+  menu.add_screen(screen5);
+  menu.add_screen(screen6);
   screen2.add_line(line25);
   screen3.add_line(line35);
   screen3.add_line(line36);
