@@ -2,6 +2,7 @@
 
 
 #include <Arduino.h>
+#include <cstring>
 
 #define BLYNK_PRINT Serial // Defines the object that is used for printing
 #define DUMP_AT_COMMANDS
@@ -71,8 +72,8 @@ uint8_t lights=0x03;
 char * light_stat[8] = {"off","off","off","off","off","off","off","off"};
 uint8_t auto_light=0;
 char * light_aut_stat[8];
-char* light_disp = (char*)"XXXXXXXX";
-char* auto_light_disp = (char*) "XXXXXXXX";
+char* light_disp=(char*)malloc(9);
+char* auto_light_disp = (char*) malloc(9);
 void LCDwrite(String msg1, String msg2 );
 bool setPowerBoostKeepOn(int en);
 void scan_buttons(uint8_t * buttons);
@@ -812,14 +813,14 @@ LiquidLine line59(0, 3, "ch8_hours:", ch8_hours);
 LiquidScreen screen5(line51,line52,line53,line54);
 
 LiquidLine line61(0, 0, "Light assign");
-LiquidLine line62(0,1, "Ch1: ",  channels[1] );
-LiquidLine line63(0,2, "Ch2: ",  channels[2] );
-LiquidLine line64(0,3, "Ch3: ",  channels[3] );
-LiquidLine line65(0,3, "Ch4: ",  channels[4] );
-LiquidLine line66(0,3, "Ch5: ",  channels[5] );
-LiquidLine line67(0,3, "Ch6: ",  channels[6] );
-LiquidLine line68(0,3, "Ch7: ",  channels[7] );
-LiquidLine line69(0,3, "Ch8: ",  channels[8] );
+LiquidLine line62(0,1, "Ch1: ",  channels[0] );
+LiquidLine line63(0,2, "Ch2: ",  channels[1] );
+LiquidLine line64(0,3, "Ch3: ",  channels[2] );
+LiquidLine line65(0,3, "Ch4: ",  channels[3] );
+LiquidLine line66(0,3, "Ch5: ",  channels[4] );
+LiquidLine line67(0,3, "Ch6: ",  channels[5] );
+LiquidLine line68(0,3, "Ch7: ",  channels[6] );
+LiquidLine line69(0,3, "Ch8: ",  channels[7] );
 
 LiquidScreen screen6(line61,line62,line63,line64);
 
@@ -921,6 +922,11 @@ void toggle_lights()
     Blynk.virtualWrite(channel+9,(0x01&(lights>>channel))?255:0);
   //}
   light_stat[channel]=(char*)(((lights>>channel)&0x01)?"On ":"Off");
+  for (uint8_t i = 0; i<8; i++)
+ {
+    if((lights>>i)&0x01) light_disp[i]='I';
+    else light_disp[i]='X';
+ }
   menu.softUpdate();
    Serial.printf("lights=%d \n", lights);
 }
@@ -936,6 +942,11 @@ void toggle_lights_auto()
   //EEPROM.put(1,auto_light);
   prefs.putUChar("auto_light", auto_light);
   light_aut_stat[channel]=(char*)(((auto_light>>channel)&0x01)?"On ":"Off");
+ for (uint8_t i = 0; i<8; i++)
+ {
+    if((auto_light>>i)&0x01) auto_light_disp[i]='I';
+    else auto_light_disp[i]='X';
+ }
   menu.softUpdate();
 }
 
@@ -1044,20 +1055,21 @@ void time_decr()
 
 void assign_channel()
 {
-  static uint8_t temp=0;
+   static uint8_t temp=0;
+  uint8_t channels_temp[8]={channel1, channel2, channel3, channel4, channel5, channel6, channel7, channel8};
   uint8_t line;
   if(menu.get_currentScreen()==&screen6)
   {
   line=menu.get_focusedLine();
   temp++;
-  if (temp==8) temp=0;
-  switch(line)
-  {
-    case 1:
-    channels[temp]=channel1;
-    break;
+  if (temp<=0) temp=7;
+ // switch(line)
+  //{
+   // case 1:
+    channels[line-1]=channels_temp[temp];
+   /* break;
     case 2:
-    channels[temp]=channel2;
+    channels[line]=channels_temp[temp];
     break;
     case 3:
     channels[temp]=channel3;
@@ -1078,7 +1090,7 @@ void assign_channel()
     channels[temp]=channel8;
     break;
 
-  }
+  }*/
   
   }
   menu.update();
@@ -1087,19 +1099,20 @@ void assign_channel()
 void assign_channel_()
 {
   static uint8_t temp=0;
+  uint8_t channels_temp[8]={channel1, channel2, channel3, channel4, channel5, channel6, channel7, channel8};
   uint8_t line;
   if(menu.get_currentScreen()==&screen6)
   {
   line=menu.get_focusedLine();
   temp--;
-  if (temp==8) temp=0;
-  switch(line)
-  {
-    case 1:
-    channels[temp]=channel1;
-    break;
+  if (temp>=8) temp=0;
+ // switch(line)
+  //{
+   // case 1:
+    channels[line-1]=channels_temp[temp];
+   /* break;
     case 2:
-    channels[temp]=channel2;
+    channels[line]=channels_temp[temp];
     break;
     case 3:
     channels[temp]=channel3;
@@ -1120,7 +1133,7 @@ void assign_channel_()
     channels[temp]=channel8;
     break;
 
-  }
+  }*/
   
   }
   menu.update();
@@ -1198,16 +1211,18 @@ void setup() {
   free(auto_light_disp);
   light_disp=(char *)malloc(10*sizeof(char));
   auto_light_disp=(char *)malloc(10*sizeof(char));*/
-  for (uint8_t i = 0; i<7; i++)
+  lights=0;
+  light_disp[8] = '\0';
+  auto_light_disp[8] = '\0';
+  for (uint8_t i = 0; i<8; i++)
  {
-  // if((lights>>i)&0x01)
-  // light_disp[i]='I';
-  // else light_disp[i]='X';
-  // if((auto_light>>i)&0x01)
-  // auto_light_disp[i]='I';
-  // else auto_light_disp[i]='X';
-   //auto_light_disp[i]=(((auto_light>>i)&0x01)?'I':'X');
-   light_aut_stat[i]=(char*)(((auto_light>>i)&0x01)?"On ":"Off");
+  if((lights>>i)&0x01) light_disp[i]='I';
+  else light_disp[i]='X';
+  if((auto_light>>i)&0x01) auto_light_disp[i]='I';
+  else auto_light_disp[i]='X';
+  
+  auto_light_disp[i]=(((auto_light>>i)&0x01)?'I':'X');
+  light_aut_stat[i]=(char*)(((auto_light>>i)&0x01)?"On ":"Off");
  }
  // light_disp[8]='\0';
  // auto_light_disp[8]='\0';
