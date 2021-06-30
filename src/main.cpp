@@ -1062,7 +1062,7 @@ void assign_channel()
   {
   line=menu.get_focusedLine();
   temp++;
-  if (temp<=0) temp=7;
+  if (temp>=8) temp=0;
  // switch(line)
   //{
    // case 1:
@@ -1105,7 +1105,7 @@ void assign_channel_()
   {
   line=menu.get_focusedLine();
   temp--;
-  if (temp>=8) temp=0;
+  if (temp<=0) temp=7;
  // switch(line)
   //{
    // case 1:
@@ -1401,9 +1401,9 @@ void loop() {
   //uncomment the next row if using 7 segnment display
   //disp.write(pg_hours);
   buttonsCheck();
-  //scan_buttons(&button_msg);
-  //connectionHandlerTimer.run();
- // if(healthy) Blynk.run();
+  scan_buttons(&button_msg);
+  connectionHandlerTimer.run();
+  if(healthy) Blynk.run();
  delay(20);
  
 }
@@ -1457,7 +1457,7 @@ void scan_buttons(uint8_t * buttons)
    lights^=(1<<*buttons);
     digitalWrite(channels[*buttons], (0x01&(lights>>*buttons)));
   }
-
+  I2Cbuttons.endTransmission();
 }
 //######################Menu#########
 
