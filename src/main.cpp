@@ -1181,7 +1181,6 @@ void setup() {
   bouncer_Esc.interval(5);
   
  
-
   Serial.begin(115200);
   I2CPower.begin(I2C_SDA, I2C_SCL, 400000);
   I2Cbuttons.begin(I2C_SDA_2, I2C_SCL_2, 400000);
@@ -1216,12 +1215,13 @@ void setup() {
   auto_light_disp[8] = '\0';
   for (uint8_t i = 0; i<8; i++)
  {
-  if((lights>>i)&0x01) light_disp[i]='I';
+ /* if((lights>>i)&0x01) light_disp[i]='I';
   else light_disp[i]='X';
   if((auto_light>>i)&0x01) auto_light_disp[i]='I';
-  else auto_light_disp[i]='X';
-  
+  else auto_light_disp[i]='X';*/
+  light_disp[i]=(((lights>>i)&0x01)?'I':'X');
   auto_light_disp[i]=(((auto_light>>i)&0x01)?'I':'X');
+  light_stat[i]=(char*)(((lights>>i)&0x01)?"On ":"Off");
   light_aut_stat[i]=(char*)(((auto_light>>i)&0x01)?"On ":"Off");
  }
  // light_disp[8]='\0';
@@ -1448,7 +1448,7 @@ bool setPowerBoostKeepOn(int en){
 
 void scan_buttons(uint8_t * buttons)
 {
-  I2Cbuttons.beginTransmission(0x01);
+  //I2Cbuttons.beginTransmission(0x01);
   I2Cbuttons.requestFrom(0x02,1);
   while(I2Cbuttons.available()) 
   I2Cbuttons.readBytes(buttons,1);
