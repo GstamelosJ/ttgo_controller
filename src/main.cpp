@@ -830,29 +830,31 @@ void buttonsCheck() {
 	 {
 		// Calls the function identified with
 		// increase or 1 for the focused line.
-		//menu.call_function(1);
-    menu.next_screen();
+    //menu.next_screen();
+		menu.call_function(1);
+    
     menu.update();
 	}
   bouncer_Down.update();
   if (bouncer_Down.fell())
   {
-		//menu.call_function(2);
-    menu.previous_screen();
+		menu.call_function(2);
+   // menu.previous_screen();
     menu.update();
 	}
   bouncer_Enter.update();
 	if (bouncer_Enter.fell()) {
 		// Switches focus to the next line.
 		//menu.call_function(3);
-    menu.next_screen();
+    //menu.next_screen();
+    menu.switch_focus();
     menu.update();
 	}
   bouncer_Esc.update();
   if (bouncer_Esc.fell()) {
     //menu.call_function(4);
     //LCDwrite("Button ESC", "Pressed" );
-    menu.switch_focus();
+    menu.previous_screen();
     menu.update();
   } 
   /*if (up.check() == LOW) {
