@@ -2,6 +2,7 @@
 
 
 #include <Arduino.h>
+#include <cstring>
 
 #define BLYNK_PRINT Serial // Defines the object that is used for printing
 #define DUMP_AT_COMMANDS
@@ -67,10 +68,12 @@ char apn[] = "internet"; //COSMOTE
 char user[] = "";
 char pass[] = "";
 uint8_t button_msg;
-uint8_t lights;
+uint8_t lights=0x03;
+char * light_stat[8] = {"off","off","off","off","off","off","off","off"};
 uint8_t auto_light=0;
-char* light_disp = (char*)"XXXXXXXX";
-char* auto_light_disp = (char*) "OOOOOOOO";
+char * light_aut_stat[8];
+char* light_disp=(char*)malloc(9);
+char* auto_light_disp = (char*) malloc(9);
 void LCDwrite(String msg1, String msg2 );
 bool setPowerBoostKeepOn(int en);
 void scan_buttons(uint8_t * buttons);
@@ -770,32 +773,32 @@ LiquidLine control(0, 3, "<Control>");
 LiquidScreen welcome_screen(welcome_line1, welcome_line2, welcome_line3,control);
 
 LiquidLine line21(0, 0, "Control");
-LiquidLine line22(0, 1, "<Light Control>");
-LiquidLine line23(0, 2, "<Light Auto control>");
+LiquidLine line22(0, 1, "<Light Ctl>");
+LiquidLine line23(0, 2, "<Light Auto ctl>");
 LiquidLine line24(0, 3, "<Light assign>");
 LiquidLine line25(0, 3, "<Light timer>");
 LiquidScreen screen2(line21, line22, line23, line24);
 
 LiquidLine line31(0, 0, "Light Control");
-LiquidLine line32(0, 1, "Control Light 1:", (((lights>>0)&0x01)?"On ":"Off"));
-LiquidLine line33(7, 2, "Light 2:", (((lights>>1)&0x01)?"On ":"Off"));
-LiquidLine line34(7, 3, "Light 3:", (((lights>>2)&0x01)?"On ":"Off"));
-LiquidLine line35(7, 3, "Light 4:", (((lights>>3)&0x01)?"On ":"Off"));
-LiquidLine line36(7, 3, "Light 5:", (((lights>>4)&0x01)?"On ":"Off"));
-LiquidLine line37(7, 3, "Light 6:", (((lights>>5)&0x01)?"On ":"Off"));
-LiquidLine line38(7, 3, "Light 7:", (((lights>>6)&0x01)?"On ":"Off"));
-LiquidLine line39(7, 3, "Light 8:", (((lights>>7)&0x01)?"On ":"Off"));
+LiquidLine line32(2, 1, "Light 1:", light_stat[0]);
+LiquidLine line33(2, 2, "Light 2:", light_stat[1]);
+LiquidLine line34(2, 3, "Light 3:", light_stat[2]);
+LiquidLine line35(2, 3, "Light 4:", light_stat[3]);
+LiquidLine line36(2, 3, "Light 5:", light_stat[4]);
+LiquidLine line37(2, 3, "Light 6:", light_stat[5]);
+LiquidLine line38(2, 3, "Light 7:", light_stat[6]);
+LiquidLine line39(2, 3, "Light 8:", light_stat[7]);
 LiquidScreen screen3(line31,line32,line33,line34);
 //LiquidScreen screen31(line35,line36,line37,line38);
 LiquidLine line41(0, 0, "Light Auto control");
-LiquidLine line42(0, 1, "Light-auto 1:", (((auto_light>>0)&0x01)?"On ":"Off"));
-LiquidLine line43(7, 2, "Light-auto 2:", (((auto_light>>1)&0x01)?"On ":"Off"));
-LiquidLine line44(7, 3, "Light-auto 3:", (((auto_light>>2)&0x01)?"On ":"Off"));
-LiquidLine line45(7, 3, "Light-auto 4:", (((auto_light>>3)&0x01)?"On ":"Off"));
-LiquidLine line46(7, 3, "Light-auto 5:", (((auto_light>>4)&0x01)?"On ":"Off"));
-LiquidLine line47(7, 3, "Light-auto 6:", (((auto_light>>5)&0x01)?"On ":"Off"));
-LiquidLine line48(7, 3, "Light-auto 7:", (((auto_light>>6)&0x01)?"On ":"Off"));
-LiquidLine line49(7, 3, "Light-auto 8:", (((auto_light>>7)&0x01)?"On ":"Off"));
+LiquidLine line42(2, 1, "Light-auto 1:", light_aut_stat[0]);
+LiquidLine line43(2, 2, "Light-auto 2:", light_aut_stat[1]);
+LiquidLine line44(2, 3, "Light-auto 3:", light_aut_stat[2]);
+LiquidLine line45(2, 3, "Light-auto 4:", light_aut_stat[3]);
+LiquidLine line46(2, 3, "Light-auto 5:", light_aut_stat[4]);
+LiquidLine line47(2, 3, "Light-auto 6:", light_aut_stat[5]);
+LiquidLine line48(2, 3, "Light-auto 7:", light_aut_stat[6]);
+LiquidLine line49(2, 3, "Light-auto 8:", light_aut_stat[7]);
 LiquidScreen screen4(line41,line42,line43,line44);
 
 LiquidLine line51(0, 0, "Light timer");
@@ -810,14 +813,14 @@ LiquidLine line59(0, 3, "ch8_hours:", ch8_hours);
 LiquidScreen screen5(line51,line52,line53,line54);
 
 LiquidLine line61(0, 0, "Light assign");
-LiquidLine line62(0,1, "Ch1: ",  channels[1] );
-LiquidLine line63(0,2, "Ch2: ",  channels[2] );
-LiquidLine line64(0,3, "Ch3: ",  channels[3] );
-LiquidLine line65(0,3, "Ch4: ",  channels[4] );
-LiquidLine line66(0,3, "Ch5: ",  channels[5] );
-LiquidLine line67(0,3, "Ch6: ",  channels[6] );
-LiquidLine line68(0,3, "Ch7: ",  channels[7] );
-LiquidLine line69(0,3, "Ch8: ",  channels[8] );
+LiquidLine line62(0,1, "Ch1: ",  channels[0] );
+LiquidLine line63(0,2, "Ch2: ",  channels[1] );
+LiquidLine line64(0,3, "Ch3: ",  channels[2] );
+LiquidLine line65(0,3, "Ch4: ",  channels[3] );
+LiquidLine line66(0,3, "Ch5: ",  channels[4] );
+LiquidLine line67(0,3, "Ch6: ",  channels[5] );
+LiquidLine line68(0,3, "Ch7: ",  channels[6] );
+LiquidLine line69(0,3, "Ch8: ",  channels[7] );
 
 LiquidScreen screen6(line61,line62,line63,line64);
 
@@ -830,23 +833,35 @@ void buttonsCheck() {
 	 {
 		// Calls the function identified with
 		// increase or 1 for the focused line.
+<<<<<<< HEAD
     //menu.next_screen();
 		menu.call_function(1);
     
+=======
+		menu.call_function(1);
+    //menu.next_screen();
+>>>>>>> 708b2eeab955d9abc45e2571a565b1d96c3d76ce
     menu.update();
 	}
   bouncer_Down.update();
   if (bouncer_Down.fell())
   {
 		menu.call_function(2);
+<<<<<<< HEAD
    // menu.previous_screen();
+=======
+    //menu.previous_screen();
+>>>>>>> 708b2eeab955d9abc45e2571a565b1d96c3d76ce
     menu.update();
 	}
   bouncer_Enter.update();
 	if (bouncer_Enter.fell()) {
 		// Switches focus to the next line.
 		//menu.call_function(3);
+<<<<<<< HEAD
     //menu.next_screen();
+=======
+>>>>>>> 708b2eeab955d9abc45e2571a565b1d96c3d76ce
     menu.switch_focus();
     menu.update();
 	}
@@ -876,6 +891,8 @@ void buttonsCheck() {
 void idle_function(){}
 void nextScreen()
 {
+  Serial.printf("current screen = %d \n",menu.get_currentScreen());
+  Serial.printf("focused line = %d \n",menu.get_focusedLine());
   if((menu.get_currentScreen()==&welcome_screen)&&(menu.get_focusedLine()==3))
   menu.change_screen(&screen2);
   else if((menu.get_currentScreen()==&screen2)&&(menu.get_focusedLine()==1))
@@ -883,11 +900,15 @@ void nextScreen()
   else if((menu.get_currentScreen()==&screen2)&&(menu.get_focusedLine()==2))
   menu.change_screen(&screen4);
   else if((menu.get_currentScreen()==&screen2)&&(menu.get_focusedLine()==3))
-  menu.change_screen(&screen6);
+  {
+    menu.change_screen(&screen6);
+    Serial.printf("current screen = %d \n",menu.get_currentScreen());
+  }
   else if((menu.get_currentScreen()==&screen2)&&(menu.get_focusedLine()==4))
   menu.change_screen(&screen5);
   else if(menu.get_currentScreen()!=&welcome_screen) 
   menu.change_screen(&welcome_screen);
+   
 }
 
 void nextLine()
@@ -903,34 +924,50 @@ void prevLine()
 void toggle_lights()
 {
   uint8_t channel;
-  channel=menu.get_focusedLine();
-  if(menu.get_currentScreen()==&screen3)
-  {
+  channel=menu.get_focusedLine()-1;
+  Serial.printf("channel=%d \n", channel);
+  Serial.printf("lights=%d \n", lights);
+  //if(menu.get_currentScreen()==&screen3)
+  //{
     
     lights^=(1<<channel);
     digitalWrite(channels[channel], (0x01&(lights>>channel)));
     Blynk.virtualWrite(channel-1,(0x01&(lights>>channel)));
     Blynk.virtualWrite(channel+9,(0x01&(lights>>channel))?255:0);
-  }
-
+  //}
+  light_stat[channel]=(char*)(((lights>>channel)&0x01)?"On ":"Off");
+  for (uint8_t i = 0; i<8; i++)
+ {
+    if((lights>>i)&0x01) light_disp[i]='I';
+    else light_disp[i]='X';
+ }
+  menu.softUpdate();
+   Serial.printf("lights=%d \n", lights);
 }
 
 void toggle_lights_auto()
 {
   uint8_t channel;
-  channel=menu.get_focusedLine();
-  if(menu.get_currentScreen()==&screen4)
+  channel=menu.get_focusedLine()-1;
+  //if(menu.get_currentScreen()==&screen4)
   auto_light^=(1<<channel);
   Blynk.virtualWrite(channel+19,(0x01&(auto_light>>channel)));
   //Blynk.virtualWrite(channel+19,(0x01&(auto_light>>channel))?255:0);
   //EEPROM.put(1,auto_light);
   prefs.putUChar("auto_light", auto_light);
+  light_aut_stat[channel]=(char*)(((auto_light>>channel)&0x01)?"On ":"Off");
+ for (uint8_t i = 0; i<8; i++)
+ {
+    if((auto_light>>i)&0x01) auto_light_disp[i]='I';
+    else auto_light_disp[i]='X';
+ }
+  menu.softUpdate();
 }
 
 void time_increment()
 {
-  if(menu.get_currentScreen()==&screen5)
-  {
+  //if(menu.get_currentScreen()==&screen5)
+  //{
   switch(menu.get_focusedLine())
   {
   case 1:
@@ -975,14 +1012,14 @@ void time_increment()
   break;
 
   }
-  }
-  
+  //}
+  menu.update();
 }
 
 void time_decr()
 {
-if(menu.get_currentScreen()==&screen5)
-  {
+//if(menu.get_currentScreen()==&screen5)
+  //{
   switch(menu.get_focusedLine())
   {
   case 1:
@@ -1026,25 +1063,27 @@ if(menu.get_currentScreen()==&screen5)
   break;
 
   }
-  }
+  //}
+  menu.update();
 }
 
 void assign_channel()
 {
-  static uint8_t temp=0;
+   static uint8_t temp=0;
+  uint8_t channels_temp[8]={channel1, channel2, channel3, channel4, channel5, channel6, channel7, channel8};
   uint8_t line;
   if(menu.get_currentScreen()==&screen6)
   {
   line=menu.get_focusedLine();
   temp++;
-  if (temp==8) temp=0;
-  switch(line)
-  {
-    case 1:
-    channels[temp]=channel1;
-    break;
+  if (temp>=8) temp=0;
+ // switch(line)
+  //{
+   // case 1:
+    channels[line-1]=channels_temp[temp];
+   /* break;
     case 2:
-    channels[temp]=channel2;
+    channels[line]=channels_temp[temp];
     break;
     case 3:
     channels[temp]=channel3;
@@ -1065,27 +1104,29 @@ void assign_channel()
     channels[temp]=channel8;
     break;
 
-  }
+  }*/
   
   }
+  menu.update();
 }
 
 void assign_channel_()
 {
   static uint8_t temp=0;
+  uint8_t channels_temp[8]={channel1, channel2, channel3, channel4, channel5, channel6, channel7, channel8};
   uint8_t line;
   if(menu.get_currentScreen()==&screen6)
   {
   line=menu.get_focusedLine();
   temp--;
-  if (temp==8) temp=0;
-  switch(line)
-  {
-    case 1:
-    channels[temp]=channel1;
-    break;
+  if (temp<=0) temp=7;
+ // switch(line)
+  //{
+   // case 1:
+    channels[line-1]=channels_temp[temp];
+   /* break;
     case 2:
-    channels[temp]=channel2;
+    channels[line]=channels_temp[temp];
     break;
     case 3:
     channels[temp]=channel3;
@@ -1106,9 +1147,10 @@ void assign_channel_()
     channels[temp]=channel8;
     break;
 
-  }
+  }*/
   
   }
+  menu.update();
 }
 
 
@@ -1153,7 +1195,6 @@ void setup() {
   bouncer_Esc.interval(5);
   
  
-
   Serial.begin(115200);
   I2CPower.begin(I2C_SDA, I2C_SCL, 400000);
   I2Cbuttons.begin(I2C_SDA_2, I2C_SCL_2, 400000);
@@ -1179,6 +1220,26 @@ void setup() {
   ch7_hours=prefs.getUChar("ch7_hours",1);
   ch8_hours=prefs.getUChar("ch8_hours",1);
   auto_light=prefs.getUChar("auto_light", auto_light);
+ /* free(light_disp);
+  free(auto_light_disp);
+  light_disp=(char *)malloc(10*sizeof(char));
+  auto_light_disp=(char *)malloc(10*sizeof(char));*/
+  lights=0;
+  light_disp[8] = '\0';
+  auto_light_disp[8] = '\0';
+  for (uint8_t i = 0; i<8; i++)
+ {
+ /* if((lights>>i)&0x01) light_disp[i]='I';
+  else light_disp[i]='X';
+  if((auto_light>>i)&0x01) auto_light_disp[i]='I';
+  else auto_light_disp[i]='X';*/
+  light_disp[i]=(((lights>>i)&0x01)?'I':'X');
+  auto_light_disp[i]=(((auto_light>>i)&0x01)?'I':'X');
+  light_stat[i]=(char*)(((lights>>i)&0x01)?"On ":"Off");
+  light_aut_stat[i]=(char*)(((auto_light>>i)&0x01)?"On ":"Off");
+ }
+ // light_disp[8]='\0';
+ // auto_light_disp[8]='\0';
   pinMode(LED_BUILTIN, OUTPUT);
  //uncoment following 2 rows if using 7 segment display
   //disp.setDigitPins(digitNum,digits);
@@ -1191,123 +1252,126 @@ void setup() {
   LCDwrite(msg1, msg2 );
   //@@@@@@@@@@@@@@@@@@@
 
-    control.attach_function(3, nextScreen);
-  line22.attach_function(3, nextScreen);
-  line22.attach_function(1, nextLine);
-  line22.attach_function(2, prevLine);
-  line23.attach_function(3, nextScreen);
-  line23.attach_function(1, nextLine);
-  line23.attach_function(2, prevLine);  
-  line24.attach_function(3, nextScreen);
-  line24.attach_function(1, nextLine);
-  line24.attach_function(2, prevLine);
-  line25.attach_function(3, nextScreen);
-  line25.attach_function(1, nextLine);
-  line25.attach_function(2, prevLine);
+    control.attach_function(1, nextScreen);
+    control.attach_function(2, nextScreen);
+  line22.attach_function(1, nextScreen);
+  //line22.attach_function(1, nextLine);
+  line22.attach_function(2, nextScreen);
+  line23.attach_function(1, nextScreen);
+ // line23.attach_function(1, nextLine);
+  line23.attach_function(2, nextScreen);  
+  line24.attach_function(1, nextScreen);
+  //line24.attach_function(1, nextLine);
+  line24.attach_function(2, nextScreen);
+  line25.attach_function(1, nextScreen);
+  //line25.attach_function(1, nextLine);
+  line25.attach_function(2, nextScreen);
   line32.attach_function(1, toggle_lights);
   line32.attach_function(2, toggle_lights);
-  line32.attach_function(3, nextLine);
+  //line32.attach_function(3, nextLine);
   line33.attach_function(1, toggle_lights);
   line33.attach_function(2, toggle_lights);
-  line33.attach_function(3, nextLine);
+  //line33.attach_function(3, nextLine);
   line34.attach_function(1, toggle_lights);
   line34.attach_function(2, toggle_lights);
-  line34.attach_function(3, nextLine);
+  //line34.attach_function(3, nextLine);
   line35.attach_function(1, toggle_lights);
   line35.attach_function(2, toggle_lights); 
-  line35.attach_function(3, nextLine);  
+  //line35.attach_function(3, nextLine);  
   line36.attach_function(1, toggle_lights);
   line36.attach_function(2, toggle_lights);
-  line36.attach_function(3, nextLine);
+  //line36.attach_function(3, nextLine);
   line37.attach_function(1, toggle_lights);
   line37.attach_function(2, toggle_lights);
-  line37.attach_function(3, nextLine);
+  //line37.attach_function(3, nextLine);
   line38.attach_function(1, toggle_lights);
   line38.attach_function(2, toggle_lights); 
-  line38.attach_function(3, nextLine);
+  //line38.attach_function(3, nextLine);
   line39.attach_function(1, toggle_lights);
   line39.attach_function(2, toggle_lights); 
-  line39.attach_function(3, nextLine);  
+  //line39.attach_function(3, nextLine);  
 
   line42.attach_function(1, toggle_lights_auto);
   line42.attach_function(2, toggle_lights_auto);
-  line42.attach_function(3, nextLine);
+  //line42.attach_function(3, nextLine);
   line43.attach_function(1, toggle_lights_auto);
   line43.attach_function(2, toggle_lights_auto);
-  line43.attach_function(3, nextLine);
+  //line43.attach_function(3, nextLine);
   line44.attach_function(1, toggle_lights_auto);
   line44.attach_function(2, toggle_lights_auto);
-  line44.attach_function(3, nextLine);
+  //line44.attach_function(3, nextLine);
   line45.attach_function(1, toggle_lights_auto);
   line45.attach_function(2, toggle_lights_auto);
-  line45.attach_function(3, nextLine);
+  //line45.attach_function(3, nextLine);
   line46.attach_function(1, toggle_lights_auto);
   line46.attach_function(2, toggle_lights_auto);
-  line46.attach_function(3, nextLine);
+  //line46.attach_function(3, nextLine);
   line47.attach_function(1, toggle_lights_auto);
   line47.attach_function(2, toggle_lights_auto);
-  line47.attach_function(3, nextLine);
+  //line47.attach_function(3, nextLine);
   line48.attach_function(1, toggle_lights_auto);
   line48.attach_function(2, toggle_lights_auto);
-  line48.attach_function(3, nextLine);
+  //line48.attach_function(3, nextLine);
   line49.attach_function(1, toggle_lights_auto);
   line49.attach_function(2, toggle_lights_auto);
-  line49.attach_function(3, nextLine);
+  //line49.attach_function(3, nextLine);
 
   line52.attach_function(1,time_increment);
   line52.attach_function(2,time_decr);
-  line52.attach_function(3, nextLine);
+  //line52.attach_function(3, nextLine);
   line53.attach_function(1,time_increment);
   line53.attach_function(2,time_decr);
-  line53.attach_function(3, nextLine);
+  //line53.attach_function(3, nextLine);
   line54.attach_function(1,time_increment);
   line54.attach_function(2,time_decr);
-  line54.attach_function(3, nextLine);
+  //line54.attach_function(3, nextLine);
   line55.attach_function(1,time_increment);
   line55.attach_function(2,time_decr);
-  line55.attach_function(3, nextLine);
+  //line55.attach_function(3, nextLine);
   line56.attach_function(1,time_increment);
   line56.attach_function(2,time_decr);
-  line56.attach_function(3, nextLine);
+  //line56.attach_function(3, nextLine);
   line57.attach_function(1,time_increment);
   line57.attach_function(2,time_decr);
-  line57.attach_function(3, nextLine);
+  //line57.attach_function(3, nextLine);
   line58.attach_function(1,time_increment);
   line58.attach_function(2,time_decr);
-  line58.attach_function(3, nextLine);
+  //line58.attach_function(3, nextLine);
   line59.attach_function(1,time_increment);
   line59.attach_function(2,time_decr);
-  line59.attach_function(3, nextLine);
+  //line59.attach_function(3, nextLine);
   
   line62.attach_function(1,assign_channel);
   line62.attach_function(2,assign_channel_);
-  line62.attach_function(3, nextLine);
+  //line62.attach_function(3, nextLine);
   line63.attach_function(1,assign_channel);
   line63.attach_function(2,assign_channel_);
-  line63.attach_function(3, nextLine);
+  //line63.attach_function(3, nextLine);
   line64.attach_function(1,assign_channel);
   line64.attach_function(2,assign_channel_);
-  line64.attach_function(3, nextLine);
+  //line64.attach_function(3, nextLine);
   line65.attach_function(1,assign_channel);
   line65.attach_function(2,assign_channel_);
-  line65.attach_function(3, nextLine);
+  //line65.attach_function(3, nextLine);
   line66.attach_function(1,assign_channel);
   line66.attach_function(2,assign_channel_);
-  line66.attach_function(3, nextLine);
+  //line66.attach_function(3, nextLine);
   line67.attach_function(1,assign_channel);
   line67.attach_function(2,assign_channel_);
-  line67.attach_function(3, nextLine);
+  //line67.attach_function(3, nextLine);
   line68.attach_function(1,assign_channel);
   line68.attach_function(2,assign_channel_);
-  line68.attach_function(3, nextLine);
+  //line68.attach_function(3, nextLine);
   line69.attach_function(1,assign_channel);
   line69.attach_function(2,assign_channel_);
-  line69.attach_function(3, nextLine);
+  //line69.attach_function(3, nextLine);
 
    menu.init();
 	menu.add_screen(screen2);
 	menu.add_screen(screen3);
 	menu.add_screen(screen4);
+  menu.add_screen(screen5);
+  menu.add_screen(screen6);
   screen2.add_line(line25);
   screen3.add_line(line35);
   screen3.add_line(line36);
@@ -1351,9 +1415,9 @@ void loop() {
   //uncomment the next row if using 7 segnment display
   //disp.write(pg_hours);
   buttonsCheck();
-  //scan_buttons(&button_msg);
-  //connectionHandlerTimer.run();
- // if(healthy) Blynk.run();
+  scan_buttons(&button_msg);
+  connectionHandlerTimer.run();
+  if(healthy) Blynk.run();
  delay(20);
  
 }
@@ -1398,7 +1462,7 @@ bool setPowerBoostKeepOn(int en){
 
 void scan_buttons(uint8_t * buttons)
 {
-  I2Cbuttons.beginTransmission(0x01);
+  //I2Cbuttons.beginTransmission(0x01);
   I2Cbuttons.requestFrom(0x02,1);
   while(I2Cbuttons.available()) 
   I2Cbuttons.readBytes(buttons,1);
@@ -1407,7 +1471,7 @@ void scan_buttons(uint8_t * buttons)
    lights^=(1<<*buttons);
     digitalWrite(channels[*buttons], (0x01&(lights>>*buttons)));
   }
-
+  I2Cbuttons.endTransmission();
 }
 //######################Menu#########
 
