@@ -871,35 +871,21 @@ void buttonsCheck() {
 	 {
 		// Calls the function identified with
 		// increase or 1 for the focused line.
-<<<<<<< HEAD
-    //menu.next_screen();
-		menu.call_function(1);
-    
-=======
 		menu.call_function(1);
     //menu.next_screen();
->>>>>>> 708b2eeab955d9abc45e2571a565b1d96c3d76ce
     menu.update();
 	}
   bouncer_Down.update();
   if (bouncer_Down.fell())
   {
 		menu.call_function(2);
-<<<<<<< HEAD
-   // menu.previous_screen();
-=======
     //menu.previous_screen();
->>>>>>> 708b2eeab955d9abc45e2571a565b1d96c3d76ce
     menu.update();
 	}
   bouncer_Enter.update();
 	if (bouncer_Enter.fell()) {
 		// Switches focus to the next line.
 		//menu.call_function(3);
-<<<<<<< HEAD
-    //menu.next_screen();
-=======
->>>>>>> 708b2eeab955d9abc45e2571a565b1d96c3d76ce
     menu.switch_focus();
     menu.update();
 	}
