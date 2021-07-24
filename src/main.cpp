@@ -84,6 +84,7 @@ void day_night_check(int ldr_value);
 Preferences prefs;
 
 SimpleTimer connectionHandlerTimer;
+SimpleTimer refreshmenuTimer;
 Bounce bouncer_Enter = Bounce();
 Bounce bouncer_Up = Bounce();
 Bounce bouncer_Down = Bounce();
@@ -313,7 +314,7 @@ isFirstConnect = false;
 
 BLYNK_WRITE(V0)  // Manual selection
 {
-  if ((param.asInt()==1)&& !((lights)&0x01) ) 
+  if ((param.asInt()==1)) 
   { //turn ON the pgm
     digitalWrite(channels[0], HIGH);
     lights|=(1<<0);
@@ -327,10 +328,10 @@ BLYNK_WRITE(V0)  // Manual selection
    // LCDwrite(msg1, msg2 );
    refresh_menu();
   } 
-  else if ((param.asInt()==1)&& ((lights)&0x01) ) 
+  else if ((param.asInt()==0)) 
   {
     digitalWrite(channels[0], LOW);
-    lights&=!(1<<0);
+    lights&=~(1<<0);
      Serial.println("The CH1 set off");
     Blynk.notify("CH1 OFF!");
     delay(100);
@@ -346,7 +347,7 @@ BLYNK_WRITE(V0)  // Manual selection
 
 BLYNK_WRITE(V1)  // Manual selection
 {
-  if ((param.asInt()==1)&& !((lights>>1)&0x01) ) 
+  if ((param.asInt()==1)) 
   { //turn ON the pgm
     digitalWrite(channels[1], HIGH);
     lights|=(1<<1);
@@ -360,10 +361,10 @@ BLYNK_WRITE(V1)  // Manual selection
    // LCDwrite(msg1, msg2 );
    refresh_menu();
   } 
-  else if ((param.asInt()==1)&& ((lights>>1)&0x01) ) 
+  else if ((param.asInt()==0)) 
   {
     digitalWrite(channels[1], LOW);
-    lights&=!(1<<1);
+    lights&=~(1<<1);
      Serial.println("The CH2 set off");
     Blynk.notify("CH2 OFF!");
     delay(100);
@@ -379,7 +380,7 @@ BLYNK_WRITE(V1)  // Manual selection
 
 BLYNK_WRITE(V2)  // Manual selection
 {
-  if ((param.asInt()==1)&& !((lights>>2)&0x01) ) 
+  if ((param.asInt()==1)) 
   { //turn ON the pgm
     digitalWrite(channels[2], HIGH);
     lights|=(1<<2);
@@ -393,10 +394,10 @@ BLYNK_WRITE(V2)  // Manual selection
     //LCDwrite(msg1, msg2 );
     refresh_menu();
   } 
-  else if ((param.asInt()==1)&& ((lights>>2)&0x01) ) 
+  else if ((param.asInt()==0)) 
   {
     digitalWrite(channels[2], LOW);
-    lights&=!(1<<2);
+    lights&=~(1<<2);
      Serial.println("The CH3 set off");
     Blynk.notify("CH3 OFF!");
     delay(100);
@@ -412,7 +413,7 @@ BLYNK_WRITE(V2)  // Manual selection
 
 BLYNK_WRITE(V3)  // Manual selection
 {
-  if ((param.asInt()==1)&& !((lights>>3)&0x01) ) 
+  if ((param.asInt()==1)) 
   { //turn ON the pgm
     digitalWrite(channels[3], HIGH);
     lights|=(1<<3);
@@ -426,10 +427,10 @@ BLYNK_WRITE(V3)  // Manual selection
     //LCDwrite(msg1, msg2 );
     refresh_menu();
   } 
-  else if ((param.asInt()==1)&& ((lights>>3)&0x01) ) 
+  else if ((param.asInt()==0)) 
   {
     digitalWrite(channels[1], LOW);
-    lights&=!(1<<3);
+    lights&=~(1<<3);
      Serial.println("The CH4 set off");
     Blynk.notify("CH4 OFF!");
     delay(100);
@@ -445,7 +446,7 @@ BLYNK_WRITE(V3)  // Manual selection
 
 BLYNK_WRITE(V4)  // Manual selection
 {
-  if ((param.asInt()==1)&& !((lights>>4)&0x01) ) 
+  if ((param.asInt()==1)) 
   { //turn ON the pgm
     digitalWrite(channels[4], HIGH);
     lights|=(1<<4);
@@ -459,10 +460,10 @@ BLYNK_WRITE(V4)  // Manual selection
     //LCDwrite(msg1, msg2 );
     refresh_menu();
   } 
-  else if ((param.asInt()==1)&& ((lights>>4)&0x01) ) 
+  else if ((param.asInt()==0)) 
   {
     digitalWrite(channels[4], LOW);
-    lights&=!(1<<4);
+    lights&=~(1<<4);
      Serial.println("The CH5 set off");
     Blynk.notify("CH5 OFF!");
     delay(100);
@@ -478,7 +479,7 @@ BLYNK_WRITE(V4)  // Manual selection
 
 BLYNK_WRITE(V5)  // Manual selection
 {
-  if ((param.asInt()==1)&& !((lights>>5)&0x01) ) 
+  if ((param.asInt()==1)) 
   { //turn ON the pgm
     digitalWrite(channels[5], HIGH);
     lights|=(1<<5);
@@ -492,10 +493,10 @@ BLYNK_WRITE(V5)  // Manual selection
     //LCDwrite(msg1, msg2 );
     refresh_menu();
   } 
-  else if ((param.asInt()==1)&& ((lights>>5)&0x01) ) 
+  else if ((param.asInt()==0)) 
   {
     digitalWrite(channels[5], LOW);
-    lights&=!(1<<5);
+    lights&=~(1<<5);
      Serial.println("The CH6 set off");
     Blynk.notify("CH6 OFF!");
     delay(100);
@@ -511,7 +512,7 @@ BLYNK_WRITE(V5)  // Manual selection
 
 BLYNK_WRITE(V6)  // Manual selection
 {
-  if ((param.asInt()==1)&& !((lights>>6)&0x01) ) 
+  if ((param.asInt()==1)) 
   { //turn ON the pgm
     digitalWrite(channels[6], HIGH);
     lights|=(1<<6);
@@ -525,10 +526,10 @@ BLYNK_WRITE(V6)  // Manual selection
     //LCDwrite(msg1, msg2 );
     refresh_menu();
   } 
-  else if ((param.asInt()==1)&& ((lights>>6)&0x01) ) 
+  else if ((param.asInt()==0)) 
   {
     digitalWrite(channels[6], LOW);
-    lights&=!(1<<6);
+    lights&=~(1<<6);
      Serial.println("The CH7 set off");
     Blynk.notify("CH7 OFF!");
     delay(100);
@@ -544,7 +545,7 @@ BLYNK_WRITE(V6)  // Manual selection
 
 BLYNK_WRITE(V7)  // Manual selection
 {
-  if ((param.asInt()==1)&& !((lights>>7)&0x01) ) 
+  if ((param.asInt()==1)) 
   { //turn ON the pgm
     digitalWrite(channels[7], HIGH);
     lights|=(1<<7);
@@ -558,10 +559,10 @@ BLYNK_WRITE(V7)  // Manual selection
     //LCDwrite(msg1, msg2 );
     refresh_menu();
   } 
-  else if ((param.asInt()==1)&& ((lights>>7)&0x01) ) 
+  else if ((param.asInt()==0)) 
   {
     digitalWrite(channels[7], LOW);
-    lights&=!(1<<7);
+    lights&=~(1<<7);
      Serial.println("The CH8 set off");
     Blynk.notify("CH8 OFF!");
     delay(100);
@@ -576,30 +577,28 @@ BLYNK_WRITE(V7)  // Manual selection
 }
 
 
-BLYNK_WRITE(V20)  // Manual selection
+BLYNK_WRITE(V8)  // Manual selection
 {
-  if ((param.asInt()==1)&& !((lights>>1)&0x01) ) 
+  if ((param.asInt()==1)&& !((lights>>1)&0x01) )
   { //turn ON the pgm
    // digitalWrite(channels[0], HIGH);
     auto_light|=(1<<0);
     Serial.println("The CH1 set on for " + String(ch1_hours)+" hours");
     Blynk.notify("CH1 ON!");
     delay(100);
-    Blynk.virtualWrite(20,1);
-    Blynk.virtualWrite(30,255);
+    Blynk.virtualWrite(35,1);
     //msg1="The CH1 set on";
     //msg2="for "+ String(pg_hours)+" Hours";
     //LCDwrite(msg1, msg2 );
   } 
-  else if ((param.asInt()==1)&& ((lights>>1)&0x01) ) 
+  else if ((param.asInt()==0)&& ((lights>>1)&0x01) ) 
   {
     //digitalWrite(channels[1], LOW);
     auto_light&=(1<<0);
      Serial.println("The CH1 set off");
     Blynk.notify("CH1 OFF!");
     delay(100);
-    Blynk.virtualWrite(20,0);
-    Blynk.virtualWrite(30,0);
+    Blynk.virtualWrite(35,0);
     //msg1="The CH1 set off";
     //msg2="after "+ String(pg_hours)+" Hours";
     //LCDwrite(msg1, msg2 );
@@ -607,7 +606,7 @@ BLYNK_WRITE(V20)  // Manual selection
   
 }
 
-BLYNK_WRITE(V21)  // Manual selection
+BLYNK_WRITE(V9)  // Manual selection
 {
   if ((param.asInt()==1)&& !((lights>>1)&0x01) ) 
   { //turn ON the pgm
@@ -616,21 +615,19 @@ BLYNK_WRITE(V21)  // Manual selection
     Serial.println("The CH2 set on for " + String(ch1_hours)+" hours");
     Blynk.notify("CH1 ON!");
     delay(100);
-    Blynk.virtualWrite(21,1);
-    Blynk.virtualWrite(31,255);
+    Blynk.virtualWrite(36,1);
     //msg1="The CH2 set on";
    // msg2="for "+ String(pg_hours)+" Hours";
     //LCDwrite(msg1, msg2 );
   } 
-  else if ((param.asInt()==1)&& ((lights>>1)&0x01) ) 
+  else if ((param.asInt()==0)&& ((lights>>1)&0x01) ) 
   {
     //digitalWrite(channels[1], LOW);
     auto_light&=(1<<1);
      Serial.println("The CH2 set off");
     Blynk.notify("CH2 OFF!");
     delay(100);
-    Blynk.virtualWrite(21,0);
-    Blynk.virtualWrite(31,0);
+    Blynk.virtualWrite(36,0);
     //msg1="The CH2 set off";
     //msg2="after "+ String(pg_hours)+" Hours";
     //LCDwrite(msg1, msg2 );
@@ -638,7 +635,7 @@ BLYNK_WRITE(V21)  // Manual selection
   
 }
 
-BLYNK_WRITE(V22)  // Manual selection
+BLYNK_WRITE(V18)  // Manual selection
 {
   if ((param.asInt()==1)&& !((lights>>1)&0x01) ) 
   { //turn ON the pgm
@@ -647,21 +644,19 @@ BLYNK_WRITE(V22)  // Manual selection
     Serial.println("The CH3 set on for " + String(ch1_hours)+" hours");
     Blynk.notify("CH3 ON!");
     delay(100);
-    Blynk.virtualWrite(22,1);
-    Blynk.virtualWrite(32,255);
+    Blynk.virtualWrite(37,255);
     //msg1="The CH3 set on";
     //msg2="for "+ String(pg_hours)+" Hours";
     //LCDwrite(msg1, msg2 );
   } 
-  else if ((param.asInt()==1)&& ((lights>>1)&0x01) ) 
+  else if ((param.asInt()==0)&& ((lights>>1)&0x01) ) 
   {
     //digitalWrite(channels[2], LOW);
     lights&=(1<<2);
      Serial.println("The CH3 set off");
     Blynk.notify("CH3 OFF!");
     delay(100);
-    Blynk.virtualWrite(22,0);
-    Blynk.virtualWrite(32,0);
+    Blynk.virtualWrite(37,0);
     //msg1="The CH3 set off";
     //msg2="after "+ String(pg_hours)+" Hours";
     //LCDwrite(msg1, msg2 );
@@ -669,7 +664,7 @@ BLYNK_WRITE(V22)  // Manual selection
   
 }
 
-BLYNK_WRITE(V23)  // Manual selection
+BLYNK_WRITE(V19)  // Manual selection
 {
   if ((param.asInt()==1)&& !((lights>>1)&0x01) ) 
   { //turn ON the pgm
@@ -678,21 +673,19 @@ BLYNK_WRITE(V23)  // Manual selection
     Serial.println("The CH4 set on for " + String(ch1_hours)+" hours");
     Blynk.notify("CH4 ON!");
     delay(100);
-    Blynk.virtualWrite(23,1);
-    Blynk.virtualWrite(33,255);
+    Blynk.virtualWrite(38,255);
     //msg1="The CH4 set on";
     //msg2="for "+ String(pg_hours)+" Hours";
     //LCDwrite(msg1, msg2 );
   } 
-  else if ((param.asInt()==1)&& ((lights>>1)&0x01) ) 
+  else if ((param.asInt()==0)&& ((lights>>1)&0x01) ) 
   {
     //digitalWrite(channels[1], LOW);
     lights&=(1<<3);
      Serial.println("The CH4 set off");
     Blynk.notify("CH4 OFF!");
     delay(100);
-    Blynk.virtualWrite(23,0);
-    Blynk.virtualWrite(33,0);
+    Blynk.virtualWrite(38,0);
     //msg1="The CH4 set off";
    // msg2="after "+ String(pg_hours)+" Hours";
    // LCDwrite(msg1, msg2 );
@@ -700,7 +693,7 @@ BLYNK_WRITE(V23)  // Manual selection
   
 }
 
-BLYNK_WRITE(V24)  // Manual selection
+BLYNK_WRITE(V28)  // Manual selection
 {
   if ((param.asInt()==1)&& !((lights>>1)&0x01) ) 
   { //turn ON the pgm
@@ -709,21 +702,19 @@ BLYNK_WRITE(V24)  // Manual selection
     Serial.println("The CH5 set on for " + String(ch1_hours)+" hours");
     Blynk.notify("CH5 ON!");
     delay(100);
-    Blynk.virtualWrite(24,1);
-    Blynk.virtualWrite(34,255);
+    Blynk.virtualWrite(39,1);
     //msg1="The CH5 set on";
     //msg2="for "+ String(pg_hours)+" Hours";
     //LCDwrite(msg1, msg2 );
   } 
-  else if ((param.asInt()==1)&& ((lights>>1)&0x01) ) 
+  else if ((param.asInt()==0)&& ((lights>>1)&0x01) ) 
   {
     //digitalWrite(channels[4], LOW);
     lights&=(1<<4);
      Serial.println("The CH5 set off");
     Blynk.notify("CH5 OFF!");
     delay(100);
-    Blynk.virtualWrite(24,0);
-    Blynk.virtualWrite(34,0);
+    Blynk.virtualWrite(39,0);
     //msg1="The CH5 set off";
     //msg2="after "+ String(pg_hours)+" Hours";
     //LCDwrite(msg1, msg2 );
@@ -731,7 +722,7 @@ BLYNK_WRITE(V24)  // Manual selection
   
 }
 
-BLYNK_WRITE(V25)  // Manual selection
+BLYNK_WRITE(V29)  // Manual selection
 {
   if ((param.asInt()==1)&& !((lights>>1)&0x01) ) 
   { //turn ON the pgm
@@ -740,21 +731,19 @@ BLYNK_WRITE(V25)  // Manual selection
     Serial.println("The CH6 set on for " + String(ch1_hours)+" hours");
     Blynk.notify("CH6 ON!");
     delay(100);
-    Blynk.virtualWrite(25,1);
-    Blynk.virtualWrite(35,255);
+    Blynk.virtualWrite(40,1);
     //msg1="The CH6 set on";
     //msg2="for "+ String(pg_hours)+" Hours";
     //LCDwrite(msg1, msg2 );
   } 
-  else if ((param.asInt()==1)&& ((lights>>1)&0x01) ) 
+  else if ((param.asInt()==0)&& ((lights>>1)&0x01) ) 
   {
     //digitalWrite(channels[5], LOW);
     lights&=!(1<<5);
      Serial.println("The CH6 set off");
     Blynk.notify("CH6 OFF!");
     delay(100);
-    Blynk.virtualWrite(25,0);
-    Blynk.virtualWrite(35,0);
+    Blynk.virtualWrite(40,0);
     //msg1="The CH6 set off";
     //msg2="after "+ String(pg_hours)+" Hours";
     //LCDwrite(msg1, msg2 );
@@ -762,7 +751,7 @@ BLYNK_WRITE(V25)  // Manual selection
   
 }
 
-BLYNK_WRITE(V26)  // Manual selection
+BLYNK_WRITE(V33)  // Manual selection
 {
   if ((param.asInt()==1)&& !((lights>>1)&0x01) ) 
   { //turn ON the pgm
@@ -771,21 +760,19 @@ BLYNK_WRITE(V26)  // Manual selection
     Serial.println("The CH7 set on for " + String(ch1_hours)+" hours");
     Blynk.notify("CH7 ON!");
     delay(100);
-    Blynk.virtualWrite(26,1);
-    Blynk.virtualWrite(36,255);
+    Blynk.virtualWrite(41,1);
     //msg1="The CH7 set on";
     //msg2="for "+ String(pg_hours)+" Hours";
     //LCDwrite(msg1, msg2 );
   } 
-  else if ((param.asInt()==1)&& ((lights>>1)&0x01) ) 
+  else if ((param.asInt()==0)&& ((lights>>1)&0x01) ) 
   {
     //digitalWrite(channels[6], LOW);
     lights|=!(1<<6);
      Serial.println("The CH7 set off");
     Blynk.notify("CH7 OFF!");
     delay(100);
-    Blynk.virtualWrite(26,0);
-    Blynk.virtualWrite(36,0);
+    Blynk.virtualWrite(41,0);
     //msg1="The CH7 set off";
     //msg2="after "+ String(pg_hours)+" Hours";
     //LCDwrite(msg1, msg2 );
@@ -793,7 +780,7 @@ BLYNK_WRITE(V26)  // Manual selection
   
 }
 
-BLYNK_WRITE(V27)  // Manual selection
+BLYNK_WRITE(V34)  // Manual selection
 {
   if ((param.asInt()==1)&& !((lights>>1)&0x01) ) 
   { //turn ON the pgm
@@ -802,8 +789,7 @@ BLYNK_WRITE(V27)  // Manual selection
     Serial.println("The CH8 set on for " + String(ch1_hours)+" hours");
     Blynk.notify("CH8 ON!");
     delay(100);
-    Blynk.virtualWrite(27,1);
-    Blynk.virtualWrite(37,255);
+    Blynk.virtualWrite(42,1);
     //msg1="The CH8 set on";
     //msg2="for "+ String(pg_hours)+" Hours";
     //LCDwrite(msg1, msg2 );
@@ -815,8 +801,7 @@ BLYNK_WRITE(V27)  // Manual selection
      Serial.println("The CH8 set off");
     Blynk.notify("CH8 OFF!");
     delay(100);
-    Blynk.virtualWrite(27,0);
-    Blynk.virtualWrite(37,0);
+    Blynk.virtualWrite(42,0);
     //msg1="The CH8 set off";
     //msg2="after "+ String(pg_hours)+" Hours";
     //LCDwrite(msg1, msg2 );
@@ -957,6 +942,7 @@ void toggle_lights()
     lights^=(1<<channel);
     digitalWrite(channels[channel], (0x01&(lights>>channel)));
     Blynk.virtualWrite(channel,(0x01&(lights>>channel)));
+    Blynk.virtualWrite(channel+20,(0x01&(lights>>channel)));
    // Blynk.virtualWrite(channel+9,(0x01&(lights>>channel))?255:0);
   //}
   light_stat[channel]=(char*)(((lights>>channel)&0x01)?"On ":"Off");
@@ -1429,6 +1415,7 @@ void setup() {
   //@@@@@@@@@@@@@@@@@@@@@@@@@
  //%%%%%%%%%%%%%%%%%%%%
   connectionHandlerTimer.setInterval(100, ConnectionHandler);
+  refreshmenuTimer.setInterval(200,refresh_menu);
   connectionState = AWAIT_GSM_CONNECTION;
 }
 
