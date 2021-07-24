@@ -84,6 +84,7 @@ void day_night_check(int ldr_value);
 Preferences prefs;
 
 SimpleTimer connectionHandlerTimer;
+SimpleTimer refreshmenuTimer;
 Bounce bouncer_Enter = Bounce();
 Bounce bouncer_Up = Bounce();
 Bounce bouncer_Down = Bounce();
@@ -330,7 +331,7 @@ BLYNK_WRITE(V0)  // Manual selection
   else if ((param.asInt()==0)) 
   {
     digitalWrite(channels[0], LOW);
-    lights&=!(1<<0);
+    lights&=~(1<<0);
      Serial.println("The CH1 set off");
     Blynk.notify("CH1 OFF!");
     delay(100);
@@ -363,7 +364,7 @@ BLYNK_WRITE(V1)  // Manual selection
   else if ((param.asInt()==0)) 
   {
     digitalWrite(channels[1], LOW);
-    lights&=!(1<<1);
+    lights&=~(1<<1);
      Serial.println("The CH2 set off");
     Blynk.notify("CH2 OFF!");
     delay(100);
@@ -396,7 +397,7 @@ BLYNK_WRITE(V2)  // Manual selection
   else if ((param.asInt()==0)) 
   {
     digitalWrite(channels[2], LOW);
-    lights&=!(1<<2);
+    lights&=~(1<<2);
      Serial.println("The CH3 set off");
     Blynk.notify("CH3 OFF!");
     delay(100);
@@ -429,7 +430,7 @@ BLYNK_WRITE(V3)  // Manual selection
   else if ((param.asInt()==0)) 
   {
     digitalWrite(channels[1], LOW);
-    lights&=!(1<<3);
+    lights&=~(1<<3);
      Serial.println("The CH4 set off");
     Blynk.notify("CH4 OFF!");
     delay(100);
@@ -462,7 +463,7 @@ BLYNK_WRITE(V4)  // Manual selection
   else if ((param.asInt()==0)) 
   {
     digitalWrite(channels[4], LOW);
-    lights&=!(1<<4);
+    lights&=~(1<<4);
      Serial.println("The CH5 set off");
     Blynk.notify("CH5 OFF!");
     delay(100);
@@ -495,7 +496,7 @@ BLYNK_WRITE(V5)  // Manual selection
   else if ((param.asInt()==0)) 
   {
     digitalWrite(channels[5], LOW);
-    lights&=!(1<<5);
+    lights&=~(1<<5);
      Serial.println("The CH6 set off");
     Blynk.notify("CH6 OFF!");
     delay(100);
@@ -528,7 +529,7 @@ BLYNK_WRITE(V6)  // Manual selection
   else if ((param.asInt()==0)) 
   {
     digitalWrite(channels[6], LOW);
-    lights&=!(1<<6);
+    lights&=~(1<<6);
      Serial.println("The CH7 set off");
     Blynk.notify("CH7 OFF!");
     delay(100);
@@ -561,7 +562,7 @@ BLYNK_WRITE(V7)  // Manual selection
   else if ((param.asInt()==0)) 
   {
     digitalWrite(channels[7], LOW);
-    lights&=!(1<<7);
+    lights&=~(1<<7);
      Serial.println("The CH8 set off");
     Blynk.notify("CH8 OFF!");
     delay(100);
@@ -578,7 +579,7 @@ BLYNK_WRITE(V7)  // Manual selection
 
 BLYNK_WRITE(V8)  // Manual selection
 {
-  if ((param.asInt()==1)&& !((lights>>1)&0x01) ) 
+  if ((param.asInt()==1)&& !((lights>>1)&0x01) )
   { //turn ON the pgm
    // digitalWrite(channels[0], HIGH);
     auto_light|=(1<<0);
@@ -1414,6 +1415,7 @@ void setup() {
   //@@@@@@@@@@@@@@@@@@@@@@@@@
  //%%%%%%%%%%%%%%%%%%%%
   connectionHandlerTimer.setInterval(100, ConnectionHandler);
+  refreshmenuTimer.setInterval(200,refresh_menu);
   connectionState = AWAIT_GSM_CONNECTION;
 }
 
