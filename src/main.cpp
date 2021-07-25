@@ -307,6 +307,7 @@ void refresh_menu()
 BLYNK_CONNECTED() {
 if (isFirstConnect) {
   Blynk.syncAll();
+  refresh_menu();
  // Blynk.notify("TIMER STARTING!!!!");
 isFirstConnect = false;
 }
@@ -1428,6 +1429,7 @@ void loop() {
   buttonsCheck();
   scan_buttons(&button_msg);
   connectionHandlerTimer.run();
+  refreshmenuTimer.run();
   if(healthy) Blynk.run();
  delay(20);
  
@@ -1481,6 +1483,7 @@ void scan_buttons(uint8_t * buttons)
   {
    lights^=(1<<*buttons);
     digitalWrite(channels[*buttons], (0x01&(lights>>*buttons)));
+    Blynk.virtualWrite(*buttons,(0x01&(lights>>*buttons)));
   }
   I2Cbuttons.endTransmission();
 }
