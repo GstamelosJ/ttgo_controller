@@ -1427,7 +1427,7 @@ void loop() {
   //uncomment the next row if using 7 segnment display
   //disp.write(pg_hours);
   buttonsCheck();
-  scan_buttons(&button_msg);
+  //scan_buttons(&button_msg);
   connectionHandlerTimer.run();
   refreshmenuTimer.run();
   if(healthy) Blynk.run();
@@ -1479,7 +1479,7 @@ void scan_buttons(uint8_t * buttons)
   I2Cbuttons.requestFrom(0x08,1);
   while(I2Cbuttons.available()) 
   I2Cbuttons.readBytes(buttons,1);
-  if (*buttons!=0xff)
+  if ((*buttons!=0xff)||(*buttons!=0x00))
   {
    lights^=(1<<*buttons);
     digitalWrite(channels[*buttons], (0x01&(lights>>*buttons)));
