@@ -580,7 +580,7 @@ BLYNK_WRITE(V7)  // Manual selection
 
 BLYNK_WRITE(V8)  // Manual selection
 {
-  if ((param.asInt()==1)&& !((lights>>1)&0x01) )
+  if ((param.asInt()==1))
   { //turn ON the pgm
    // digitalWrite(channels[0], HIGH);
     auto_light|=(1<<0);
@@ -592,10 +592,10 @@ BLYNK_WRITE(V8)  // Manual selection
     //msg2="for "+ String(pg_hours)+" Hours";
     //LCDwrite(msg1, msg2 );
   } 
-  else if ((param.asInt()==0)&& ((lights>>1)&0x01) ) 
+  else if ((param.asInt()==0) ) 
   {
     //digitalWrite(channels[1], LOW);
-    auto_light&=(1<<0);
+    auto_light&=~(1<<0);
      Serial.println("The CH1 set off");
     Blynk.notify("CH1 OFF!");
     delay(100);
@@ -609,7 +609,7 @@ BLYNK_WRITE(V8)  // Manual selection
 
 BLYNK_WRITE(V9)  // Manual selection
 {
-  if ((param.asInt()==1)&& !((lights>>1)&0x01) ) 
+  if ((param.asInt()==1)) 
   { //turn ON the pgm
     //digitalWrite(channels[1], HIGH);
     auto_light|=(1<<1);
@@ -621,10 +621,10 @@ BLYNK_WRITE(V9)  // Manual selection
    // msg2="for "+ String(pg_hours)+" Hours";
     //LCDwrite(msg1, msg2 );
   } 
-  else if ((param.asInt()==0)&& ((lights>>1)&0x01) ) 
+  else if ((param.asInt()==0)) 
   {
     //digitalWrite(channels[1], LOW);
-    auto_light&=(1<<1);
+    auto_light&=~(1<<1);
      Serial.println("The CH2 set off");
     Blynk.notify("CH2 OFF!");
     delay(100);
@@ -638,7 +638,7 @@ BLYNK_WRITE(V9)  // Manual selection
 
 BLYNK_WRITE(V18)  // Manual selection
 {
-  if ((param.asInt()==1)&& !((lights>>1)&0x01) ) 
+  if ((param.asInt()==1)) 
   { //turn ON the pgm
     //digitalWrite(channels[2], HIGH);
     lights|=(1<<2);
@@ -650,10 +650,10 @@ BLYNK_WRITE(V18)  // Manual selection
     //msg2="for "+ String(pg_hours)+" Hours";
     //LCDwrite(msg1, msg2 );
   } 
-  else if ((param.asInt()==0)&& ((lights>>1)&0x01) ) 
+  else if ((param.asInt()==0)) 
   {
     //digitalWrite(channels[2], LOW);
-    lights&=(1<<2);
+    lights&=~(1<<2);
      Serial.println("The CH3 set off");
     Blynk.notify("CH3 OFF!");
     delay(100);
@@ -667,7 +667,7 @@ BLYNK_WRITE(V18)  // Manual selection
 
 BLYNK_WRITE(V19)  // Manual selection
 {
-  if ((param.asInt()==1)&& !((lights>>1)&0x01) ) 
+  if ((param.asInt()==1)) 
   { //turn ON the pgm
     //digitalWrite(channels[3], HIGH);
     lights|=(1<<3);
@@ -679,10 +679,10 @@ BLYNK_WRITE(V19)  // Manual selection
     //msg2="for "+ String(pg_hours)+" Hours";
     //LCDwrite(msg1, msg2 );
   } 
-  else if ((param.asInt()==0)&& ((lights>>1)&0x01) ) 
+  else if ((param.asInt()==0)) 
   {
     //digitalWrite(channels[1], LOW);
-    lights&=(1<<3);
+    lights&=~(1<<3);
      Serial.println("The CH4 set off");
     Blynk.notify("CH4 OFF!");
     delay(100);
@@ -696,7 +696,7 @@ BLYNK_WRITE(V19)  // Manual selection
 
 BLYNK_WRITE(V28)  // Manual selection
 {
-  if ((param.asInt()==1)&& !((lights>>1)&0x01) ) 
+  if ((param.asInt()==1)) 
   { //turn ON the pgm
     //digitalWrite(channels[4], HIGH);
     lights|=(1<<4);
@@ -708,10 +708,10 @@ BLYNK_WRITE(V28)  // Manual selection
     //msg2="for "+ String(pg_hours)+" Hours";
     //LCDwrite(msg1, msg2 );
   } 
-  else if ((param.asInt()==0)&& ((lights>>1)&0x01) ) 
+  else if ((param.asInt()==0)) 
   {
     //digitalWrite(channels[4], LOW);
-    lights&=(1<<4);
+    lights&=~(1<<4);
      Serial.println("The CH5 set off");
     Blynk.notify("CH5 OFF!");
     delay(100);
@@ -725,7 +725,7 @@ BLYNK_WRITE(V28)  // Manual selection
 
 BLYNK_WRITE(V29)  // Manual selection
 {
-  if ((param.asInt()==1)&& !((lights>>1)&0x01) ) 
+  if ((param.asInt()==1)) 
   { //turn ON the pgm
     //digitalWrite(channels[5], HIGH);
     lights|=(1<<5);
@@ -737,10 +737,10 @@ BLYNK_WRITE(V29)  // Manual selection
     //msg2="for "+ String(pg_hours)+" Hours";
     //LCDwrite(msg1, msg2 );
   } 
-  else if ((param.asInt()==0)&& ((lights>>1)&0x01) ) 
+  else if ((param.asInt()==0)) 
   {
     //digitalWrite(channels[5], LOW);
-    lights&=!(1<<5);
+    lights&=~(1<<5);
      Serial.println("The CH6 set off");
     Blynk.notify("CH6 OFF!");
     delay(100);
@@ -754,7 +754,7 @@ BLYNK_WRITE(V29)  // Manual selection
 
 BLYNK_WRITE(V33)  // Manual selection
 {
-  if ((param.asInt()==1)&& !((lights>>1)&0x01) ) 
+  if ((param.asInt()==1)) 
   { //turn ON the pgm
     //digitalWrite(channels[6], HIGH);
     lights|=(1<<6);
@@ -766,10 +766,10 @@ BLYNK_WRITE(V33)  // Manual selection
     //msg2="for "+ String(pg_hours)+" Hours";
     //LCDwrite(msg1, msg2 );
   } 
-  else if ((param.asInt()==0)&& ((lights>>1)&0x01) ) 
+  else if ((param.asInt()==0)) 
   {
     //digitalWrite(channels[6], LOW);
-    lights|=!(1<<6);
+    lights|=~(1<<6);
      Serial.println("The CH7 set off");
     Blynk.notify("CH7 OFF!");
     delay(100);
@@ -783,7 +783,7 @@ BLYNK_WRITE(V33)  // Manual selection
 
 BLYNK_WRITE(V34)  // Manual selection
 {
-  if ((param.asInt()==1)&& !((lights>>1)&0x01) ) 
+  if ((param.asInt()==1)) 
   { //turn ON the pgm
     //digitalWrite(channels[7], HIGH);
     lights|=(1<<7);
@@ -798,7 +798,7 @@ BLYNK_WRITE(V34)  // Manual selection
   else if ((param.asInt()==1)&& ((lights>>1)&0x01) ) 
   {
     //digitalWrite(channels[7], LOW);
-    lights&=!(1<<7);
+    lights&=~(1<<7);
      Serial.println("The CH8 set off");
     Blynk.notify("CH8 OFF!");
     delay(100);
@@ -810,7 +810,38 @@ BLYNK_WRITE(V34)  // Manual selection
   
 }
 
-
+BLYNK_WRITE(V10)
+{
+ch1_hours=param.asInt();
+}
+BLYNK_WRITE(V11)
+{
+ch2_hours=param.asInt();
+}
+BLYNK_WRITE(V12)
+{
+ch3_hours=param.asInt();
+}
+BLYNK_WRITE(V13)
+{
+ch4_hours=param.asInt();
+}
+BLYNK_WRITE(V14)
+{
+ch5_hours=param.asInt();
+}
+BLYNK_WRITE(V15)
+{
+ch6_hours=param.asInt();
+}
+BLYNK_WRITE(V16)
+{
+ch7_hours=param.asInt();
+}
+BLYNK_WRITE(V17)
+{
+ch8_hours=param.asInt();
+}
 
 
 
@@ -985,41 +1016,49 @@ void time_increment()
   ch1_hours++;
   if (ch1_hours==12)ch1_hours=0;
   prefs.putUChar("ch1_time",ch1_hours);
+  Blynk.virtualWrite(10,ch1_hours);
   break;
   case 2:
   ch2_hours++;
   if (ch2_hours==12)ch2_hours=0;
   prefs.putUChar("ch2_time",ch2_hours);
+  Blynk.virtualWrite(11,ch2_hours);
   break;
   case 3:
   ch3_hours++;
   if (ch3_hours==12)ch3_hours=0;
   prefs.putUChar("ch3_time",ch3_hours);
+  Blynk.virtualWrite(12,ch3_hours);
   break;
   case 4:
   ch4_hours++;
   if (ch4_hours==12)ch4_hours=0;
   prefs.putUChar("ch4_time",ch4_hours);
+  Blynk.virtualWrite(13,ch4_hours);
   break;
   case 5:
   ch5_hours++;
   if (ch5_hours==12)ch5_hours=0;
   prefs.putUChar("ch5_time",ch5_hours);
+  Blynk.virtualWrite(14,ch5_hours);
   break;
   case 6:
   ch6_hours++;
   if (ch6_hours==12)ch6_hours=0;
   prefs.putUChar("ch6_time",ch6_hours);
+  Blynk.virtualWrite(15,ch6_hours);
   break; 
   case 7:
   ch7_hours++;
   if (ch7_hours==12)ch7_hours=0;
   prefs.putUChar("ch7_time",ch7_hours);
+  Blynk.virtualWrite(16,ch7_hours);
   break;
   case 8:
   ch8_hours++;
   if (ch8_hours==12)ch8_hours=0;
   prefs.putUChar("ch8_time",ch8_hours);
+  Blynk.virtualWrite(17,ch8_hours);
   break;
 
   }
