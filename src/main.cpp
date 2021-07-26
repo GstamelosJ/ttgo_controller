@@ -25,6 +25,11 @@ char auth[]= "QlAhqepp7Trb57enFlHT5LreNeXNTNkS";
 #include <LiquidCrystal_I2C.h>
 //#include <LiquidCrystal.h>
 #include <LiquidMenu.h>
+#include <NTPClient.h>
+#include <WiFiUdp.h>
+#include <time.h>
+#include <TimeLib.h>
+
 #define ENTER 34
 #define UP 36
 #define DOWN  39
@@ -116,6 +121,17 @@ LiquidCrystal_I2C lcd(0x27,20,4);
 //LiquidCrystal_I2C lcd(PCF8574_ADDR_A21_A11_A01, 4, 5, 6, 16, 11, 12, 13, 14, POSITIVE);
 //SoftwareSerial SerialAT(16, 17); // RX, TX
 //TinyGsm modem(SerialAT);
+////////////////////////////
+WiFiUDP ntpUDP;
+
+// By default 'pool.ntp.org' is used with 60 seconds update interval and
+// no offset
+NTPClient timeClient(ntpUDP);
+
+// You can specify the time server pool and the offset, (in seconds)
+// additionally you can specify the update interval (in milliseconds).
+// NTPClient timeClient(ntpUDP, "europe.pool.ntp.org", 3600, 60000);
+
 
 #ifdef DUMP_AT_COMMANDS
   #include <StreamDebugger.h>
@@ -1203,7 +1219,14 @@ void assign_channel_()
   menu.update();
 }
 
+//Automation handler ################################
+//####################################################
+void automation_hanler(int arg)
+{
 
+
+
+}
 //############################################
 void setup() {
   // put your setup code here, to run once:
@@ -1454,6 +1477,10 @@ void setup() {
   menu.update();
   //@@@@@@@@@@@@@@@@@@@@@@@@@
  //%%%%%%%%%%%%%%%%%%%%
+ timeClient.begin();
+  timeClient.setTimeOffset(10800);
+  timeClient.update();
+  setTime(timeClient.getEpochTime());
   connectionHandlerTimer.setInterval(100, ConnectionHandler);
   refreshmenuTimer.setInterval(200,refresh_menu);
   connectionState = AWAIT_GSM_CONNECTION;
