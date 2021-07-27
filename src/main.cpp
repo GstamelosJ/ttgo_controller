@@ -58,7 +58,7 @@ char auth[]= "QlAhqepp7Trb57enFlHT5LreNeXNTNkS";
 #define channel7 15
 #define channel8 2
 
-uint8_t channels[] {channel1, channel2, channel3, channel4, channel5, channel6, channel7, channel8};
+uint8_t channels[] = {channel1, channel2, channel3, channel4, channel5, channel6, channel7, channel8};
 
 int ldr_value;
 
@@ -86,6 +86,7 @@ void LCDwrite(String msg1, String msg2 );
 bool setPowerBoostKeepOn(int en);
 void scan_buttons(uint8_t * buttons);
 void day_night_check(int ldr_value);
+
 Preferences prefs;
 
 SimpleTimer connectionHandlerTimer;
@@ -104,11 +105,21 @@ Button down(DOWN,pullup);
 String msg1;
 String msg2;
 int ch1_hours, ch2_hours, ch3_hours, ch4_hours, ch5_hours, ch6_hours, ch7_hours, ch8_hours, pg_hours, csq;
-int current_hours;
+int ch_hours[]={ch1_hours, ch2_hours, ch3_hours, ch4_hours, ch5_hours, ch6_hours, ch7_hours, ch8_hours};
+//int current_hours;
+time_t start1, start2, start3;
 long prev_millis, disconnect_timer;
-int sec;
+time_t nowseconds;  
+time_t started_times[8];
+time_t stop_times[8];
 boolean healthy=false, pg_on,start_rec_timer=false;
 boolean isFirstConnect=true;
+typedef enum {
+  TIME_START,
+  LDR,
+  MANUAL
+} EVENT;
+void event_hanler(EVENT event, int channel);
 //uncoment the following three rows in case of incorporating 7 segment display module
 //SevenSeg disp(6, 5, 4, 3, 2, 14, 15); 
 //const int digitNum=2;
@@ -859,7 +870,30 @@ BLYNK_WRITE(V17)
 ch8_hours=param.asInt();
 }
 
-
+BLYNK_WRITE(V30)// lights sceduler  
+{
+   TimeInputParam t(param);
+    int dayadjustment = -1;  
+    if(weekday() == 1)
+    {
+      dayadjustment =  6; // needed for Sunday, Time library is day 1 and Blynk is day 7
+    }
+    if(t.isWeekdaySelected(weekday() + dayadjustment))
+    {
+       if (t.hasStartTime()) // Process start time
+      {
+          start1=(t.getStartHour()*3600)+(t.getStartMinute()*60);
+          nowseconds=(timeClient.getHours())*3600+(timeClient.getMinutes())*60+(timeClient.getSeconds());
+          if((nowseconds>=start1)&&(nowseconds<=start1+30)) 
+           { for(int i=0; i<=7; i++)
+            {
+              if((auto_light>>i)&0x01)
+              event_hanler(TIME_START, channels[i]);
+            }
+           } 
+      }
+    }   
+}
 
 void reconnectBlynk() {
   if (!Blynk.connected()) {
@@ -1219,12 +1253,27 @@ void assign_channel_()
   menu.update();
 }
 
-//Automation handler ################################
+//Event handler ################################
 //####################################################
-void automation_hanler(int arg)
+void event_hanler(EVENT event, int channel)
 {
+  started_times[channel]=timeClient.getEpochTime();
+  stop_times[channel]=started_times[channel]+ch_hours[channel]*3600;
 
+}
 
+//###### AutomationHandler*************
+void automation_handler()
+{
+  uint8_t i;
+  for (i=0;i<=7;i++)
+  {
+    if((auto_light>>i)&0x01)
+      if(stop_times[i]<=timeClient.getEpochTime())
+        { digitalWrite(channels[i],0);
+          Blynk.virtualWrite(i,0);
+        }
+  }
 
 }
 //############################################
