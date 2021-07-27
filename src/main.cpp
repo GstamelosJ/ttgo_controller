@@ -811,7 +811,7 @@ BLYNK_WRITE(V34)  // Manual selection
     //msg2="for "+ String(pg_hours)+" Hours";
     //LCDwrite(msg1, msg2 );
   } 
-  else if ((param.asInt()==1)&& ((lights>>1)&0x01) ) 
+  else if ((param.asInt()==1)) 
   {
     //digitalWrite(channels[7], LOW);
     lights&=~(1<<7);
