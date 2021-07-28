@@ -618,6 +618,7 @@ BLYNK_WRITE(V8)  // Manual selection
     //msg1="The CH1 set on";
     //msg2="for "+ String(pg_hours)+" Hours";
     //LCDwrite(msg1, msg2 );
+    refresh_menu();
   } 
   else if ((param.asInt()==0) ) 
   {
@@ -630,6 +631,7 @@ BLYNK_WRITE(V8)  // Manual selection
     //msg1="The CH1 set off";
     //msg2="after "+ String(pg_hours)+" Hours";
     //LCDwrite(msg1, msg2 );
+    refresh_menu();
   }
   
 }
@@ -647,6 +649,7 @@ BLYNK_WRITE(V9)  // Manual selection
     //msg1="The CH2 set on";
    // msg2="for "+ String(pg_hours)+" Hours";
     //LCDwrite(msg1, msg2 );
+    refresh_menu();
   } 
   else if ((param.asInt()==0)) 
   {
@@ -659,6 +662,7 @@ BLYNK_WRITE(V9)  // Manual selection
     //msg1="The CH2 set off";
     //msg2="after "+ String(pg_hours)+" Hours";
     //LCDwrite(msg1, msg2 );
+    refresh_menu();
   }
   
 }
@@ -676,6 +680,7 @@ BLYNK_WRITE(V18)  // Manual selection
     //msg1="The CH3 set on";
     //msg2="for "+ String(pg_hours)+" Hours";
     //LCDwrite(msg1, msg2 );
+    refresh_menu();
   } 
   else if ((param.asInt()==0)) 
   {
@@ -688,6 +693,7 @@ BLYNK_WRITE(V18)  // Manual selection
     //msg1="The CH3 set off";
     //msg2="after "+ String(pg_hours)+" Hours";
     //LCDwrite(msg1, msg2 );
+    refresh_menu();
   }
   
 }
@@ -705,6 +711,7 @@ BLYNK_WRITE(V19)  // Manual selection
     //msg1="The CH4 set on";
     //msg2="for "+ String(pg_hours)+" Hours";
     //LCDwrite(msg1, msg2 );
+    refresh_menu();
   } 
   else if ((param.asInt()==0)) 
   {
@@ -717,6 +724,7 @@ BLYNK_WRITE(V19)  // Manual selection
     //msg1="The CH4 set off";
    // msg2="after "+ String(pg_hours)+" Hours";
    // LCDwrite(msg1, msg2 );
+   refresh_menu();
   }
   
 }
@@ -734,6 +742,7 @@ BLYNK_WRITE(V28)  // Manual selection
     //msg1="The CH5 set on";
     //msg2="for "+ String(pg_hours)+" Hours";
     //LCDwrite(msg1, msg2 );
+    refresh_menu();
   } 
   else if ((param.asInt()==0)) 
   {
@@ -746,6 +755,7 @@ BLYNK_WRITE(V28)  // Manual selection
     //msg1="The CH5 set off";
     //msg2="after "+ String(pg_hours)+" Hours";
     //LCDwrite(msg1, msg2 );
+    refresh_menu();
   }
   
 }
@@ -763,6 +773,7 @@ BLYNK_WRITE(V29)  // Manual selection
     //msg1="The CH6 set on";
     //msg2="for "+ String(pg_hours)+" Hours";
     //LCDwrite(msg1, msg2 );
+    refresh_menu();
   } 
   else if ((param.asInt()==0)) 
   {
@@ -775,6 +786,7 @@ BLYNK_WRITE(V29)  // Manual selection
     //msg1="The CH6 set off";
     //msg2="after "+ String(pg_hours)+" Hours";
     //LCDwrite(msg1, msg2 );
+    refresh_menu();
   }
   
 }
@@ -792,6 +804,7 @@ BLYNK_WRITE(V33)  // Manual selection
     //msg1="The CH7 set on";
     //msg2="for "+ String(pg_hours)+" Hours";
     //LCDwrite(msg1, msg2 );
+    refresh_menu();
   } 
   else if ((param.asInt()==0)) 
   {
@@ -804,6 +817,7 @@ BLYNK_WRITE(V33)  // Manual selection
     //msg1="The CH7 set off";
     //msg2="after "+ String(pg_hours)+" Hours";
     //LCDwrite(msg1, msg2 );
+    refresh_menu();
   }
   
 }
@@ -821,6 +835,7 @@ BLYNK_WRITE(V34)  // Manual selection
     //msg1="The CH8 set on";
     //msg2="for "+ String(pg_hours)+" Hours";
     //LCDwrite(msg1, msg2 );
+    refresh_menu();
   } 
   else if ((param.asInt()==1)) 
   {
@@ -833,6 +848,7 @@ BLYNK_WRITE(V34)  // Manual selection
     //msg1="The CH8 set off";
     //msg2="after "+ String(pg_hours)+" Hours";
     //LCDwrite(msg1, msg2 );
+    refresh_menu();
   }
   
 }
@@ -1607,7 +1623,7 @@ void scan_buttons(uint8_t * buttons)
 
 void day_night_check(int ldr_value)
 {
-
+ 
 }
 
 
