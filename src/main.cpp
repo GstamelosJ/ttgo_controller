@@ -1596,9 +1596,9 @@ void scan_buttons(uint8_t * buttons)
   I2Cbuttons.readBytes(buttons,1);
   if (((*buttons)!=0xff)&&((*buttons)!=0x00))
   {
-   lights^=(1<<*buttons);
-    digitalWrite(channels[*buttons], (0x01&(lights>>*buttons)));
-    Blynk.virtualWrite(*buttons,(0x01&(lights>>*buttons)));
+   lights^=(1<<(*buttons-1));
+    digitalWrite(channels[(*buttons-1)], (0x01&(lights>>(*buttons-1))));
+    Blynk.virtualWrite((*buttons-1),(0x01&(lights>>(*buttons-1))));
   }
   I2Cbuttons.endTransmission();
 }
