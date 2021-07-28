@@ -133,11 +133,11 @@ LiquidCrystal_I2C lcd(0x27,20,4);
 //SoftwareSerial SerialAT(16, 17); // RX, TX
 //TinyGsm modem(SerialAT);
 ////////////////////////////
-WiFiUDP ntpUDP;
+//WiFiUDP ntpUDP;
 
 // By default 'pool.ntp.org' is used with 60 seconds update interval and
 // no offset
-NTPClient timeClient(ntpUDP);
+//NTPClient timeClient(ntpUDP);
 
 // You can specify the time server pool and the offset, (in seconds)
 // additionally you can specify the update interval (in milliseconds).
@@ -886,7 +886,7 @@ BLYNK_WRITE(V17)
 ch8_hours=param.asInt();
 }
 
-BLYNK_WRITE(V30)// lights sceduler  
+/*BLYNK_WRITE(V30)// lights sceduler  
 {
    TimeInputParam t(param);
     int dayadjustment = -1;  
@@ -909,7 +909,7 @@ BLYNK_WRITE(V30)// lights sceduler
            } 
       }
     }   
-}
+}*/
 
 void reconnectBlynk() {
   if (!Blynk.connected()) {
@@ -1271,7 +1271,7 @@ void assign_channel_()
 
 //Event handler ################################
 //####################################################
-void event_hanler(EVENT event, int channel)
+/*void event_hanler(EVENT event, int channel)
 {
   started_times[channel]=timeClient.getEpochTime();
   stop_times[channel]=started_times[channel]+ch_hours[channel]*3600;
@@ -1291,7 +1291,7 @@ void automation_handler()
         }
   }
 
-}
+}*/
 //############################################
 void setup() {
   // put your setup code here, to run once:
@@ -1542,10 +1542,10 @@ void setup() {
   menu.update();
   //@@@@@@@@@@@@@@@@@@@@@@@@@
  //%%%%%%%%%%%%%%%%%%%%
- timeClient.begin();
-  timeClient.setTimeOffset(10800);
-  timeClient.update();
-  setTime(timeClient.getEpochTime());
+ //timeClient.begin();
+  //timeClient.setTimeOffset(10800);
+  //timeClient.update();
+  //setTime(timeClient.getEpochTime());
   connectionHandlerTimer.setInterval(100, ConnectionHandler);
   refreshmenuTimer.setInterval(200,refresh_menu);
   connectionState = AWAIT_GSM_CONNECTION;
