@@ -1542,7 +1542,7 @@ void loop() {
   //uncomment the next row if using 7 segnment display
   //disp.write(pg_hours);
   buttonsCheck();
-  //scan_buttons(&button_msg);
+  scan_buttons(&button_msg);
   connectionHandlerTimer.run();
   refreshmenuTimer.run();
   if(healthy) Blynk.run();
