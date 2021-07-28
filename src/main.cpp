@@ -1594,7 +1594,7 @@ void scan_buttons(uint8_t * buttons)
   I2Cbuttons.requestFrom(0x08,1);
   while(I2Cbuttons.available()) 
   I2Cbuttons.readBytes(buttons,1);
-  if ((*buttons!=0xff)||(*buttons!=0x00))
+  if (((*buttons)!=0xff)&&((*buttons)!=0x00))
   {
    lights^=(1<<*buttons);
     digitalWrite(channels[*buttons], (0x01&(lights>>*buttons)));
