@@ -104,6 +104,7 @@ Button down(DOWN,pullup);
 */
 String msg1;
 String msg2;
+String date_time;
 int ch1_hours, ch2_hours, ch3_hours, ch4_hours, ch5_hours, ch6_hours, ch7_hours, ch8_hours, pg_hours, csq;
 int ch_hours[]={ch1_hours, ch2_hours, ch3_hours, ch4_hours, ch5_hours, ch6_hours, ch7_hours, ch8_hours};
 int *year_brd,*month_brd,*day_brd,*hour_brd,*minute_brd,*second_brd;
@@ -155,7 +156,7 @@ LiquidCrystal_I2C lcd(0x27,20,4);
 #endif
 
 //################Menu settings#####
-LiquidLine welcome_line1(1, 0, "Main Menu ", LIQUIDMENU_VERSION);
+LiquidLine welcome_line1(1, 0, "Main Menu ", date_time);
 LiquidLine welcome_line2(0, 1, "Lights:", light_disp);
 LiquidLine welcome_line3(0, 2, "Ligh_auto:", auto_light_disp);
 LiquidLine control(0, 3, "<Control>");
@@ -1549,7 +1550,8 @@ void setup() {
     //timeClient.begin();
   //timeClient.setTimeOffset(10800);
   //timeClient.update();
-  setTime();
+  setTime(*hour_brd, *minute_brd, *second_brd, *day_brd, *month_brd, *year_brd);
+  date_time = String(day()) + '-' + String(month()) + '-' +String(year()) + " T"+String(hour()) + ':' + String(minute());
   connectionHandlerTimer.setInterval(100, ConnectionHandler);
   refreshmenuTimer.setInterval(200,refresh_menu);
   connectionState = AWAIT_GSM_CONNECTION;
