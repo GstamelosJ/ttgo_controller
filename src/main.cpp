@@ -25,8 +25,8 @@ char auth[]= "QlAhqepp7Trb57enFlHT5LreNeXNTNkS";
 #include <LiquidCrystal_I2C.h>
 //#include <LiquidCrystal.h>
 #include <LiquidMenu.h>
-#include <NTPClient.h>
-#include <WiFiUdp.h>
+//#include <NTPClient.h>
+//#include <WiFiUdp.h>
 #include <time.h>
 #include <TimeLib.h>
 
@@ -106,6 +106,8 @@ String msg1;
 String msg2;
 int ch1_hours, ch2_hours, ch3_hours, ch4_hours, ch5_hours, ch6_hours, ch7_hours, ch8_hours, pg_hours, csq;
 int ch_hours[]={ch1_hours, ch2_hours, ch3_hours, ch4_hours, ch5_hours, ch6_hours, ch7_hours, ch8_hours};
+int *year_brd,*month_brd,*day_brd,*hour_brd,*minute_brd,*second_brd;
+float *tz;
 //int current_hours;
 time_t start1, start2, start3;
 long prev_millis, disconnect_timer;
@@ -134,11 +136,10 @@ LiquidCrystal_I2C lcd(0x27,20,4);
 //TinyGsm modem(SerialAT);
 ////////////////////////////
 
-WiFiUDP ntpUDP;
-
+//WiFiUDP ntpUDP;
 // By default 'pool.ntp.org' is used with 60 seconds update interval and
 // no offset
-NTPClient timeClient(ntpUDP);
+//NTPClient timeClient(ntpUDP);
 
 // You can specify the time server pool and the offset, (in seconds)
 // additionally you can specify the update interval (in milliseconds).
@@ -1543,10 +1544,12 @@ void setup() {
   menu.update();
   //@@@@@@@@@@@@@@@@@@@@@@@@@
  //%%%%%%%%%%%%%%%%%%%%
+ modem.NTPServerSync();
+ modem.getNetworkTime(year_brd,month_brd,day_brd,hour_brd,minute_brd,second_brd,tz);
     //timeClient.begin();
   //timeClient.setTimeOffset(10800);
   //timeClient.update();
-  //setTime(timeClient.getEpochTime());
+  setTime();
   connectionHandlerTimer.setInterval(100, ConnectionHandler);
   refreshmenuTimer.setInterval(200,refresh_menu);
   connectionState = AWAIT_GSM_CONNECTION;
