@@ -91,6 +91,7 @@ Preferences prefs;
 
 SimpleTimer connectionHandlerTimer;
 SimpleTimer refreshmenuTimer;
+SimpleTimer time_syncTimer;
 Bounce bouncer_Enter = Bounce();
 Bounce bouncer_Up = Bounce();
 Bounce bouncer_Down = Bounce();
@@ -1274,9 +1275,9 @@ void assign_channel_()
 
 //Event handler ################################
 //####################################################
-/*void event_hanler(EVENT event, int channel)
+void event_hanler(EVENT event, int channel)
 {
-  started_times[channel]=timeClient.getEpochTime();
+  started_times[channel]=now();
   stop_times[channel]=started_times[channel]+ch_hours[channel]*3600;
 
 }
@@ -1288,13 +1289,26 @@ void automation_handler()
   for (i=0;i<=7;i++)
   {
     if((auto_light>>i)&0x01)
-      if(stop_times[i]<=timeClient.getEpochTime())
+      if(stop_times[i]<=now())
         { digitalWrite(channels[i],0);
           Blynk.virtualWrite(i,0);
         }
   }
 
-}*/
+}
+
+//*************check time and update *****************
+void check_time()
+{
+  modem.NTPServerSync();
+  modem.getNetworkTime(year_brd,month_brd,day_brd,hour_brd,minute_brd,second_brd,tz);
+  setTime(*hour_brd, *minute_brd, *second_brd, *day_brd, *month_brd, *year_brd);
+}
+ 
+
+
+
+
 //############################################
 void setup() {
   // put your setup code here, to run once:
@@ -1545,13 +1559,10 @@ void setup() {
   menu.update();
   //@@@@@@@@@@@@@@@@@@@@@@@@@
  //%%%%%%%%%%%%%%%%%%%%
- modem.NTPServerSync();
- modem.getNetworkTime(year_brd,month_brd,day_brd,hour_brd,minute_brd,second_brd,tz);
-    //timeClient.begin();
-  //timeClient.setTimeOffset(10800);
-  //timeClient.update();
+  check_time();
   setTime(*hour_brd, *minute_brd, *second_brd, *day_brd, *month_brd, *year_brd);
   date_time = String(day()) + '-' + String(month()) + '-' +String(year()) + " T"+String(hour()) + ':' + String(minute());
+  time_syncTimer.setInterval(60000, check_time);
   connectionHandlerTimer.setInterval(100, ConnectionHandler);
   refreshmenuTimer.setInterval(200,refresh_menu);
   connectionState = AWAIT_GSM_CONNECTION;
@@ -1565,6 +1576,7 @@ void loop() {
   //disp.write(pg_hours);
   buttonsCheck();
   scan_buttons(&button_msg);
+  time_syncTimer.run();
   connectionHandlerTimer.run();
   refreshmenuTimer.run();
   if(healthy) Blynk.run();
