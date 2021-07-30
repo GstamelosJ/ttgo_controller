@@ -890,7 +890,7 @@ BLYNK_WRITE(V17)
 ch8_hours=param.asInt();
 }
 
-/*BLYNK_WRITE(V30)// lights sceduler  
+BLYNK_WRITE(V30)// lights sceduler  
 {
    TimeInputParam t(param);
     int dayadjustment = -1;  
@@ -913,7 +913,7 @@ ch8_hours=param.asInt();
            } 
       }
     }   
-}*/
+}
 
 void reconnectBlynk() {
   if (!Blynk.connected()) {
@@ -1298,7 +1298,7 @@ void automation_handler()
 }
 
 //*************check time and update *****************
-void check_time()
+void refresh_time()
 {
   modem.NTPServerSync();
   modem.getNetworkTime(year_brd,month_brd,day_brd,hour_brd,minute_brd,second_brd,tz);
@@ -1559,10 +1559,10 @@ void setup() {
   menu.update();
   //@@@@@@@@@@@@@@@@@@@@@@@@@
  //%%%%%%%%%%%%%%%%%%%%
-  check_time();
+  refresh_time();
   setTime(*hour_brd, *minute_brd, *second_brd, *day_brd, *month_brd, *year_brd);
   date_time = String(day()) + '-' + String(month()) + '-' +String(year()) + " T"+String(hour()) + ':' + String(minute());
-  time_syncTimer.setInterval(60000, check_time);
+  time_syncTimer.setInterval(60000, refresh_time);
   connectionHandlerTimer.setInterval(100, ConnectionHandler);
   refreshmenuTimer.setInterval(200,refresh_menu);
   connectionState = AWAIT_GSM_CONNECTION;
