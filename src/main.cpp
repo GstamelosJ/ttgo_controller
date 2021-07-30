@@ -1300,14 +1300,14 @@ void automation_handler()
 //*************check time and update *****************
 void check_time()
 {
-  modem.NTPServerSync();
- try{
+  modem.NTPServerSync("pool.ntp.org",3);
+ //try{
    modem.getNetworkTime(&year_brd,&month_brd,&day_brd,&hour_brd,&minute_brd,&second_brd,&tz);
    setTime(hour_brd, minute_brd, second_brd, day_brd, month_brd, year_brd);
    date_time = String(day()) + '-' + String(month()) + '-' +String(year()) + " T "+String(hour_brd) + ':' + String(minute_brd);
- } catch(std::exception e) {
-   Serial.println(e.what());
- }
+ //} catch(std::exception e) {
+  // Serial.println(e.what());
+ //}
   Serial.println(date_time);
   
 }
