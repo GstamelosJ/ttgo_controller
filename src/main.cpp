@@ -7,7 +7,7 @@
 #define BLYNK_TEMPLATE_ID "TMPLcobjXTat"
 #define BLYNK_DEVICE_NAME "TTGOlights"
 char auth[]= "QlAhqepp7Trb57enFlHT5LreNeXNTNkS";
-#define DUMP_AT_COMMANDS
+//#define DUMP_AT_COMMANDS
 // Select your modem:
 #define TINY_GSM_MODEM_SIM800
 //#include <SevenSeg.h>
@@ -108,8 +108,8 @@ String msg2;
 String date_time;
 int ch1_hours, ch2_hours, ch3_hours, ch4_hours, ch5_hours, ch6_hours, ch7_hours, ch8_hours, pg_hours, csq;
 int ch_hours[]={ch1_hours, ch2_hours, ch3_hours, ch4_hours, ch5_hours, ch6_hours, ch7_hours, ch8_hours};
-int *year_brd,*month_brd,*day_brd,*hour_brd,*minute_brd,*second_brd;
-float *tz;
+int year_brd,month_brd,day_brd,hour_brd,minute_brd,second_brd;
+float tz;
 //int current_hours;
 time_t start1, start2, start3;
 long prev_millis, disconnect_timer;
@@ -903,7 +903,7 @@ BLYNK_WRITE(V30)// lights sceduler
        if (t.hasStartTime()) // Process start time
       {
           start1=(t.getStartHour()*3600)+(t.getStartMinute()*60);
-          nowseconds=(timeClient.getHours())*3600+(timeClient.getMinutes())*60+(timeClient.getSeconds());
+          nowseconds=(hour())*3600+(minute())*60+(second());
           if((nowseconds>=start1)&&(nowseconds<=start1+30)) 
            { for(int i=0; i<=7; i++)
             {
@@ -1301,8 +1301,15 @@ void automation_handler()
 void refresh_time()
 {
   modem.NTPServerSync();
-  modem.getNetworkTime(year_brd,month_brd,day_brd,hour_brd,minute_brd,second_brd,tz);
-  setTime(*hour_brd, *minute_brd, *second_brd, *day_brd, *month_brd, *year_brd);
+ try{
+   modem.getNetworkTime(&year_brd,&month_brd,&day_brd,&hour_brd,&minute_brd,&second_brd,&tz);
+   setTime(hour_brd, minute_brd, second_brd, day_brd, month_brd, year_brd);
+   date_time = String(day()) + '-' + String(month()) + '-' +String(year()) + " T "+String(hour_brd) + ':' + String(minute_brd);
+ } catch(std::exception e) {
+   Serial.println(e.what());
+ }
+  Serial.println(date_time);
+  
 }
  
 
@@ -1554,18 +1561,16 @@ void setup() {
   screen4.set_displayLineCount(4);
   screen5.set_displayLineCount(4);
   screen6.set_displayLineCount(4);
-
-
-  menu.update();
   //@@@@@@@@@@@@@@@@@@@@@@@@@
  //%%%%%%%%%%%%%%%%%%%%
   refresh_time();
-  setTime(*hour_brd, *minute_brd, *second_brd, *day_brd, *month_brd, *year_brd);
-  date_time = String(day()) + '-' + String(month()) + '-' +String(year()) + " T"+String(hour()) + ':' + String(minute());
-  time_syncTimer.setInterval(60000, refresh_time);
+  //setTime(hour_brd, *minute_brd, *second_brd, *day_brd, *month_brd, *year_brd);
+  //date_time = String(day()) + '-' + String(month()) + '-' +String(year()) + " T"+String(hour()) + ':' + String(minute());
+  time_syncTimer.setInterval(6000, refresh_time);
   connectionHandlerTimer.setInterval(100, ConnectionHandler);
   refreshmenuTimer.setInterval(200,refresh_menu);
   connectionState = AWAIT_GSM_CONNECTION;
+  menu.update();
 }
 
 void loop() {
