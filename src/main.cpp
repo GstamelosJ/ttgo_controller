@@ -157,11 +157,12 @@ LiquidCrystal_I2C lcd(0x27,20,4);
 #endif
 
 //################Menu settings#####
-LiquidLine welcome_line1(1, 0, "Main Menu ", date_time);
-LiquidLine welcome_line2(0, 1, "Lights:", light_disp);
-LiquidLine welcome_line3(0, 2, "Ligh_auto:", auto_light_disp);
+LiquidLine welcome_line0(0, 0, "Date", day_brd,"-", month_brd);
+LiquidLine welcome_line1(1, 1, "Main Menu ", hour_brd,":", minute_brd);
+LiquidLine welcome_line2(0, 2, "Lights:", light_disp);
+LiquidLine welcome_line3(0, 3, "Ligh_auto:", auto_light_disp);
 LiquidLine control(0, 3, "<Control>");
-LiquidScreen welcome_screen(welcome_line1, welcome_line2, welcome_line3,control);
+LiquidScreen welcome_screen(welcome_line0,welcome_line1, welcome_line2, welcome_line3);
 
 LiquidLine line21(0, 0, "Control");
 LiquidLine line22(0, 1, "<Light Ctl>");
@@ -1004,7 +1005,7 @@ void nextScreen()
 {
   Serial.printf("current screen = %d \n",menu.get_currentScreen());
   Serial.printf("focused line = %d \n",menu.get_focusedLine());
-  if((menu.get_currentScreen()==&welcome_screen)&&(menu.get_focusedLine()==3))
+  if((menu.get_currentScreen()==&welcome_screen)&&(menu.get_focusedLine()==4))
   menu.change_screen(&screen2);
   else if((menu.get_currentScreen()==&screen2)&&(menu.get_focusedLine()==1))
   menu.change_screen(&screen3);
@@ -1304,7 +1305,7 @@ void check_time()
  //try{
    modem.getNetworkTime(&year_brd,&month_brd,&day_brd,&hour_brd,&minute_brd,&second_brd,&tz);
    setTime(hour_brd, minute_brd, second_brd, day_brd, month_brd, year_brd);
-   date_time = String(day()) + '-' + String(month()) + '-' +String(year()) + " T "+String(hour_brd) + ':' + String(minute_brd);
+   date_time = day() + '/'+ month() + '/' + year()+ 'T'+ hour() + ':' + minute();
  //} catch(std::exception e) {
   // Serial.println(e.what());
  //}
@@ -1534,6 +1535,7 @@ void setup() {
 	menu.add_screen(screen4);
   menu.add_screen(screen5);
   menu.add_screen(screen6);
+  welcome_screen.add_line(control);
   screen2.add_line(line25);
   screen3.add_line(line35);
   screen3.add_line(line36);
@@ -1556,6 +1558,7 @@ void setup() {
   screen6.add_line(line68);
   screen6.add_line(line69);
 
+  welcome_screen.set_displayLineCount(4);
   screen2.set_displayLineCount(4);
   screen3.set_displayLineCount(4);
   screen4.set_displayLineCount(4);
@@ -1638,6 +1641,7 @@ void scan_buttons(uint8_t * buttons)
    lights^=(1<<(*buttons-1));
     digitalWrite(channels[(*buttons-1)], (0x01&(lights>>(*buttons-1))));
     Blynk.virtualWrite((*buttons-1),(0x01&(lights>>(*buttons-1))));
+    delay(200);
     *buttons=0xff;
   }
   
