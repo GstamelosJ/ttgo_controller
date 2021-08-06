@@ -15,7 +15,7 @@ char auth[]= "QlAhqepp7Trb57enFlHT5LreNeXNTNkS";
 #include <cstring>
 #include <Bounce2.h>
 //#include <Button.h>
-#include <EEPROM.h>
+//#include <EEPROM.h>
 #include <Preferences.h>
 #include <BlynkSimpleTinyGSM.h>
 #include <TinyGsmClient.h>
@@ -86,7 +86,7 @@ void LCDwrite(String msg1, String msg2 );
 bool setPowerBoostKeepOn(int en);
 void scan_buttons(uint8_t * buttons);
 void day_night_check(int ldr_value);
-char date_timebuf[20];
+char* date_timebuf=(char*)malloc(24);
 
 Preferences prefs;
 
@@ -640,7 +640,9 @@ BLYNK_WRITE(V8)  // Manual selection
     //LCDwrite(msg1, msg2 );
     refresh_menu();
   }
+  prefs.begin("values_store",false);
   prefs.putUChar("auto_light", auto_light);
+  prefs.end();
 }
 
 BLYNK_WRITE(V9)  // Manual selection
@@ -671,7 +673,9 @@ BLYNK_WRITE(V9)  // Manual selection
     //LCDwrite(msg1, msg2 );
     refresh_menu();
   }
+  prefs.begin("values_store",false);
   prefs.putUChar("auto_light", auto_light);
+  prefs.end();
 }
 
 BLYNK_WRITE(V18)  // Manual selection
@@ -702,7 +706,9 @@ BLYNK_WRITE(V18)  // Manual selection
     //LCDwrite(msg1, msg2 );
     refresh_menu();
   }
+  prefs.begin("values_store",false);
   prefs.putUChar("auto_light", auto_light);
+  prefs.end();
 }
 
 BLYNK_WRITE(V19)  // Manual selection
@@ -733,7 +739,9 @@ BLYNK_WRITE(V19)  // Manual selection
    // LCDwrite(msg1, msg2 );
    refresh_menu();
   }
+  prefs.begin("values_store",false);
   prefs.putUChar("auto_light", auto_light);
+  prefs.end();
 }
 
 BLYNK_WRITE(V28)  // Manual selection
@@ -764,7 +772,9 @@ BLYNK_WRITE(V28)  // Manual selection
     //LCDwrite(msg1, msg2 );
     refresh_menu();
   }
+  prefs.begin("values_store",false);
   prefs.putUChar("auto_light", auto_light);
+  prefs.end();
 }
 
 BLYNK_WRITE(V29)  // Manual selection
@@ -795,7 +805,9 @@ BLYNK_WRITE(V29)  // Manual selection
     //LCDwrite(msg1, msg2 );
     refresh_menu();
   }
+  prefs.begin("values_store",false);
   prefs.putUChar("auto_light", auto_light);
+  prefs.end();
 }
 
 BLYNK_WRITE(V33)  // Manual selection
@@ -826,7 +838,9 @@ BLYNK_WRITE(V33)  // Manual selection
     //LCDwrite(msg1, msg2 );
     refresh_menu();
   }
+  prefs.begin("values_store",false);
   prefs.putUChar("auto_light", auto_light);
+  prefs.end();
 }
 
 BLYNK_WRITE(V34)  // Manual selection
@@ -857,7 +871,9 @@ BLYNK_WRITE(V34)  // Manual selection
     //LCDwrite(msg1, msg2 );
     refresh_menu();
   }
+  prefs.begin("values_store",false);
   prefs.putUChar("auto_light", auto_light);
+  prefs.end();
 }
 
 BLYNK_WRITE(V10)
@@ -1103,7 +1119,9 @@ void toggle_lights_auto()
   }
   
   //EEPROM.put(1,auto_light);
+  prefs.begin("values_store",false);
   prefs.putUChar("auto_light", auto_light);
+  prefs.end();
   light_aut_stat[channel]=(char*)(((auto_light>>channel)&0x01)?"On ":"Off");
  for (uint8_t i = 0; i<8; i++)
  {
@@ -1118,6 +1136,7 @@ void time_increment()
 {
   //if(menu.get_currentScreen()==&screen5)
   //{
+  prefs.begin("values_store",false);
   switch(menu.get_focusedLine())
   {
   case 1:
@@ -1168,7 +1187,7 @@ void time_increment()
   prefs.putUChar("ch8_time",ch8_hours);
   Blynk.virtualWrite(17,ch8_hours);
   break;
-
+  prefs.end();
   }
   //}
   menu.update();
@@ -1178,6 +1197,7 @@ void time_decr()
 {
 //if(menu.get_currentScreen()==&screen5)
   //{
+  prefs.begin("values_store",false);
   switch(menu.get_focusedLine())
   {
   case 1:
@@ -1219,7 +1239,7 @@ void time_decr()
   if (ch8_hours==0)ch8_hours=12;
   prefs.putUChar("ch8_time",ch8_hours);
   break;
-
+  prefs.end();
   }
   //}
   menu.update();
@@ -1344,16 +1364,61 @@ void refresh_time()
    setTime(hour_brd, minute_brd, second_brd, day_brd, month_brd, year_brd);
   // date_time = String(day()) + '/'+ String(month()) + '/' + String(year())+ 'T'+ String(hour()) + ':' + String(minute());
   // date_time =day() + '/' + month() + '/' + year();
-  sprintf(date_timebuf, "%2d/%2d/%4d %2d:%2d", day(),month(),year(), hour(),minute() );
+  sprintf(date_timebuf, "%02d/%02d/%04d %02d:%02d\0", day(),month(),year(), hour(),minute() );
  //} catch(std::exception e) {
   // Serial.println(e.what());
  //}
-  Serial.println(date_time);
+  //Serial.println(date_time);
+  menu.update();
   
 }
  
 
+//*************** sync_auto_light**************
+//**********************************************
+void sync_auto_light()
+{
+  for(uint8_t channel=0;channel<=7;channel++)
+{
+   auto_light^=(1<<channel);
+  switch (channel)
+  {
+    case 0:
+      Blynk.virtualWrite(8,(0x01&(auto_light>>channel)));
+      Blynk.virtualWrite(35,(0x01&(auto_light>>channel)));
+      break;
+    case 1:
+      Blynk.virtualWrite(9,(0x01&(auto_light>>channel)));
+      Blynk.virtualWrite(36,(0x01&(auto_light>>channel)));
+      break;
+    case 2:
+      Blynk.virtualWrite(18,(0x01&(auto_light>>channel)));
+      Blynk.virtualWrite(37,(0x01&(auto_light>>channel)));
+      break;
+    case 3:
+      Blynk.virtualWrite(19,(0x01&(auto_light>>channel)));
+      Blynk.virtualWrite(38,(0x01&(auto_light>>channel)));
+      break;
+    case 4:
+      Blynk.virtualWrite(28,(0x01&(auto_light>>channel)));
+      Blynk.virtualWrite(39,(0x01&(auto_light>>channel)));
+      break;
+    case 5:
+      Blynk.virtualWrite(29,(0x01&(auto_light>>channel)));
+      Blynk.virtualWrite(40,(0x01&(auto_light>>channel)));
+      break;
+    case 6:
+      Blynk.virtualWrite(33,(0x01&(auto_light>>channel)));
+      Blynk.virtualWrite(41,(0x01&(auto_light>>channel)));
+      break;
+    case 7:
+      Blynk.virtualWrite(34,(0x01&(auto_light>>channel)));
+      Blynk.virtualWrite(42,(0x01&(auto_light>>channel)));
 
+  }
+}
+  
+} 
 
 
 //############################################
@@ -1411,7 +1476,7 @@ void setup() {
   /////////
   ConnectionHandler();
   prev_millis=millis();
-  EEPROM.get(0, pg_hours);
+  //EEPROM.get(0, pg_hours);
   prefs.begin("values_store",false);
   ch1_hours=prefs.getUChar("ch1_hours",1);
   ch2_hours=prefs.getUChar("ch2_hours",1);
@@ -1421,7 +1486,8 @@ void setup() {
   ch6_hours=prefs.getUChar("ch6_hours",1);
   ch7_hours=prefs.getUChar("ch7_hours",1);
   ch8_hours=prefs.getUChar("ch8_hours",1);
-  auto_light=prefs.getUChar("auto_light", auto_light);
+  auto_light=prefs.getUChar("auto_light", 0);
+  prefs.end();
  /* free(light_disp);
   free(auto_light_disp);
   light_disp=(char *)malloc(10*sizeof(char));
@@ -1440,6 +1506,7 @@ void setup() {
   light_stat[i]=(char*)(((lights>>i)&0x01)?"On ":"Off");
   light_aut_stat[i]=(char*)(((auto_light>>i)&0x01)?"On ":"Off");
  }
+ //sync_auto_light();
  // light_disp[8]='\0';
  // auto_light_disp[8]='\0';
   pinMode(LED_BUILTIN, OUTPUT);
