@@ -7,7 +7,7 @@
 #define BLYNK_TEMPLATE_ID "TMPLcobjXTat"
 #define BLYNK_DEVICE_NAME "TTGOlights"
 char auth[]= "QlAhqepp7Trb57enFlHT5LreNeXNTNkS";
-//#define DUMP_AT_COMMANDS
+#define DUMP_AT_COMMANDS
 // Select your modem:
 #define TINY_GSM_MODEM_SIM800
 //#include <SevenSeg.h>
@@ -157,7 +157,8 @@ LiquidCrystal_I2C lcd(0x27,20,4);
 #endif
 
 //################Menu settings#####
-LiquidLine welcome_line0(0, 0, "Date", day_brd,"-", month_brd);
+LiquidLine welcome_line0(0, 0, "Date: ", day_brd,"/", month_brd);
+//LiquidLine welcome_line0(0, 0, "Date", date_time);
 LiquidLine welcome_line1(1, 1, "Main Menu ", hour_brd,":", minute_brd);
 LiquidLine welcome_line2(0, 2, "Lights:", light_disp);
 LiquidLine welcome_line3(0, 3, "Ligh_auto:", auto_light_disp);
@@ -814,7 +815,7 @@ BLYNK_WRITE(V33)  // Manual selection
   else if ((param.asInt()==0)) 
   {
     //digitalWrite(channels[6], LOW);
-    auto_light|=~(1<<6);
+    auto_light&=~(1<<6);
      Serial.println("The CH7 set off");
     Blynk.notify("CH7 OFF!");
     delay(100);
@@ -842,7 +843,7 @@ BLYNK_WRITE(V34)  // Manual selection
     //LCDwrite(msg1, msg2 );
     refresh_menu();
   } 
-  else if ((param.asInt()==1)) 
+  else if ((param.asInt()==0)) 
   {
     //digitalWrite(channels[7], LOW);
     auto_light&=~(1<<7);
@@ -1064,8 +1065,42 @@ void toggle_lights_auto()
   channel=menu.get_focusedLine()-1;
   //if(menu.get_currentScreen()==&screen4)
   auto_light^=(1<<channel);
-  Blynk.virtualWrite(channel+20,(0x01&(auto_light>>channel)));
-  //Blynk.virtualWrite(channel+19,(0x01&(auto_light>>channel))?255:0);
+  switch (channel)
+  {
+    case 0:
+      Blynk.virtualWrite(8,(0x01&(auto_light>>channel)));
+      Blynk.virtualWrite(35,(0x01&(auto_light>>channel)));
+      break;
+    case 1:
+      Blynk.virtualWrite(9,(0x01&(auto_light>>channel)));
+      Blynk.virtualWrite(36,(0x01&(auto_light>>channel)));
+      break;
+    case 2:
+      Blynk.virtualWrite(18,(0x01&(auto_light>>channel)));
+      Blynk.virtualWrite(37,(0x01&(auto_light>>channel)));
+      break;
+    case 3:
+      Blynk.virtualWrite(19,(0x01&(auto_light>>channel)));
+      Blynk.virtualWrite(38,(0x01&(auto_light>>channel)));
+      break;
+    case 4:
+      Blynk.virtualWrite(28,(0x01&(auto_light>>channel)));
+      Blynk.virtualWrite(39,(0x01&(auto_light>>channel)));
+      break;
+    case 5:
+      Blynk.virtualWrite(29,(0x01&(auto_light>>channel)));
+      Blynk.virtualWrite(40,(0x01&(auto_light>>channel)));
+      break;
+    case 6:
+      Blynk.virtualWrite(33,(0x01&(auto_light>>channel)));
+      Blynk.virtualWrite(41,(0x01&(auto_light>>channel)));
+      break;
+    case 7:
+      Blynk.virtualWrite(34,(0x01&(auto_light>>channel)));
+      Blynk.virtualWrite(42,(0x01&(auto_light>>channel)));
+
+  }
+  
   //EEPROM.put(1,auto_light);
   prefs.putUChar("auto_light", auto_light);
   light_aut_stat[channel]=(char*)(((auto_light>>channel)&0x01)?"On ":"Off");
@@ -1301,11 +1336,12 @@ void automation_handler()
 //*************check time and update *****************
 void refresh_time()
 {
-  modem.NTPServerSync("pool.ntp.org",3);
+  modem.NTPServerSync("pool.ntp.org",180);
  //try{
    modem.getNetworkTime(&year_brd,&month_brd,&day_brd,&hour_brd,&minute_brd,&second_brd,&tz);
    setTime(hour_brd, minute_brd, second_brd, day_brd, month_brd, year_brd);
-   date_time = day() + '/'+ month() + '/' + year()+ 'T'+ hour() + ':' + minute();
+   date_time = String(day()) + '/'+ String(month()) + '/' + String(year())+ 'T'+ String(hour()) + ':' + String(minute());
+   date_time =day() + '/' + month() + '/' + year();
  //} catch(std::exception e) {
   // Serial.println(e.what());
  //}
@@ -1407,14 +1443,14 @@ void setup() {
  //uncoment following 2 rows if using 7 segment display
   //disp.setDigitPins(digitNum,digits);
   //disp.setCommonCathode();
-  Blynk.virtualWrite(V4, pg_hours);
-  Blynk.virtualWrite(0,0);
+  //Blynk.virtualWrite(V4, pg_hours);
+ // Blynk.virtualWrite(0,0);
   //uncomment next rows if using 16x2 LCD
-  msg1="Timer time";
-  msg2="set to :"+ String(pg_hours)+" Hours";
-  LCDwrite(msg1, msg2 );
+ // msg1="Timer time";
+  //msg2="set to :"+ String(pg_hours)+" Hours";
+  //LCDwrite(msg1, msg2 );
   //@@@@@@@@@@@@@@@@@@@
-
+    welcome_line0.attach_function(1,idle_function);
     control.attach_function(1, nextScreen);
     control.attach_function(2, nextScreen);
   line22.attach_function(1, nextScreen);
