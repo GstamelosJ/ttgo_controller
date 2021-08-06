@@ -86,6 +86,7 @@ void LCDwrite(String msg1, String msg2 );
 bool setPowerBoostKeepOn(int en);
 void scan_buttons(uint8_t * buttons);
 void day_night_check(int ldr_value);
+char date_timebuf[20];
 
 Preferences prefs;
 
@@ -157,8 +158,8 @@ LiquidCrystal_I2C lcd(0x27,20,4);
 #endif
 
 //################Menu settings#####
-LiquidLine welcome_line0(0, 0, "Date: ", day_brd,"/", month_brd);
-//LiquidLine welcome_line0(0, 0, "Date", date_time);
+//LiquidLine welcome_line0(0, 0, "Date: ", day_brd,"/", month_brd);
+LiquidLine welcome_line0(0, 0, "D:", date_timebuf);
 LiquidLine welcome_line1(1, 1, "Main Menu ", hour_brd,":", minute_brd);
 LiquidLine welcome_line2(0, 2, "Lights:", light_disp);
 LiquidLine welcome_line3(0, 3, "Ligh_auto:", auto_light_disp);
@@ -639,7 +640,7 @@ BLYNK_WRITE(V8)  // Manual selection
     //LCDwrite(msg1, msg2 );
     refresh_menu();
   }
-  
+  prefs.putUChar("auto_light", auto_light);
 }
 
 BLYNK_WRITE(V9)  // Manual selection
@@ -670,7 +671,7 @@ BLYNK_WRITE(V9)  // Manual selection
     //LCDwrite(msg1, msg2 );
     refresh_menu();
   }
-  
+  prefs.putUChar("auto_light", auto_light);
 }
 
 BLYNK_WRITE(V18)  // Manual selection
@@ -701,7 +702,7 @@ BLYNK_WRITE(V18)  // Manual selection
     //LCDwrite(msg1, msg2 );
     refresh_menu();
   }
-  
+  prefs.putUChar("auto_light", auto_light);
 }
 
 BLYNK_WRITE(V19)  // Manual selection
@@ -732,7 +733,7 @@ BLYNK_WRITE(V19)  // Manual selection
    // LCDwrite(msg1, msg2 );
    refresh_menu();
   }
-  
+  prefs.putUChar("auto_light", auto_light);
 }
 
 BLYNK_WRITE(V28)  // Manual selection
@@ -763,7 +764,7 @@ BLYNK_WRITE(V28)  // Manual selection
     //LCDwrite(msg1, msg2 );
     refresh_menu();
   }
-  
+  prefs.putUChar("auto_light", auto_light);
 }
 
 BLYNK_WRITE(V29)  // Manual selection
@@ -794,7 +795,7 @@ BLYNK_WRITE(V29)  // Manual selection
     //LCDwrite(msg1, msg2 );
     refresh_menu();
   }
-  
+  prefs.putUChar("auto_light", auto_light);
 }
 
 BLYNK_WRITE(V33)  // Manual selection
@@ -825,7 +826,7 @@ BLYNK_WRITE(V33)  // Manual selection
     //LCDwrite(msg1, msg2 );
     refresh_menu();
   }
-  
+  prefs.putUChar("auto_light", auto_light);
 }
 
 BLYNK_WRITE(V34)  // Manual selection
@@ -856,7 +857,7 @@ BLYNK_WRITE(V34)  // Manual selection
     //LCDwrite(msg1, msg2 );
     refresh_menu();
   }
-  
+  prefs.putUChar("auto_light", auto_light);
 }
 
 BLYNK_WRITE(V10)
@@ -1110,6 +1111,7 @@ void toggle_lights_auto()
     else auto_light_disp[i]='X';
  }
   menu.softUpdate();
+
 }
 
 void time_increment()
@@ -1340,8 +1342,9 @@ void refresh_time()
  //try{
    modem.getNetworkTime(&year_brd,&month_brd,&day_brd,&hour_brd,&minute_brd,&second_brd,&tz);
    setTime(hour_brd, minute_brd, second_brd, day_brd, month_brd, year_brd);
-   date_time = String(day()) + '/'+ String(month()) + '/' + String(year())+ 'T'+ String(hour()) + ':' + String(minute());
-   date_time =day() + '/' + month() + '/' + year();
+  // date_time = String(day()) + '/'+ String(month()) + '/' + String(year())+ 'T'+ String(hour()) + ':' + String(minute());
+  // date_time =day() + '/' + month() + '/' + year();
+  sprintf(date_timebuf, "%2d/%2d/%4d %2d:%2d", day(),month(),year(), hour(),minute() );
  //} catch(std::exception e) {
   // Serial.println(e.what());
  //}
