@@ -7,7 +7,7 @@
 #define BLYNK_TEMPLATE_ID "TMPLcobjXTat"
 #define BLYNK_DEVICE_NAME "TTGOlights"
 char auth[]= "QlAhqepp7Trb57enFlHT5LreNeXNTNkS";
-#define DUMP_AT_COMMANDS
+//#define DUMP_AT_COMMANDS
 // Select your modem:
 #define TINY_GSM_MODEM_SIM800
 //#include <SevenSeg.h>
@@ -335,13 +335,14 @@ void refresh_menu()
   light_aut_stat[i]=(char*)(((auto_light>>i)&0x01)?"On ":"Off");
  }
   menu.softUpdate();
+  Serial.printf("lights=%d \n", lights);
 }
 
     
 BLYNK_CONNECTED() {
 if (isFirstConnect) {
   Blynk.syncAll();
-  refresh_menu();
+  //refresh_menu();
  // Blynk.notify("TIMER STARTING!!!!");
 isFirstConnect = false;
 }
