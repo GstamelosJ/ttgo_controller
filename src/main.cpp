@@ -1420,6 +1420,48 @@ void sync_auto_light()
   
 } 
 
+//*****************serial input****************
+
+void serial_input_handler()
+{
+  uint8_t received_byte;
+  if(Serial.available())
+  {
+    received_byte=Serial.readBytes(&received_byte,1);
+    switch (received_byte)
+    {
+    case 100:
+      /* code */
+      lights=255;
+      for(uint8_t i=0;i<8;i++)
+      {
+        digitalWrite(channels[i], (0x01&(lights>>i)));
+        Blynk.virtualWrite(i,(0x01&(lights>>i)));
+
+      }
+      
+      break;
+    case 200:
+      /* code */
+      lights=0;
+      for(uint8_t i=0;i<8;i++)
+      {
+        digitalWrite(channels[i], (0x01&(lights>>i)));
+        Blynk.virtualWrite(i,(0x01&(lights>>i)));
+      }
+      
+      break;
+
+    default:
+      lights^=(1<<(received_byte-1));
+      digitalWrite(channels[received_byte-1], (0x01&(lights>>(received_byte-1))));
+      Blynk.virtualWrite(received_byte-1,(channels[received_byte-1]?1:0));
+      break;
+    }
+     
+  }
+  
+}
 
 //############################################
 void setup() {
