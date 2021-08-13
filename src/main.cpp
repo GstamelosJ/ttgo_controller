@@ -1432,22 +1432,23 @@ void serial_input_handler()
     {
     case 100:
       /* code */
-      lights=255;
+      lights|=auto_light;
       for(uint8_t i=0;i<8;i++)
       {
         digitalWrite(channels[i], (0x01&(lights>>i)));
         Blynk.virtualWrite(i,(0x01&(lights>>i)));
-
+        delay(200);
       }
       
       break;
     case 200:
       /* code */
-      lights=0;
+      lights&=~auto_light;
       for(uint8_t i=0;i<8;i++)
       {
         digitalWrite(channels[i], (0x01&(lights>>i)));
         Blynk.virtualWrite(i,(0x01&(lights>>i)));
+        delay(200);
       }
       
       break;
