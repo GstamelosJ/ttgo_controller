@@ -1335,6 +1335,8 @@ void assign_channel_()
 //####################################################
 void event_hanler(EVENT event, int channel)
 {
+  digitalWrite(channels[channel], 1);
+  Blynk.virtualWrite(channel,1);      
   started_times[channel]=now();
   stop_times[channel]=started_times[channel]+ch_hours[channel]*3600;
 
@@ -1347,7 +1349,7 @@ void automation_handler()
   for (i=0;i<=7;i++)
   {
     if((auto_light>>i)&0x01)
-      if(stop_times[i]<=now())
+      if(stop_times[i]<=now()&&stop_times[i]>=(now()-30))
         { digitalWrite(channels[i],0);
           Blynk.virtualWrite(i,0);
         }
@@ -1427,39 +1429,42 @@ void serial_input_handler()
   uint8_t received_byte;
   if(Serial.available())
   {
-    received_byte=Serial.readBytes(&received_byte,1);
-    switch (received_byte)
+    if(Serial.readBytes(&received_byte,1))
     {
-    case 100:
-      /* code */
-      lights|=auto_light;
-      for(uint8_t i=0;i<8;i++)
+      switch (received_byte)
       {
-        digitalWrite(channels[i], (0x01&(lights>>i)));
-        Blynk.virtualWrite(i,(0x01&(lights>>i)));
-        delay(200);
-      }
-      
-      break;
-    case 200:
-      /* code */
-      lights&=~auto_light;
-      for(uint8_t i=0;i<8;i++)
-      {
-        digitalWrite(channels[i], (0x01&(lights>>i)));
-        Blynk.virtualWrite(i,(0x01&(lights>>i)));
-        delay(200);
-      }
-      
-      break;
+      case 100:
+        /* code */
+        lights|=auto_light;
+        for(uint8_t i=0;i<8;i++)
+        {
+          digitalWrite(channels[i], (0x01&(lights>>i)));
+          Blynk.virtualWrite(i,(0x01&(lights>>i)));
+          delay(200);
+        }
+        
+        break;
+      case 200:
+        /* code */
+        lights&=~auto_light;
+        for(uint8_t i=0;i<8;i++)
+        {
+          digitalWrite(channels[i], (0x01&(lights>>i)));
+          Blynk.virtualWrite(i,(0x01&(lights>>i)));
+          delay(200);
+        }
+        
+        break;
 
-    default:
-      lights^=(1<<(received_byte-1));
-      digitalWrite(channels[received_byte-1], (0x01&(lights>>(received_byte-1))));
-      Blynk.virtualWrite(received_byte-1,(channels[received_byte-1]?1:0));
-      break;
+      default:
+        lights^=(1<<(received_byte-1));
+        digitalWrite(channels[received_byte-1], (0x01&(lights>>(received_byte-1))));
+        Blynk.virtualWrite(received_byte-1,(channels[received_byte-1]?1:0));
+        break;
+      }
     }
-     
+    else 
+      Serial.println("Nothing from serial input to parse!");
   }
   
 }
