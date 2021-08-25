@@ -109,6 +109,14 @@ String msg2;
 String date_time;
 int ch1_hours, ch2_hours, ch3_hours, ch4_hours, ch5_hours, ch6_hours, ch7_hours, ch8_hours, pg_hours, csq;
 int ch_hours[]={ch1_hours, ch2_hours, ch3_hours, ch4_hours, ch5_hours, ch6_hours, ch7_hours, ch8_hours};
+uint8_t follow_timeinput[8];
+struct time_input {
+   uint8_t  ti_hour;
+   uint8_t  ti_min;
+};
+time_input ti1;
+time_input ti2;
+time_input ti3;
 int year_brd,month_brd,day_brd,hour_brd,minute_brd,second_brd;
 float tz;
 //int current_hours;
@@ -171,6 +179,7 @@ LiquidLine line22(0, 1, "<Light Ctl>");
 LiquidLine line23(0, 2, "<Light Auto ctl>");
 LiquidLine line24(0, 3, "<Light assign>");
 LiquidLine line25(0, 3, "<Light timer>");
+LiquidLine line26(0, 3, "<Time input assign>");
 LiquidScreen screen2(line21, line22, line23, line24);
 
 LiquidLine line31(0, 0, "Light Control");
@@ -215,8 +224,18 @@ LiquidLine line66(0,3, "Ch5: ",  channels[4] );
 LiquidLine line67(0,3, "Ch6: ",  channels[5] );
 LiquidLine line68(0,3, "Ch7: ",  channels[6] );
 LiquidLine line69(0,3, "Ch8: ",  channels[7] );
-
 LiquidScreen screen6(line61,line62,line63,line64);
+
+LiquidLine line71(0, 0, "Time input assign");
+LiquidLine line72(0,1, "Ch1: ",  follow_timeinput[0] );
+LiquidLine line73(0,2, "Ch2: ",  follow_timeinput[1] );
+LiquidLine line74(0,3, "Ch3: ",  follow_timeinput[2] );
+LiquidLine line75(0,3, "Ch4: ",  follow_timeinput[3] );
+LiquidLine line76(0,3, "Ch5: ",  follow_timeinput[4] );
+LiquidLine line77(0,3, "Ch6: ",  follow_timeinput[5] );
+LiquidLine line78(0,3, "Ch7: ",  follow_timeinput[6] );
+LiquidLine line79(0,3, "Ch8: ",  follow_timeinput[7] );
+LiquidScreen screen7(line71,line72,line73,line74);
 
 LiquidMenu menu(lcd,welcome_screen);
 
@@ -1204,40 +1223,48 @@ void time_decr()
   ch1_hours--;
   if (ch1_hours==0)ch1_hours=12;
   prefs.putUChar("ch1_time",ch1_hours);
+  Blynk.virtualWrite(10,ch1_hours);
   break;
   case 2:
   ch2_hours--;
   if (ch2_hours==0)ch2_hours=12;
   prefs.putUChar("ch2_time",ch2_hours);
+  Blynk.virtualWrite(11,ch2_hours);
   break;
   case 3:
   ch3_hours--;
   if (ch3_hours==0)ch3_hours=12;
   prefs.putUChar("ch3_time",ch3_hours);
+  Blynk.virtualWrite(12,ch2_hours);
   case 4:
   ch4_hours--;
   if (ch4_hours==0)ch4_hours=12;
   prefs.putUChar("ch4_time",ch4_hours);
+  Blynk.virtualWrite(13,ch2_hours);
   break;
   case 5:
   ch5_hours--;
   if (ch5_hours==0)ch5_hours=12;
   prefs.putUChar("ch5_time",ch5_hours);
+  Blynk.virtualWrite(14,ch2_hours);
   break;
   case 6:
   ch6_hours--;
   if (ch6_hours==0)ch6_hours=12;
   prefs.putUChar("ch6_time",ch6_hours);
+  Blynk.virtualWrite(15,ch2_hours);
   break; 
   case 7:
   ch5_hours--;
   if (ch7_hours==0)ch7_hours=12;
   prefs.putUChar("ch7_time",ch7_hours);
+  Blynk.virtualWrite(16,ch2_hours);
   break;
   case 8:
   ch5_hours--;
   if (ch8_hours==0)ch8_hours=12;
   prefs.putUChar("ch8_time",ch8_hours);
+  Blynk.virtualWrite(17,ch2_hours);
   break;
   prefs.end();
   }
@@ -1421,6 +1448,27 @@ void sync_auto_light()
 }
   
 } 
+
+
+
+void activetoday(){        // check if schedule should run today
+  if(year() != 1970){
+
+  /* if (mondayfriday==1) {  
+    Blynk.syncVirtual(V4); // sync timeinput widget  
+   }
+   if (saturdaysunday==1) { 
+    Blynk.syncVirtual(V6); // sync timeinput widget  
+   }
+   if (alldays==1) { 
+    Blynk.syncVirtual(V8); // sync timeinput widget  
+   }
+   if (uptoyou==1) { 
+    Blynk.syncVirtual(V10); // sync timeinput widget  
+   }*/
+   Blynk.syncVirtual(V1,V0); // sync timeinput widget 
+  }
+}
 
 //*****************serial input****************
 
@@ -1689,8 +1737,10 @@ void setup() {
 	menu.add_screen(screen4);
   menu.add_screen(screen5);
   menu.add_screen(screen6);
+  menu.add_screen(screen7);
   welcome_screen.add_line(control);
   screen2.add_line(line25);
+  screen2.add_line(line26);
   screen3.add_line(line35);
   screen3.add_line(line36);
   screen3.add_line(line37);
@@ -1711,6 +1761,11 @@ void setup() {
   screen6.add_line(line67);
   screen6.add_line(line68);
   screen6.add_line(line69);
+  screen7.add_line(line75);
+  screen7.add_line(line76);
+  screen7.add_line(line77);
+  screen7.add_line(line78);
+  screen7.add_line(line79);
 
   welcome_screen.set_displayLineCount(4);
   screen2.set_displayLineCount(4);
@@ -1718,6 +1773,7 @@ void setup() {
   screen4.set_displayLineCount(4);
   screen5.set_displayLineCount(4);
   screen6.set_displayLineCount(4);
+  screen7.set_displayLineCount(4);
   //@@@@@@@@@@@@@@@@@@@@@@@@@
  //%%%%%%%%%%%%%%%%%%%%
   refresh_time();
