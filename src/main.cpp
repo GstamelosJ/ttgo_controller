@@ -180,6 +180,7 @@ LiquidLine line23(0, 2, "<Light Auto ctl>");
 LiquidLine line24(0, 3, "<Light assign>");
 LiquidLine line25(0, 3, "<Light timer>");
 LiquidLine line26(0, 3, "<Time input assign>");
+LiquidLine line27(0, 3, "<Time input values>");
 LiquidScreen screen2(line21, line22, line23, line24);
 
 LiquidLine line31(0, 0, "Light Control");
@@ -236,6 +237,12 @@ LiquidLine line77(0,3, "Ch6: ",  follow_timeinput[5] );
 LiquidLine line78(0,3, "Ch7: ",  follow_timeinput[6] );
 LiquidLine line79(0,3, "Ch8: ",  follow_timeinput[7] );
 LiquidScreen screen7(line71,line72,line73,line74);
+
+LiquidLine line81(0, 0, "Time input values");
+LiquidLine line82(0,1, "TimeInput1: ",  ti1.ti_hour,":",ti1.ti_min );
+LiquidLine line83(0,2, "TimeInput2: ",  ti2.ti_hour,":",ti2.ti_min  );
+LiquidLine line84(0,3, "TimeInput3: ",  ti3.ti_hour,":",ti3.ti_min  );
+LiquidScreen screen8(line81,line82,line83,line84);
 
 LiquidMenu menu(lcd,welcome_screen);
 
@@ -1272,6 +1279,121 @@ void time_decr()
   menu.update();
 }
 
+void time_input_incr()
+{
+  char str_buf[10];
+  if((menu.get_currentScreen()==&screen7))
+  {
+    
+
+  }
+  else if((menu.get_currentScreen()==&screen8))
+  {
+    switch(menu.get_focusedLine())
+    {
+      case 1:
+        ti1.ti_min++;
+        if (ti1.ti_min==60)
+        {
+          ti1.ti_min=0;
+          ti1.ti_hour++;
+          if(ti1.ti_hour=24) ti1.ti_hour=0; 
+        }
+        prefs.putUChar("ti1.ti_hour",ti1.ti_hour);
+        prefs.putUChar("ti1.ti_min",ti1.ti_min);
+        sprintf(str_buf, "%02d:%02d\0", ti1.ti_hour,ti1.ti_min );
+        Blynk.virtualWrite(30,str_buf);
+      break;
+      case 2:
+        ti2.ti_min++;
+        if (ti2.ti_min==60)
+        {
+          ti2.ti_min=0;
+          ti2.ti_hour++;
+          if(ti2.ti_hour=24) ti2.ti_hour=0; 
+        }
+        prefs.putUChar("ti2.ti_hour",ti2.ti_hour);
+        prefs.putUChar("ti2.ti_min",ti2.ti_min);
+        sprintf(str_buf, "%02d:%02d\0", ti2.ti_hour,ti2.ti_min );
+        Blynk.virtualWrite(31,str_buf);
+      break;
+      case 3:
+        ti3.ti_min++;
+        if (ti3.ti_min==60)
+        {
+          ti3.ti_min=0;
+          ti3.ti_hour++;
+          if(ti3.ti_hour=24) ti3.ti_hour=0; 
+        }
+        prefs.putUChar("ti3.ti_hour",ti3.ti_hour);
+        prefs.putUChar("ti3.ti_min",ti3.ti_min);
+        sprintf(str_buf, "%02d:%02d\0", ti3.ti_hour,ti3.ti_min );
+        Blynk.virtualWrite(32,str_buf);
+      break;
+      
+    }
+
+  }
+}
+
+void time_input_decr()
+{
+  char str_buf[10];
+  if((menu.get_currentScreen()==&screen7))
+  {
+
+
+  }
+  else if((menu.get_currentScreen()==&screen8))
+  {
+    switch(menu.get_focusedLine())
+    {
+      case 1:
+        ti1.ti_min--;
+        if (ti1.ti_min<0)
+        {
+          ti1.ti_min=59;
+          ti1.ti_hour--;
+          if(ti1.ti_hour<0) ti1.ti_hour=23; 
+        }
+        prefs.putUChar("ti1.ti_hour",ti1.ti_hour);
+        prefs.putUChar("ti1.ti_min",ti1.ti_min);
+        sprintf(str_buf, "%02d:%02d\0", ti1.ti_hour,ti1.ti_min );
+        Blynk.virtualWrite(30,str_buf);
+      break;
+      case 2:
+        ti2.ti_min--;
+        if (ti2.ti_min<0)
+        {
+          ti2.ti_min=59;
+          ti2.ti_hour--;
+          if(ti2.ti_hour<0) ti2.ti_hour=23; 
+        }
+        prefs.putUChar("ti2.ti_hour",ti2.ti_hour);
+        prefs.putUChar("ti2.ti_min",ti2.ti_min);
+        sprintf(str_buf, "%02d:%02d\0", ti2.ti_hour,ti2.ti_min );
+        Blynk.virtualWrite(31,str_buf);
+      break;
+      case 3:
+        ti3.ti_min--;
+        if (ti3.ti_min<0)
+        {
+          ti3.ti_min=59;
+          ti3.ti_hour--;
+          if(ti3.ti_hour<0) ti3.ti_hour=23; 
+        }
+        prefs.putUChar("ti3.ti_hour",ti3.ti_hour);
+        prefs.putUChar("ti3.ti_min",ti3.ti_min);
+        sprintf(str_buf, "%02d:%02d\0", ti3.ti_hour,ti3.ti_min );
+        Blynk.virtualWrite(32,str_buf);
+      break;
+      
+    }
+
+  }
+}
+
+
 void assign_channel()
 {
    static uint8_t temp=0;
@@ -1583,6 +1705,12 @@ void setup() {
   ch7_hours=prefs.getUChar("ch7_hours",1);
   ch8_hours=prefs.getUChar("ch8_hours",1);
   auto_light=prefs.getUChar("auto_light", 0);
+  ti1.ti_hour=prefs.getUChar("ti1.ti_hour",00);
+  ti1.ti_min=prefs.getUChar("ti1.ti_hour",00);
+  ti2.ti_hour=prefs.getUChar("ti2.ti_hour",00);
+  ti2.ti_min=prefs.getUChar("ti2.ti_hour",00);
+  ti3.ti_hour=prefs.getUChar("ti3.ti_hour",00);
+  ti3.ti_min=prefs.getUChar("ti3.ti_hour",00);
   prefs.end();
  /* free(light_disp);
   free(auto_light_disp);
@@ -1731,6 +1859,39 @@ void setup() {
   line69.attach_function(2,assign_channel_);
   //line69.attach_function(3, nextLine);
 
+ line72.attach_function(1,time_input_incr);
+  line72.attach_function(2,time_input_decr);
+  //line62.attach_function(3, nextLine);
+  line73.attach_function(1,time_input_incr);
+  line73.attach_function(2,time_input_decr);
+  //line63.attach_function(3, nextLine);
+  line74.attach_function(1,time_input_incr);
+  line74.attach_function(2,time_input_decr);
+  //line64.attach_function(3, nextLine);
+  line75.attach_function(1,time_input_incr);
+  line75.attach_function(2,time_input_decr);
+  //line65.attach_function(3, nextLine);
+  line76.attach_function(1,time_input_incr);
+  line76.attach_function(2,time_input_decr);
+  //line66.attach_function(3, nextLine);
+  line77.attach_function(1,time_input_incr);
+  line77.attach_function(2,time_input_decr);
+  //line67.attach_function(3, nextLine);
+  line78.attach_function(1,time_input_incr);
+  line78.attach_function(2,time_input_decr);
+  //line68.attach_function(3, nextLine);
+  line79.attach_function(1,time_input_incr);
+  line79.attach_function(2,time_input_decr);
+
+  line82.attach_function(1,time_input_incr);
+  line82.attach_function(2,time_input_decr);
+  //line62.attach_function(3, nextLine);
+  line83.attach_function(1,time_input_incr);
+  line83.attach_function(2,time_input_decr);
+  //line63.attach_function(3, nextLine);
+  line84.attach_function(1,time_input_incr);
+  line84.attach_function(2,time_input_decr);
+
    menu.init();
 	menu.add_screen(screen2);
 	menu.add_screen(screen3);
@@ -1738,9 +1899,11 @@ void setup() {
   menu.add_screen(screen5);
   menu.add_screen(screen6);
   menu.add_screen(screen7);
+  menu.add_screen(screen8);
   welcome_screen.add_line(control);
   screen2.add_line(line25);
   screen2.add_line(line26);
+  screen2.add_line(line27);
   screen3.add_line(line35);
   screen3.add_line(line36);
   screen3.add_line(line37);
