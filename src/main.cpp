@@ -935,6 +935,39 @@ BLYNK_WRITE(V17)
 ch8_hours=param.asInt();
 }
 
+BLYNK_WRITE(V50)
+{
+follow_timeinput[0]=param.asInt();
+}
+BLYNK_WRITE(V51)
+{
+follow_timeinput[1]=param.asInt();
+}
+BLYNK_WRITE(V52)
+{
+follow_timeinput[2]=param.asInt();
+}
+BLYNK_WRITE(V53)
+{
+follow_timeinput[3]=param.asInt();
+}
+BLYNK_WRITE(V54)
+{
+follow_timeinput[4]=param.asInt();
+}
+BLYNK_WRITE(V55)
+{
+follow_timeinput[5]=param.asInt();
+}
+BLYNK_WRITE(V56)
+{
+follow_timeinput[6]=param.asInt();
+}
+BLYNK_WRITE(V57)
+{
+follow_timeinput[7]=param.asInt();
+}
+
 BLYNK_WRITE(V30)// lights sceduler  
 {
    TimeInputParam t(param);
@@ -952,12 +985,68 @@ BLYNK_WRITE(V30)// lights sceduler
           if((nowseconds>=start1)&&(nowseconds<=start1+30)) 
            { for(int i=0; i<=7; i++)
             {
-              if((auto_light>>i)&0x01)
+              if(((auto_light>>i)&0x01)&&follow_timeinput[i]==1)
               event_hanler(TIME_START, channels[i]);
             }
            } 
       }
     }   
+    ti1.ti_hour=t.getStartHour();
+    ti1.ti_min=t.getStartMinute();
+}
+
+BLYNK_WRITE(V31)// lights sceduler  
+{
+   TimeInputParam t(param);
+    int dayadjustment = -1;  
+    if(weekday() == 1)
+    {
+      dayadjustment =  6; // needed for Sunday, Time library is day 1 and Blynk is day 7
+    }
+    if(t.isWeekdaySelected(weekday() + dayadjustment))
+    {
+       if (t.hasStartTime()) // Process start time
+      {
+          start1=(t.getStartHour()*3600)+(t.getStartMinute()*60);
+          nowseconds=(hour())*3600+(minute())*60+(second());
+          if((nowseconds>=start1)&&(nowseconds<=start1+30)) 
+           { for(int i=0; i<=7; i++)
+            {
+              if(((auto_light>>i)&0x01)&&follow_timeinput[i]==2)
+              event_hanler(TIME_START, channels[i]);
+            }
+           } 
+      }
+    }
+    ti2.ti_hour=t.getStartHour();
+    ti2.ti_min=t.getStartMinute();   
+}
+
+BLYNK_WRITE(V32)// lights sceduler  
+{
+   TimeInputParam t(param);
+    int dayadjustment = -1;  
+    if(weekday() == 1)
+    {
+      dayadjustment =  6; // needed for Sunday, Time library is day 1 and Blynk is day 7
+    }
+    if(t.isWeekdaySelected(weekday() + dayadjustment))
+    {
+       if (t.hasStartTime()) // Process start time
+      {
+          start1=(t.getStartHour()*3600)+(t.getStartMinute()*60);
+          nowseconds=(hour())*3600+(minute())*60+(second());
+          if((nowseconds>=start1)&&(nowseconds<=start1+30)) 
+           { for(int i=0; i<=7; i++)
+            {
+              if(((auto_light>>i)&0x01)&&follow_timeinput[i]==3)
+              event_hanler(TIME_START, channels[i]);
+            }
+           } 
+      }
+    } 
+    ti3.ti_hour=t.getStartHour();
+    ti3.ti_min=t.getStartMinute();  
 }
 
 void reconnectBlynk() {
@@ -1297,7 +1386,7 @@ void time_input_incr()
         {
           ti1.ti_min=0;
           ti1.ti_hour++;
-          if(ti1.ti_hour=24) ti1.ti_hour=0; 
+          if(ti1.ti_hour==24) ti1.ti_hour=0; 
         }
         prefs.putUChar("ti1.ti_hour",ti1.ti_hour);
         prefs.putUChar("ti1.ti_min",ti1.ti_min);
@@ -1310,7 +1399,7 @@ void time_input_incr()
         {
           ti2.ti_min=0;
           ti2.ti_hour++;
-          if(ti2.ti_hour=24) ti2.ti_hour=0; 
+          if(ti2.ti_hour==24) ti2.ti_hour=0; 
         }
         prefs.putUChar("ti2.ti_hour",ti2.ti_hour);
         prefs.putUChar("ti2.ti_min",ti2.ti_min);
@@ -1323,7 +1412,7 @@ void time_input_incr()
         {
           ti3.ti_min=0;
           ti3.ti_hour++;
-          if(ti3.ti_hour=24) ti3.ti_hour=0; 
+          if(ti3.ti_hour==24) ti3.ti_hour=0; 
         }
         prefs.putUChar("ti3.ti_hour",ti3.ti_hour);
         prefs.putUChar("ti3.ti_min",ti3.ti_min);
@@ -1588,7 +1677,7 @@ void activetoday(){        // check if schedule should run today
    if (uptoyou==1) { 
     Blynk.syncVirtual(V10); // sync timeinput widget  
    }*/
-   Blynk.syncVirtual(V1,V0); // sync timeinput widget 
+   Blynk.syncVirtual(V30,V31,V32); // sync timeinput widget 
   }
 }
 
