@@ -67,8 +67,6 @@ int ldr_value;
 
 TwoWire I2CPower = TwoWire(0);
 TwoWire I2Cbuttons = TwoWire(1);
-
-
 // Your GPRS credentials
 // Leave empty, if missing user or pass
 
@@ -109,10 +107,18 @@ String msg2;
 String date_time;
 int ch1_hours, ch2_hours, ch3_hours, ch4_hours, ch5_hours, ch6_hours, ch7_hours, ch8_hours, pg_hours, csq;
 int ch_hours[]={ch1_hours, ch2_hours, ch3_hours, ch4_hours, ch5_hours, ch6_hours, ch7_hours, ch8_hours};
+char * days[7] = {"M","T","W","T","F","S","Sun"};
+
+static uint8_t days_id=0;
 uint8_t follow_timeinput[8];
 struct time_input {
    uint8_t  ti_hour;
    uint8_t  ti_min;
+   bool ss;
+   bool sr;
+   uint8_t days_flag[7];
+   char * days_blynk=(char*)malloc(10);
+   char * daysDisp[7];
 };
 time_input ti1;
 time_input ti2;
@@ -239,9 +245,10 @@ LiquidLine line79(0,3, "Ch8: ",  follow_timeinput[7] );
 LiquidScreen screen7(line71,line72,line73,line74);
 
 LiquidLine line81(0, 0, "Time input values");
-LiquidLine line82(0,1, "TimeInput1: ",  ti1.ti_hour,":",ti1.ti_min );
-LiquidLine line83(0,2, "TimeInput2: ",  ti2.ti_hour,":",ti2.ti_min  );
-LiquidLine line84(0,3, "TimeInput3: ",  ti3.ti_hour,":",ti3.ti_min  );
+LiquidLine line82(0,1, "DaysInput1: ",  ti1.daysDisp);
+LiquidLine line83(0,1, "TimeInput1: ",  ti1.ti_hour,":",ti1.ti_min );
+LiquidLine line84(0,2, "TimeInput2: ",  ti2.ti_hour,":",ti2.ti_min  );
+LiquidLine line85(0,3, "TimeInput3: ",  ti3.ti_hour,":",ti3.ti_min  );
 LiquidScreen screen8(line81,line82,line83,line84);
 
 LiquidMenu menu(lcd,welcome_screen);
@@ -1107,8 +1114,13 @@ void buttonsCheck() {
 	if (bouncer_Enter.fell()) {
 		// Switches focus to the next line.
 		//menu.call_function(3);
+    if(menu.get_currentScreen()==&screen8&&(menu.get_focusedLine()==1||menu.get_focusedLine()==3||menu.get_focusedLine()==5))
+    {
+      menu.call_function(3);
+    }
+    else 
     menu.switch_focus();
-    menu.update();
+    menu.update(); 
 	}
   bouncer_Esc.update();
   if (bouncer_Esc.fell()) {
@@ -1394,8 +1406,8 @@ void time_input_incr()
         }
         prefs.putUChar("ti1.ti_hour",ti1.ti_hour);
         prefs.putUChar("ti1.ti_min",ti1.ti_min);
-        sprintf(str_buf, "%02d:%02d", ti1.ti_hour,ti1.ti_min );
-        Blynk.virtualWrite(30,str_buf);
+       // sprintf(str_buf, "%02d:%02d", ti1.ti_hour,ti1.ti_min );
+        Blynk.virtualWrite(30,(ti1.ti_hour*60+ti1.ti_min)*60,0,"Europe/Athens","1,2,3,5",10800);
       break;
       case 2:
         ti2.ti_min++;
@@ -1486,6 +1498,38 @@ void time_input_decr()
   }
 }
 
+void select_active_days()
+
+{
+  days_id++;
+  if(days_id==8) days_id=0;
+}
+
+void activate_day()
+{
+  switch(menu.get_focusedLine())
+  {
+    case 1:
+    ti1.days_flag[days_id]=1;
+    ti1.days_flag[days_id]?ti1.daysDisp[days_id]=days[days_id]:"X";
+    break;
+    case 3:
+    ti2.days_flag[days_id]=1;
+    break;
+    case 5:
+    ti3.days_flag[days_id]=1;
+    break;
+    
+  }
+  
+
+}
+
+void deactivate_day()
+{
+
+  
+}
 
 void assign_channel()
 {
@@ -1764,13 +1808,13 @@ void setup() {
   pinMode(DOWN, INPUT);
 
   bouncer_Enter.attach(ENTER);
-  bouncer_Enter.interval(5);
+  bouncer_Enter.interval(2);
   bouncer_Up.attach(UP);
-  bouncer_Up.interval(5);
+  bouncer_Up.interval(2);
   bouncer_Down.attach(DOWN);
-  bouncer_Down.interval(5);
+  bouncer_Down.interval(2);
   bouncer_Esc.attach(ESC);
-  bouncer_Esc.interval(5);
+  bouncer_Esc.interval(2);
   
  
   Serial.begin(115200);
