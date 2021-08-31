@@ -247,8 +247,10 @@ LiquidScreen screen7(line71,line72,line73,line74);
 LiquidLine line81(0, 0, "Time input values");
 LiquidLine line82(0,1, "DaysInput1: ",  ti1.daysDisp);
 LiquidLine line83(0,1, "TimeInput1: ",  ti1.ti_hour,":",ti1.ti_min );
-LiquidLine line84(0,2, "TimeInput2: ",  ti2.ti_hour,":",ti2.ti_min  );
-LiquidLine line85(0,3, "TimeInput3: ",  ti3.ti_hour,":",ti3.ti_min  );
+LiquidLine line84(0,1, "DaysInput1: ",  ti2.daysDisp);
+LiquidLine line85(0,2, "TimeInput2: ",  ti2.ti_hour,":",ti2.ti_min  );
+LiquidLine line86(0,1, "DaysInput1: ",  ti3.daysDisp);
+LiquidLine line87(0,3, "TimeInput3: ",  ti3.ti_hour,":",ti3.ti_min  );
 LiquidScreen screen8(line81,line82,line83,line84);
 
 LiquidMenu menu(lcd,welcome_screen);
@@ -1515,9 +1517,11 @@ void activate_day()
     break;
     case 3:
     ti2.days_flag[days_id]=1;
+    ti2.days_flag[days_id]?ti2.daysDisp[days_id]=days[days_id]:"X";
     break;
     case 5:
     ti3.days_flag[days_id]=1;
+    ti3.days_flag[days_id]?ti3.daysDisp[days_id]=days[days_id]:"X";
     break;
     
   }
@@ -1527,7 +1531,22 @@ void activate_day()
 
 void deactivate_day()
 {
-
+  switch(menu.get_focusedLine())
+  {
+    case 1:
+    ti1.days_flag[days_id]=0;
+    ti1.days_flag[days_id]?ti1.daysDisp[days_id]=days[days_id]:"X";
+    break;
+    case 3:
+    ti2.days_flag[days_id]=0;
+    ti2.days_flag[days_id]?ti2.daysDisp[days_id]=days[days_id]:"X";
+    break;
+    case 5:
+    ti3.days_flag[days_id]=0;
+    ti3.days_flag[days_id]?ti3.daysDisp[days_id]=days[days_id]:"X";
+    break;
+    
+  }
   
 }
 
@@ -2026,14 +2045,23 @@ void setup() {
   line79.attach_function(1,time_input_incr);
   line79.attach_function(2,time_input_decr);
 
-  line82.attach_function(1,time_input_incr);
-  line82.attach_function(2,time_input_decr);
-  //line62.attach_function(3, nextLine);
+  line82.attach_function(1,activate_day);
+  line82.attach_function(2,deactivate_day);
+  line82.attach_function(3, select_active_days);
   line83.attach_function(1,time_input_incr);
   line83.attach_function(2,time_input_decr);
   //line63.attach_function(3, nextLine);
-  line84.attach_function(1,time_input_incr);
-  line84.attach_function(2,time_input_decr);
+  line84.attach_function(1,activate_day);
+  line84.attach_function(2,deactivate_day);
+  line84.attach_function(3,select_active_days);
+  line85.attach_function(1,time_input_incr);
+  line85.attach_function(2,time_input_decr);
+  //line62.attach_function(3, nextLine);
+  line86.attach_function(1,time_input_incr);
+  line86.attach_function(2,time_input_decr);
+  line86.attach_function(3, select_active_days);
+  line87.attach_function(1,time_input_incr);
+  line87.attach_function(2,time_input_decr);
 
    menu.init();
 	menu.add_screen(screen2);
@@ -2072,6 +2100,9 @@ void setup() {
   screen7.add_line(line77);
   screen7.add_line(line78);
   screen7.add_line(line79);
+  screen8.add_line(line85);
+  screen8.add_line(line86);
+  screen8.add_line(line87);
 
   welcome_screen.set_displayLineCount(4);
   screen2.set_displayLineCount(4);
@@ -2079,6 +2110,7 @@ void setup() {
   screen4.set_displayLineCount(4);
   screen5.set_displayLineCount(4);
   screen6.set_displayLineCount(4);
+  screen7.set_displayLineCount(4);
   screen7.set_displayLineCount(4);
   //@@@@@@@@@@@@@@@@@@@@@@@@@
  //%%%%%%%%%%%%%%%%%%%%
