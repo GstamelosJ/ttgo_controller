@@ -1559,15 +1559,15 @@ void activate_day()
   {
     case 1:
     ti1.days_flag[days_id]=1;
-    ti1.days_flag[days_id]?ti1.daysDisp[days_id]=days[days_id]:'X';
+    ti1.daysDisp[days_id]=ti1.days_flag[days_id]?days[days_id]:'X';
     break;
     case 3:
     ti2.days_flag[days_id]=1;
-    ti2.days_flag[days_id]?ti2.daysDisp[days_id]=days[days_id]:'X';
+    ti2.daysDisp[days_id]=ti2.days_flag[days_id]?days[days_id]:'X';
     break;
     case 5:
     ti3.days_flag[days_id]=1;
-    ti3.days_flag[days_id]?ti3.daysDisp[days_id]=days[days_id]:'X';
+    ti3.daysDisp[days_id]=ti3.days_flag[days_id]?days[days_id]:'X';
     break;
     
   }
@@ -1581,15 +1581,15 @@ void deactivate_day()
   {
     case 1:
     ti1.days_flag[days_id]=0;
-    ti1.days_flag[days_id]?ti1.daysDisp[days_id]=days[days_id]:'X';
+    ti1.daysDisp[days_id]=ti1.days_flag[days_id]?days[days_id]:'X';
     break;
     case 3:
     ti2.days_flag[days_id]=0;
-    ti2.days_flag[days_id]?ti2.daysDisp[days_id]=days[days_id]:'X';
+    ti2.daysDisp[days_id]=ti2.days_flag[days_id]?days[days_id]:'X';
     break;
     case 5:
     ti3.days_flag[days_id]=0;
-    ti3.days_flag[days_id]?ti3.daysDisp[days_id]=days[days_id]:'X';
+    ti3.daysDisp[days_id]=ti3.days_flag[days_id]?days[days_id]:'X';
     break;
     
   }
@@ -1931,6 +1931,15 @@ void setup() {
   auto_light_disp[i]=(((auto_light>>i)&0x01)?'I':'X');
   light_stat[i]=(char*)(((lights>>i)&0x01)?"On ":"Off");
   light_aut_stat[i]=(char*)(((auto_light>>i)&0x01)?"On ":"Off");
+ }
+  ti1.daysDisp[7]='\0';
+  ti2.daysDisp[7]='\0';
+  ti3.daysDisp[7]='\0';
+  for (uint8_t i = 0; i<7; i++)
+ {
+  ti1.daysDisp[i]=ti1.days_flag[i]?days[i]:'X';
+  ti2.daysDisp[i]=ti2.days_flag[i]?days[i]:'X';
+  ti3.daysDisp[i]=ti3.days_flag[i]?days[i]:'X';
  }
  //sync_auto_light();
  // light_disp[8]='\0';
