@@ -121,11 +121,7 @@ struct time_input {
    bool sr;
    uint8_t days_flag[7];
    char * days_blynk=(char*)malloc(10);
-<<<<<<< HEAD
    char * daysDisp=(char*)malloc(20);
-=======
-   char * daysDisp[7]={"X","X","X","X","X","X","X"};
->>>>>>> 3e1c17b02ece210f87179779faae3bc27c4a3b5c
 };
 time_input ti1;
 time_input ti2;
@@ -1538,11 +1534,11 @@ void select_active_days()
       lcd.blink();
     break;
     case 5:
-      lcd.setCursor(8+days_id,5);
+      lcd.setCursor(8+days_id,1);
       lcd.blink();
     break;
     default:
-      lcd.setCursor(8+days_id,1);
+      lcd.setCursor(8+days_id,3);
       lcd.blink();
 
   }
@@ -2169,7 +2165,7 @@ void setup() {
   //date_time = String(day()) + '-' + String(month()) + '-' +String(year()) + " T"+String(hour()) + ':' + String(minute());
   time_syncTimer.setInterval(6000, refresh_time);
   connectionHandlerTimer.setInterval(100, ConnectionHandler);
-  refreshmenuTimer.setInterval(200,refresh_menu);
+  //refreshmenuTimer.setInterval(200,refresh_menu);
   connectionState = AWAIT_GSM_CONNECTION;
   menu.update();
 }
@@ -2184,7 +2180,7 @@ void loop() {
   scan_buttons(&button_msg);
   time_syncTimer.run();
   connectionHandlerTimer.run();
-  refreshmenuTimer.run();
+ // refreshmenuTimer.run();
   if(healthy) Blynk.run();
  delay(20);
  
