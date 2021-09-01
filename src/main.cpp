@@ -107,7 +107,7 @@ String msg2;
 String date_time;
 int ch1_hours, ch2_hours, ch3_hours, ch4_hours, ch5_hours, ch6_hours, ch7_hours, ch8_hours, pg_hours, csq;
 int ch_hours[]={ch1_hours, ch2_hours, ch3_hours, ch4_hours, ch5_hours, ch6_hours, ch7_hours, ch8_hours};
-char * days[7] = {"M","T","W","T","F","S","Sun"};
+char days[7] = {'M','T','W','T','F','S','S'};
 
 static uint8_t days_id=0;
 uint8_t follow_timeinput[8];
@@ -118,7 +118,7 @@ struct time_input {
    bool sr;
    uint8_t days_flag[7];
    char * days_blynk=(char*)malloc(10);
-   char * daysDisp[7];
+   char * daysDisp=(char*)malloc(20);
 };
 time_input ti1;
 time_input ti2;
@@ -1513,15 +1513,15 @@ void activate_day()
   {
     case 1:
     ti1.days_flag[days_id]=1;
-    ti1.days_flag[days_id]?ti1.daysDisp[days_id]=days[days_id]:"X";
+    ti1.days_flag[days_id]?ti1.daysDisp[days_id]=days[days_id]:'X';
     break;
     case 3:
     ti2.days_flag[days_id]=1;
-    ti2.days_flag[days_id]?ti2.daysDisp[days_id]=days[days_id]:"X";
+    ti2.days_flag[days_id]?ti2.daysDisp[days_id]=days[days_id]:'X';
     break;
     case 5:
     ti3.days_flag[days_id]=1;
-    ti3.days_flag[days_id]?ti3.daysDisp[days_id]=days[days_id]:"X";
+    ti3.days_flag[days_id]?ti3.daysDisp[days_id]=days[days_id]:'X';
     break;
     
   }
@@ -1535,15 +1535,15 @@ void deactivate_day()
   {
     case 1:
     ti1.days_flag[days_id]=0;
-    ti1.days_flag[days_id]?ti1.daysDisp[days_id]=days[days_id]:"X";
+    ti1.days_flag[days_id]?ti1.daysDisp[days_id]=days[days_id]:'X';
     break;
     case 3:
     ti2.days_flag[days_id]=0;
-    ti2.days_flag[days_id]?ti2.daysDisp[days_id]=days[days_id]:"X";
+    ti2.days_flag[days_id]?ti2.daysDisp[days_id]=days[days_id]:'X';
     break;
     case 5:
     ti3.days_flag[days_id]=0;
-    ti3.days_flag[days_id]?ti3.daysDisp[days_id]=days[days_id]:"X";
+    ti3.days_flag[days_id]?ti3.daysDisp[days_id]=days[days_id]:'X';
     break;
     
   }
