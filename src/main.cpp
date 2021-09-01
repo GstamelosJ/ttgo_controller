@@ -29,7 +29,7 @@ char auth[]= "QlAhqepp7Trb57enFlHT5LreNeXNTNkS";
 //#include <WiFiUdp.h>
 #include <time.h>
 #include <TimeLib.h>
-
+#include <Timezone.h>
 #define ENTER 34
 #define UP 36
 #define DOWN  39
@@ -69,6 +69,9 @@ TwoWire I2CPower = TwoWire(0);
 TwoWire I2Cbuttons = TwoWire(1);
 // Your GPRS credentials
 // Leave empty, if missing user or pass
+TimeChangeRule EEST = {"EEST", Last, Sun, Mar, 2, 180};  //UTC + 3 hours
+TimeChangeRule EET = {"EET", Last, Sun, Oct, 2, 120};  //UTC + 2 hours
+Timezone GR(EET, EEST);
 
 char apn[] = "internet"; //COSMOTE 
 char user[] = "";
@@ -118,7 +121,7 @@ struct time_input {
    bool sr;
    uint8_t days_flag[7];
    char * days_blynk=(char*)malloc(10);
-   char * daysDisp[7];
+   char * daysDisp[7]={"X","X","X","X","X","X","X"};
 };
 time_input ti1;
 time_input ti2;
@@ -245,11 +248,11 @@ LiquidLine line79(0,3, "Ch8: ",  follow_timeinput[7] );
 LiquidScreen screen7(line71,line72,line73,line74);
 
 LiquidLine line81(0, 0, "Time input values");
-LiquidLine line82(0,1, "DaysInput1: ",  ti1.daysDisp);
-LiquidLine line83(0,1, "TimeInput1: ",  ti1.ti_hour,":",ti1.ti_min );
-LiquidLine line84(0,1, "DaysInput1: ",  ti2.daysDisp);
-LiquidLine line85(0,2, "TimeInput2: ",  ti2.ti_hour,":",ti2.ti_min  );
-LiquidLine line86(0,1, "DaysInput1: ",  ti3.daysDisp);
+LiquidLine line82(0,1, "Days1: ",  ti1.daysDisp);
+LiquidLine line83(0,2, "TimeInput1: ",  ti1.ti_hour,":",ti1.ti_min );
+LiquidLine line84(0,3, "Days2: ",  ti2.daysDisp);
+LiquidLine line85(0,3, "TimeInput2: ",  ti2.ti_hour,":",ti2.ti_min  );
+LiquidLine line86(0,3, "Days3: ",  ti3.daysDisp);
 LiquidLine line87(0,3, "TimeInput3: ",  ti3.ti_hour,":",ti3.ti_min  );
 LiquidScreen screen8(line81,line82,line83,line84);
 
@@ -979,7 +982,7 @@ follow_timeinput[7]=param.asInt();
 
 BLYNK_WRITE(V30)// lights sceduler  
 {
-   TimeInputParam t(param);
+     TimeInputParam t(param);
     int dayadjustment = -1;  
     if(weekday() == 1)
     {
@@ -1002,6 +1005,10 @@ BLYNK_WRITE(V30)// lights sceduler
     }   
     ti1.ti_hour=t.getStartHour();
     ti1.ti_min=t.getStartMinute();
+    for (int d=0; d<7; d++)
+    {
+       ti1.days_flag[d] = t.isWeekdaySelected(d+1) ? '1' : '0';
+    }
 }
 
 BLYNK_WRITE(V31)// lights sceduler  
@@ -1028,7 +1035,11 @@ BLYNK_WRITE(V31)// lights sceduler
       }
     }
     ti2.ti_hour=t.getStartHour();
-    ti2.ti_min=t.getStartMinute();   
+    ti2.ti_min=t.getStartMinute(); 
+    for (int d=0; d<7; d++)
+    {
+       ti2.days_flag[d] = t.isWeekdaySelected(d+1) ? '1' : '0';
+    }  
 }
 
 BLYNK_WRITE(V32)// lights sceduler  
@@ -1056,6 +1067,10 @@ BLYNK_WRITE(V32)// lights sceduler
     } 
     ti3.ti_hour=t.getStartHour();
     ti3.ti_min=t.getStartMinute();  
+    for (int d=0; d<7; d++)
+    {
+       ti3.days_flag[d] = t.isWeekdaySelected(d+1) ? '1' : '0';
+    }
 }
 
 void reconnectBlynk() {
@@ -1398,7 +1413,7 @@ void time_input_incr()
   {
     switch(menu.get_focusedLine())
     {
-      case 1:
+      case 2:
         ti1.ti_min++;
         if (ti1.ti_min==60)
         {
@@ -1409,9 +1424,14 @@ void time_input_incr()
         prefs.putUChar("ti1.ti_hour",ti1.ti_hour);
         prefs.putUChar("ti1.ti_min",ti1.ti_min);
        // sprintf(str_buf, "%02d:%02d", ti1.ti_hour,ti1.ti_min );
-        Blynk.virtualWrite(30,(ti1.ti_hour*60+ti1.ti_min)*60,0,"Europe/Athens","1,2,3,5",10800);
+       for(uint8_t d=0; d<7; d++)
+       if(ti1.days_flag[d]&&d<6)
+        sprintf(ti1.days_blynk,"%1d,", d+1);
+        else if(ti1.days_flag[d]&&d==6)
+          sprintf(ti1.days_blynk,"%1d", d+1);
+        Blynk.virtualWrite(30,(ti1.ti_hour*60+ti1.ti_min)*60,0,"Europe/Athens",ti1.days_blynk,10800);
       break;
-      case 2:
+      case 4:
         ti2.ti_min++;
         if (ti2.ti_min==60)
         {
@@ -1424,7 +1444,7 @@ void time_input_incr()
         sprintf(str_buf, "%02d:%02d\0", ti2.ti_hour,ti2.ti_min );
         Blynk.virtualWrite(31,str_buf);
       break;
-      case 3:
+      case 6:
         ti3.ti_min++;
         if (ti3.ti_min==60)
         {
@@ -1455,7 +1475,7 @@ void time_input_decr()
   {
     switch(menu.get_focusedLine())
     {
-      case 1:
+      case 2:
         ti1.ti_min--;
         if (ti1.ti_min<0)
         {
@@ -1468,7 +1488,7 @@ void time_input_decr()
         sprintf(str_buf, "%02d:%02d\0", ti1.ti_hour,ti1.ti_min );
         Blynk.virtualWrite(30,str_buf);
       break;
-      case 2:
+      case 4:
         ti2.ti_min--;
         if (ti2.ti_min<0)
         {
@@ -1481,7 +1501,7 @@ void time_input_decr()
         sprintf(str_buf, "%02d:%02d\0", ti2.ti_hour,ti2.ti_min );
         Blynk.virtualWrite(31,str_buf);
       break;
-      case 3:
+      case 6:
         ti3.ti_min--;
         if (ti3.ti_min<0)
         {
@@ -1501,10 +1521,36 @@ void time_input_decr()
 }
 
 void select_active_days()
-
 {
+    
+  switch(menu.get_focusedLine())
+  {
+    case 1:
+      lcd.setCursor(8+days_id,1);
+      lcd.cursor();
+    break;
+    case 3:
+      lcd.setCursor(8+days_id,3);
+      lcd.blink();
+    break;
+    case 5:
+      lcd.setCursor(8+days_id,5);
+      lcd.blink();
+    break;
+    default:
+      lcd.setCursor(8+days_id,1);
+      lcd.blink();
+
+  }
   days_id++;
-  if(days_id==8) days_id=0;
+  
+  if(days_id==8) 
+  {
+    days_id=0;
+    menu.switch_focus();
+    lcd.noBlink();
+  }
+  
 }
 
 void activate_day()
@@ -1525,7 +1571,7 @@ void activate_day()
     break;
     
   }
-  
+  menu.update();
 
 }
 
@@ -1547,7 +1593,7 @@ void deactivate_day()
     break;
     
   }
-  
+  menu.update();
 }
 
 void assign_channel()
@@ -2057,8 +2103,8 @@ void setup() {
   line85.attach_function(1,time_input_incr);
   line85.attach_function(2,time_input_decr);
   //line62.attach_function(3, nextLine);
-  line86.attach_function(1,time_input_incr);
-  line86.attach_function(2,time_input_decr);
+  line86.attach_function(1,activate_day);
+  line86.attach_function(2,deactivate_day);
   line86.attach_function(3, select_active_days);
   line87.attach_function(1,time_input_incr);
   line87.attach_function(2,time_input_decr);
@@ -2111,7 +2157,7 @@ void setup() {
   screen5.set_displayLineCount(4);
   screen6.set_displayLineCount(4);
   screen7.set_displayLineCount(4);
-  screen7.set_displayLineCount(4);
+  screen8.set_displayLineCount(4);
   //@@@@@@@@@@@@@@@@@@@@@@@@@
  //%%%%%%%%%%%%%%%%%%%%
   refresh_time();
