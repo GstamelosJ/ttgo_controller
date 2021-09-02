@@ -1429,6 +1429,7 @@ void time_input_incr()
         sprintf(ti1.days_blynk,"%1d,", d+1);
         else if(ti1.days_flag[d]&&d==6)
           sprintf(ti1.days_blynk,"%1d", d+1);
+        sprintf(ti1.days_blynk,'\0');
         Blynk.virtualWrite(30,(ti1.ti_hour*60+ti1.ti_min)*60,0,"Europe/Athens",ti1.days_blynk,10800);
       break;
       case 4:
@@ -1526,16 +1527,19 @@ void select_active_days()
   switch(menu.get_focusedLine())
   {
     case 1:
-      lcd.setCursor(8+days_id,1);
-      lcd.cursor();
+      //lcd.setCursor(8+days_id,1);
+      line82.set_focusPosition(Position::CUSTOM,8+days_id,1);
+      //lcd.cursor();
     break;
     case 3:
-      lcd.setCursor(8+days_id,3);
-      lcd.blink();
+      //lcd.setCursor(8+days_id,3);
+      //lcd.blink();
+      line84.set_focusPosition(Position::CUSTOM,8+days_id,3);
     break;
     case 5:
-      lcd.setCursor(8+days_id,1);
-      lcd.blink();
+      //lcd.setCursor(8+days_id,1);
+      //lcd.blink();
+      line86.set_focusPosition(Position::CUSTOM,8+days_id,5);
     break;
     default:
       lcd.setCursor(8+days_id,3);
@@ -1547,8 +1551,10 @@ void select_active_days()
   if(days_id==8) 
   {
     days_id=0;
-    menu.switch_focus();
-    lcd.noBlink();
+   // menu.switch_focus();
+   // lcd.noBlink();
+   menu.set_focusPosition(Position::RIGHT);
+   menu.switch_focus();
   }
   
 }
@@ -1560,6 +1566,7 @@ void activate_day()
     case 1:
     ti1.days_flag[days_id]=1;
     ti1.daysDisp[days_id]=ti1.days_flag[days_id]?days[days_id]:'X';
+   // line82.set_focusPosition(Position::CUSTOM,7+days_id,1);
     break;
     case 3:
     ti2.days_flag[days_id]=1;
