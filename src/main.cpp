@@ -1425,11 +1425,16 @@ void time_input_incr()
         prefs.putUChar("ti1.ti_min",ti1.ti_min);
        // sprintf(str_buf, "%02d:%02d", ti1.ti_hour,ti1.ti_min );
        for(uint8_t d=0; d<7; d++)
+       {
        if(ti1.days_flag[d]&&d<6)
-        sprintf(ti1.days_blynk,"%1d,", d+1);
+        {
+          ti1.days_blynk[d] = d+1;
+          ti1.days_blynk[d] = ',';
+        }
         else if(ti1.days_flag[d]&&d==6)
-          sprintf(ti1.days_blynk,"%1d", d+1);
+          ti1.days_blynk[d] = d+1;
         sprintf(ti1.days_blynk,'\0');
+       }
         Blynk.virtualWrite(30,(ti1.ti_hour*60+ti1.ti_min)*60,0,"Europe/Athens",ti1.days_blynk,10800);
       break;
       case 4:
@@ -1539,7 +1544,7 @@ void select_active_days()
     case 5:
       //lcd.setCursor(8+days_id,1);
       //lcd.blink();
-      line86.set_focusPosition(Position::CUSTOM,8+days_id,5);
+      line86.set_focusPosition(Position::CUSTOM,8+days_id,3);
     break;
     default:
       lcd.setCursor(8+days_id,3);
@@ -1556,7 +1561,7 @@ void select_active_days()
    menu.set_focusPosition(Position::RIGHT);
    menu.switch_focus();
   }
-  
+  menu.update();
 }
 
 void activate_day()
