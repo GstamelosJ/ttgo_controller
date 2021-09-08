@@ -1477,7 +1477,7 @@ void time_input_incr()
         
        }
        ti2.days_blynk[i]='\0';
-        Blynk.virtualWrite(30,(ti2.ti_hour*60+ti2.ti_min)*60,0,"Europe/Athens",ti2.days_blynk,10800);
+        Blynk.virtualWrite(30,(ti1.sr?"sr":(ti2.ti_hour*60+ti2.ti_min)*60),0,"Europe/Athens",ti2.days_blynk,10800);
       break;
       case 6:
         ti3.ti_min++;
