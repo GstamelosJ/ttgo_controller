@@ -1448,7 +1448,12 @@ void time_input_incr()
         
        }
        ti1.days_blynk[i]='\0';
-        Blynk.virtualWrite(30,(ti1.ti_hour*60+ti1.ti_min)*60,0,"Europe/Athens",ti1.days_blynk,10800);
+       if (ti1.sr)
+          Blynk.virtualWrite(30,"sr",0,"Europe/Athens",ti1.days_blynk,10800);
+        else if (ti1.ss)
+          Blynk.virtualWrite(30,"sr",0,"Europe/Athens",ti1.days_blynk,10800);
+        else 
+          Blynk.virtualWrite(30,(ti1.ti_hour*60+ti1.ti_min)*60,0,"Europe/Athens",ti1.days_blynk,10800);
       break;
       case 4:
         ti2.ti_min++;
@@ -1477,7 +1482,12 @@ void time_input_incr()
         
        }
        ti2.days_blynk[i]='\0';
-        Blynk.virtualWrite(30,(ti1.sr?"sr":(ti2.ti_hour*60+ti2.ti_min)*60),0,"Europe/Athens",ti2.days_blynk,10800);
+       if (ti2.sr)
+          Blynk.virtualWrite(30,"sr",0,"Europe/Athens",ti2.days_blynk,10800);
+        else if (ti2.ss)
+          Blynk.virtualWrite(30,"sr",0,"Europe/Athens",ti2.days_blynk,10800);
+        else 
+          Blynk.virtualWrite(30,((ti2.ti_hour*60+ti2.ti_min)*60),0,"Europe/Athens",ti2.days_blynk,10800);
       break;
       case 6:
         ti3.ti_min++;
@@ -1506,6 +1516,11 @@ void time_input_incr()
         
        }
        ti3.days_blynk[i]='\0';
+       if (ti3.sr)
+          Blynk.virtualWrite(30,"sr",0,"Europe/Athens",ti3.days_blynk,10800);
+        else if (ti3.ss)
+          Blynk.virtualWrite(30,"sr",0,"Europe/Athens",ti3.days_blynk,10800);
+        else 
         Blynk.virtualWrite(30,(ti3.ti_hour*60+ti3.ti_min)*60,0,"Europe/Athens",ti3.days_blynk,10800);
       break;
       
