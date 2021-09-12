@@ -122,6 +122,7 @@ struct time_input {
    uint8_t days_flag[7];
    char * days_blynk=(char*)malloc(20);
    char * daysDisp=(char*)malloc(20);
+   char * timeDisp=(char*)malloc(10);
 };
 time_input ti1;
 time_input ti2;
@@ -249,11 +250,11 @@ LiquidScreen screen7(line71,line72,line73,line74);
 
 LiquidLine line81(0, 0, "Time input values");
 LiquidLine line82(0,1, "Days1: ",  ti1.daysDisp);
-LiquidLine line83(0,2, "TimeInput1: ",  ti1.ti_hour,":",ti1.ti_min );
+LiquidLine line83(0,2, "TimeInput1: ",  ti1.timeDisp);
 LiquidLine line84(0,3, "Days2: ",  ti2.daysDisp);
-LiquidLine line85(0,3, "TimeInput2: ",  ti2.ti_hour,":",ti2.ti_min  );
+LiquidLine line85(0,3, "TimeInput2: ",  ti2.timeDisp  );
 LiquidLine line86(0,3, "Days3: ",  ti3.daysDisp);
-LiquidLine line87(0,3, "TimeInput3: ",  ti3.ti_hour,":",ti3.ti_min  );
+LiquidLine line87(0,3, "TimeInput3: ",  ti3.timeDisp);
 LiquidScreen screen8(line81,line82,line83,line84);
 
 LiquidMenu menu(lcd,welcome_screen);
@@ -983,6 +984,15 @@ follow_timeinput[7]=param.asInt();
 BLYNK_WRITE(V30)// lights sceduler  
 {
      TimeInputParam t(param);
+     if(t.isStartSunrise())
+      ti1.sr=true;
+    else if(t.isStartSunset())
+      ti1.ss=true;
+    else
+      {
+        ti1.sr=false;
+        ti1.ss=false;
+      }
     int dayadjustment = -1;  
     if(weekday() == 1)
     {
@@ -1016,6 +1026,15 @@ BLYNK_WRITE(V30)// lights sceduler
 BLYNK_WRITE(V31)// lights sceduler  
 {
    TimeInputParam t(param);
+   if(t.isStartSunrise())
+      ti2.sr=true;
+    else if(t.isStartSunset())
+      ti2.ss=true;
+    else
+      {
+        ti2.sr=false;
+        ti2.ss=false;
+      }
     int dayadjustment = -1;  
     if(weekday() == 1)
     {
@@ -1049,7 +1068,16 @@ BLYNK_WRITE(V31)// lights sceduler
 BLYNK_WRITE(V32)// lights sceduler  
 {
    TimeInputParam t(param);
-    int dayadjustment = -1;  
+    int dayadjustment = -1; 
+    if(t.isStartSunrise())
+      ti3.sr=true;
+    else if(t.isStartSunset())
+      ti3.ss=true;
+    else
+      {
+        ti3.sr=false;
+        ti3.ss=false;
+      } 
     if(weekday() == 1)
     {
       dayadjustment =  6; // needed for Sunday, Time library is day 1 and Blynk is day 7
@@ -1122,14 +1150,22 @@ void buttonsCheck() {
 	 {
 		// Calls the function identified with
 		// increase or 1 for the focused line.
-		menu.call_function(1);
+    bouncer_Down.update();
+    if (bouncer_Down.read()==LOW)
+      menu.call_function(4);
+    else
+		  menu.call_function(1);
     //menu.next_screen();
     menu.update();
 	}
   bouncer_Down.update();
   if (bouncer_Down.fell())
   {
-		menu.call_function(2);
+    bouncer_Up.update();
+    if (bouncer_Up.read()==LOW)
+      menu.call_function(4);
+    else
+		  menu.call_function(2);
     //menu.previous_screen();
     menu.update();
 	}
@@ -1449,11 +1485,20 @@ void time_input_incr()
        }
        ti1.days_blynk[i]='\0';
        if (ti1.sr)
+       {
           Blynk.virtualWrite(30,"sr",0,"Europe/Athens",ti1.days_blynk,10800);
+          sprintf(ti1.timeDisp,"sunrise");
+       }
         else if (ti1.ss)
-          Blynk.virtualWrite(30,"sr",0,"Europe/Athens",ti1.days_blynk,10800);
+        {
+          Blynk.virtualWrite(30,"ss",0,"Europe/Athens",ti1.days_blynk,10800);
+          sprintf(ti1.timeDisp,"sunset");
+        }
         else 
+        {
           Blynk.virtualWrite(30,(ti1.ti_hour*60+ti1.ti_min)*60,0,"Europe/Athens",ti1.days_blynk,10800);
+          sprintf(ti1.timeDisp,"%2d:%2d",ti1.ti_hour,ti1.ti_min);
+        }
       break;
       case 4:
         ti2.ti_min++;
@@ -1483,11 +1528,20 @@ void time_input_incr()
        }
        ti2.days_blynk[i]='\0';
        if (ti2.sr)
+       {
           Blynk.virtualWrite(30,"sr",0,"Europe/Athens",ti2.days_blynk,10800);
+          sprintf(ti2.timeDisp,"sunrise");
+       }
         else if (ti2.ss)
-          Blynk.virtualWrite(30,"sr",0,"Europe/Athens",ti2.days_blynk,10800);
+        {
+          Blynk.virtualWrite(30,"ss",0,"Europe/Athens",ti2.days_blynk,10800);
+          sprintf(ti2.timeDisp,"sunset");
+        }
         else 
+        {
           Blynk.virtualWrite(30,((ti2.ti_hour*60+ti2.ti_min)*60),0,"Europe/Athens",ti2.days_blynk,10800);
+          sprintf(ti2.timeDisp,"%2d:%2d",ti2.ti_hour,ti2.ti_min);
+        }
       break;
       case 6:
         ti3.ti_min++;
@@ -1517,11 +1571,20 @@ void time_input_incr()
        }
        ti3.days_blynk[i]='\0';
        if (ti3.sr)
+       {
           Blynk.virtualWrite(30,"sr",0,"Europe/Athens",ti3.days_blynk,10800);
+          sprintf(ti3.timeDisp,"sunrise");
+       }
         else if (ti3.ss)
-          Blynk.virtualWrite(30,"sr",0,"Europe/Athens",ti3.days_blynk,10800);
+        {
+          Blynk.virtualWrite(30,"ss",0,"Europe/Athens",ti3.days_blynk,10800);
+          sprintf(ti3.timeDisp,"sunset");
+        }
         else 
+        {
         Blynk.virtualWrite(30,(ti3.ti_hour*60+ti3.ti_min)*60,0,"Europe/Athens",ti3.days_blynk,10800);
+        sprintf(ti3.timeDisp,"%2d:%2d",ti3.ti_hour,ti3.ti_min);
+        }
       break;
       
     }
@@ -1569,7 +1632,21 @@ void time_input_decr()
         
        }
        ti1.days_blynk[i]='\0';
-      Blynk.virtualWrite(30,(ti1.ti_hour*60+ti1.ti_min)*60,0,"Europe/Athens",ti1.days_blynk,10800);
+      if (ti1.sr)
+       {
+          Blynk.virtualWrite(30,"sr",0,"Europe/Athens",ti1.days_blynk,10800);
+          sprintf(ti1.timeDisp,"sunrise");
+       }
+        else if (ti1.ss)
+        {
+          Blynk.virtualWrite(30,"ss",0,"Europe/Athens",ti1.days_blynk,10800);
+          sprintf(ti1.timeDisp,"sunset");
+        }
+        else 
+        {
+          Blynk.virtualWrite(30,(ti1.ti_hour*60+ti1.ti_min)*60,0,"Europe/Athens",ti1.days_blynk,10800);
+          sprintf(ti1.timeDisp,"%2d:%2d",ti1.ti_hour,ti1.ti_min);
+        }
       break;
       case 4:
         ti2.ti_min--;
@@ -1598,7 +1675,21 @@ void time_input_decr()
         
        }
        ti2.days_blynk[i]='\0';
-        Blynk.virtualWrite(30,(ti2.ti_hour*60+ti2.ti_min)*60,0,"Europe/Athens",ti2.days_blynk,10800);
+        if (ti2.sr)
+       {
+          Blynk.virtualWrite(30,"sr",0,"Europe/Athens",ti2.days_blynk,10800);
+          sprintf(ti2.timeDisp,"sunrise");
+       }
+        else if (ti2.ss)
+        {
+          Blynk.virtualWrite(30,"ss",0,"Europe/Athens",ti2.days_blynk,10800);
+          sprintf(ti2.timeDisp,"sunset");
+        }
+        else 
+        {
+          Blynk.virtualWrite(30,((ti2.ti_hour*60+ti2.ti_min)*60),0,"Europe/Athens",ti2.days_blynk,10800);
+          sprintf(ti2.timeDisp,"%2d:%2d",ti2.ti_hour,ti2.ti_min);
+        }
       break;
       case 6:
         ti3.ti_min--;
@@ -1627,7 +1718,21 @@ void time_input_decr()
         
        }
        ti3.days_blynk[i]='\0';
-      Blynk.virtualWrite(30,(ti3.ti_hour*60+ti3.ti_min)*60,0,"Europe/Athens",ti3.days_blynk,10800);
+      if (ti3.sr)
+       {
+          Blynk.virtualWrite(30,"sr",0,"Europe/Athens",ti3.days_blynk,10800);
+          sprintf(ti3.timeDisp,"sunrise");
+       }
+        else if (ti3.ss)
+        {
+          Blynk.virtualWrite(30,"ss",0,"Europe/Athens",ti3.days_blynk,10800);
+          sprintf(ti3.timeDisp,"sunset");
+        }
+        else 
+        {
+        Blynk.virtualWrite(30,(ti3.ti_hour*60+ti3.ti_min)*60,0,"Europe/Athens",ti3.days_blynk,10800);
+        sprintf(ti3.timeDisp,"%2d:%2d",ti3.ti_hour,ti3.ti_min);
+        }
       break;
       
     }
@@ -1715,6 +1820,50 @@ void deactivate_day()
     
   }
   menu.update();
+}
+
+void time_sr_ss()
+{
+  if((menu.get_currentScreen()==&screen8))
+  {
+    switch(menu.get_focusedLine())
+    {
+      case 2:
+      if(ti1.sr)
+      {
+        ti1.sr=false;
+        ti1.ss=true;
+      }
+      else if(ti1.ss)
+      {
+        ti1.ss=false;
+      }
+
+      break;
+      case 4:
+      if(ti2.sr)
+      {
+        ti2.sr=false;
+        ti2.ss=true;
+      }else if(ti1.ss)
+      {
+        ti2.ss=false;
+      }
+      break;
+      case 6:
+      if(ti3.sr)
+      {
+        ti3.sr=false;
+        ti3.ss=true;
+      }else if(ti1.ss)
+      {
+        ti3.ss=false;
+      }
+      break;
+    }
+
+  }
+
 }
 
 void assign_channel()
@@ -2226,18 +2375,21 @@ void setup() {
   line82.attach_function(3, select_active_days);
   line83.attach_function(1,time_input_incr);
   line83.attach_function(2,time_input_decr);
+  line83.attach_function(4,time_sr_ss);
   //line63.attach_function(3, nextLine);
   line84.attach_function(1,activate_day);
   line84.attach_function(2,deactivate_day);
   line84.attach_function(3,select_active_days);
   line85.attach_function(1,time_input_incr);
   line85.attach_function(2,time_input_decr);
+  line85.attach_function(4,time_sr_ss);
   //line62.attach_function(3, nextLine);
   line86.attach_function(1,activate_day);
   line86.attach_function(2,deactivate_day);
   line86.attach_function(3, select_active_days);
   line87.attach_function(1,time_input_incr);
   line87.attach_function(2,time_input_decr);
+  line87.attach_function(4,time_sr_ss);
 
    menu.init();
 	menu.add_screen(screen2);
