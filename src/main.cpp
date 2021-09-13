@@ -27,6 +27,7 @@ char auth[]= "QlAhqepp7Trb57enFlHT5LreNeXNTNkS";
 #include <LiquidMenu.h>
 //#include <NTPClient.h>
 //#include <WiFiUdp.h>
+#include <Dusk2Dawn.h>
 #include <time.h>
 #include <TimeLib.h>
 #include <Timezone.h>
@@ -985,13 +986,23 @@ BLYNK_WRITE(V30)// lights sceduler
 {
      TimeInputParam t(param);
      if(t.isStartSunrise())
+     {
       ti1.sr=true;
+      Dusk2Dawn greece(38.0529, 23.6943, (t.getTZ_Offset()/3600));
+      int Sunrise  = 60*(greece.sunrise(year(), month(), day(), false));
+     }
     else if(t.isStartSunset())
+    {
       ti1.ss=true;
-    else
+      Dusk2Dawn greece(38.0529, 23.6943, (t.getTZ_Offset()/3600));
+      int Sunset  = 60*((greece.sunset(year(), month(), day(), false))+25);
+    }
+    else if (t.hasStartTime())
       {
         ti1.sr=false;
         ti1.ss=false;
+        ti1.ti_hour=t.getStartHour();
+        ti1.ti_min=t.getStartMinute();
       }
     int dayadjustment = -1;  
     if(weekday() == 1)
@@ -1013,8 +1024,7 @@ BLYNK_WRITE(V30)// lights sceduler
            } 
       }
     }   
-    ti1.ti_hour=t.getStartHour();
-    ti1.ti_min=t.getStartMinute();
+    
     for (int d=0; d<7; d++)
     {
        ti1.days_flag[d] = t.isWeekdaySelected(d+1) ? 1 : 0;
@@ -1030,10 +1040,12 @@ BLYNK_WRITE(V31)// lights sceduler
       ti2.sr=true;
     else if(t.isStartSunset())
       ti2.ss=true;
-    else
+    else if (t.hasStartTime())
       {
         ti2.sr=false;
         ti2.ss=false;
+        ti2.ti_hour=t.getStartHour();
+        ti2.ti_min=t.getStartMinute();
       }
     int dayadjustment = -1;  
     if(weekday() == 1)
@@ -1055,8 +1067,7 @@ BLYNK_WRITE(V31)// lights sceduler
            } 
       }
     }
-    ti2.ti_hour=t.getStartHour();
-    ti2.ti_min=t.getStartMinute(); 
+     
     for (int d=0; d<7; d++)
     {
        ti2.days_flag[d] = t.isWeekdaySelected(d+1) ? 1 : 0;
@@ -1073,10 +1084,12 @@ BLYNK_WRITE(V32)// lights sceduler
       ti3.sr=true;
     else if(t.isStartSunset())
       ti3.ss=true;
-    else
+    else if (t.hasStartTime())
       {
         ti3.sr=false;
         ti3.ss=false;
+        ti3.ti_hour=t.getStartHour();
+        ti3.ti_min=t.getStartMinute();
       } 
     if(weekday() == 1)
     {
@@ -1097,8 +1110,7 @@ BLYNK_WRITE(V32)// lights sceduler
            } 
       }
     } 
-    ti3.ti_hour=t.getStartHour();
-    ti3.ti_min=t.getStartMinute();  
+      
     for (int d=0; d<7; d++)
     {
        ti3.days_flag[d] = t.isWeekdaySelected(d+1) ? 1 : 0;
