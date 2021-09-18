@@ -118,6 +118,7 @@ uint8_t follow_timeinput[8];
 struct time_input {
    uint8_t  ti_hour;
    uint8_t  ti_min;
+   int start_time;
    bool ss;
    bool sr;
    uint8_t days_flag[7];
@@ -989,13 +990,13 @@ BLYNK_WRITE(V30)// lights sceduler
      {
       ti1.sr=true;
       Dusk2Dawn greece(38.0529, 23.6943, (t.getTZ_Offset()/3600));
-      int Sunrise  = 60*(greece.sunrise(year(), month(), day(), false));
+      ti1.start_time  = 60*(greece.sunrise(year(), month(), day(), false));
      }
     else if(t.isStartSunset())
     {
       ti1.ss=true;
       Dusk2Dawn greece(38.0529, 23.6943, (t.getTZ_Offset()/3600));
-      int Sunset  = 60*((greece.sunset(year(), month(), day(), false))+25);
+      ti1.start_time  = 60*((greece.sunset(year(), month(), day(), false))+25);
     }
     else if (t.hasStartTime())
       {
@@ -1003,8 +1004,9 @@ BLYNK_WRITE(V30)// lights sceduler
         ti1.ss=false;
         ti1.ti_hour=t.getStartHour();
         ti1.ti_min=t.getStartMinute();
+        ti1.start_time=(ti1.ti_hour*3600)+(ti1.ti_min*60);
       }
-    int dayadjustment = -1;  
+   /* int dayadjustment = -1;  
     if(weekday() == 1)
     {
       dayadjustment =  6; // needed for Sunday, Time library is day 1 and Blynk is day 7
@@ -1013,7 +1015,7 @@ BLYNK_WRITE(V30)// lights sceduler
     {
        if (t.hasStartTime()) // Process start time
       {
-          start1=(t.getStartHour()*3600)+(t.getStartMinute()*60);
+          ti1.start_time=(t.getStartHour()*3600)+(t.getStartMinute()*60);
           nowseconds=(hour())*3600+(minute())*60+(second());
           if((nowseconds>=start1)&&(nowseconds<=start1+30)) 
            { for(int i=0; i<=7; i++)
@@ -1023,7 +1025,7 @@ BLYNK_WRITE(V30)// lights sceduler
             }
            } 
       }
-    }   
+    } */  
     
     for (int d=0; d<7; d++)
     {
@@ -1037,17 +1039,26 @@ BLYNK_WRITE(V31)// lights sceduler
 {
    TimeInputParam t(param);
    if(t.isStartSunrise())
+      {
       ti2.sr=true;
+      Dusk2Dawn greece(38.0529, 23.6943, (t.getTZ_Offset()/3600));
+      ti2.start_time  = 60*(greece.sunrise(year(), month(), day(), false));
+      }
     else if(t.isStartSunset())
+    {
       ti2.ss=true;
+      Dusk2Dawn greece(38.0529, 23.6943, (t.getTZ_Offset()/3600));
+      ti2.start_time  = 60*(greece.sunset(year(), month(), day(), false));
+    }
     else if (t.hasStartTime())
       {
         ti2.sr=false;
         ti2.ss=false;
         ti2.ti_hour=t.getStartHour();
         ti2.ti_min=t.getStartMinute();
+        ti2.start_time=(ti2.ti_hour*3600)+(ti2.ti_min*60);
       }
-    int dayadjustment = -1;  
+   /* int dayadjustment = -1;  
     if(weekday() == 1)
     {
       dayadjustment =  6; // needed for Sunday, Time library is day 1 and Blynk is day 7
@@ -1066,7 +1077,7 @@ BLYNK_WRITE(V31)// lights sceduler
             }
            } 
       }
-    }
+    }*/
      
     for (int d=0; d<7; d++)
     {
@@ -1081,17 +1092,26 @@ BLYNK_WRITE(V32)// lights sceduler
    TimeInputParam t(param);
     int dayadjustment = -1; 
     if(t.isStartSunrise())
+    {
       ti3.sr=true;
+      Dusk2Dawn greece(38.0529, 23.6943, (t.getTZ_Offset()/3600));
+      ti3.start_time  = 60*(greece.sunrise(year(), month(), day(), false));
+    }
     else if(t.isStartSunset())
+    {
       ti3.ss=true;
+      Dusk2Dawn greece(38.0529, 23.6943, (t.getTZ_Offset()/3600));
+      ti3.start_time  = 60*(greece.sunset(year(), month(), day(), false));
+    }
     else if (t.hasStartTime())
       {
         ti3.sr=false;
         ti3.ss=false;
         ti3.ti_hour=t.getStartHour();
         ti3.ti_min=t.getStartMinute();
+        ti3.start_time=(ti3.ti_hour*3600)+(ti3.ti_min*60);
       } 
-    if(weekday() == 1)
+   /* if(weekday() == 1)
     {
       dayadjustment =  6; // needed for Sunday, Time library is day 1 and Blynk is day 7
     }
@@ -1109,7 +1129,7 @@ BLYNK_WRITE(V32)// lights sceduler
             }
            } 
       }
-    } 
+    }*/ 
       
     for (int d=0; d<7; d++)
     {
@@ -1457,11 +1477,65 @@ void time_decr()
 
 void time_input_incr()
 {
-  char str_buf[10];
+  //char str_buf[10];
   uint8_t i=0;
   if((menu.get_currentScreen()==&screen7))
   {
-    
+    prefs.begin("values_store",false);
+    switch(menu.get_focusedLine())
+    {
+    case 1:
+      follow_timeinput[0]++;
+      if (follow_timeinput[0]==3)follow_timeinput[0]=0;
+      prefs.putUChar("ch1_time_input",follow_timeinput[0]);
+      Blynk.virtualWrite(10,follow_timeinput[0]);
+    break;
+    case 2:
+      follow_timeinput[1]++;
+      if (follow_timeinput[1]==3)follow_timeinput[1]=0;
+      prefs.putUChar("ch2_time_input",follow_timeinput[1]);
+      Blynk.virtualWrite(10,follow_timeinput[1]);
+    break;
+    case 3:
+          follow_timeinput[2]++;
+          if (follow_timeinput[2]==3)follow_timeinput[2]=0;
+          prefs.putUChar("ch3_time_input",follow_timeinput[2]);
+          Blynk.virtualWrite(10,follow_timeinput[2]);
+    break;
+    case 4:
+          follow_timeinput[3]++;
+          if (follow_timeinput[3]==3)follow_timeinput[3]=0;
+          prefs.putUChar("ch4_time_input",follow_timeinput[3]);
+          Blynk.virtualWrite(10,follow_timeinput[3]);
+    break;
+    case 5:
+        follow_timeinput[4]++;
+          if (follow_timeinput[4]==3)follow_timeinput[4]=0;
+          prefs.putUChar("ch5_time_input",follow_timeinput[4]);
+          Blynk.virtualWrite(10,follow_timeinput[4]);
+    break;
+    case 6:
+        follow_timeinput[5]++;
+          if (follow_timeinput[5]==3)follow_timeinput[5]=0;
+          prefs.putUChar("ch6_time_input",follow_timeinput[6]);
+          Blynk.virtualWrite(10,follow_timeinput[6]);
+    break; 
+    case 7:
+        follow_timeinput[6]++;
+          if (follow_timeinput[6]==3)follow_timeinput[6]=0;
+          prefs.putUChar("ch7_time_input",follow_timeinput[6]);
+          Blynk.virtualWrite(10,follow_timeinput[6]);
+    break;
+    case 8:
+        follow_timeinput[7]++;
+          if (follow_timeinput[7]==3)follow_timeinput[7]=0;
+          prefs.putUChar("ch8_time_input",follow_timeinput[7]);
+          Blynk.virtualWrite(10,follow_timeinput[7]);
+    break;
+    prefs.end();
+    }
+    //}
+    menu.update();
 
   }
   else if((menu.get_currentScreen()==&screen8))
@@ -1610,7 +1684,62 @@ void time_input_decr()
   //char str_buf[10];
   if((menu.get_currentScreen()==&screen7))
   {
+      prefs.begin("values_store",false);
+      switch(menu.get_focusedLine())
+      {
+      case 1:
+            follow_timeinput[0]--;
+            if (follow_timeinput[0]<0)follow_timeinput[0]=2;
+            prefs.putUChar("ch1_time_input",follow_timeinput[0]);
+            Blynk.virtualWrite(10,follow_timeinput[0]);
+      break;
+      case 2:
+            follow_timeinput[1]--;
+            if (follow_timeinput[1]<0)follow_timeinput[1]=2;
+            prefs.putUChar("ch2_time_input",follow_timeinput[1]);
+            Blynk.virtualWrite(10,follow_timeinput[1]);
+      break;
+      case 3:
+            follow_timeinput[2]--;
+            if (follow_timeinput[2]<0)follow_timeinput[2]=2;
+            prefs.putUChar("ch3_time_input",follow_timeinput[2]);
+            Blynk.virtualWrite(10,follow_timeinput[2]);
+      break;
+      case 4:
+            follow_timeinput[3]--;
+            if (follow_timeinput[3]<0)follow_timeinput[3]=2;
+            prefs.putUChar("ch4_time_input",follow_timeinput[3]);
+            Blynk.virtualWrite(10,follow_timeinput[3]);
+      break;
+      case 5:
+          follow_timeinput[4]--;
+            if (follow_timeinput[4]<0)follow_timeinput[4]=2;
+            prefs.putUChar("ch5_time_input",follow_timeinput[4]);
+            Blynk.virtualWrite(10,follow_timeinput[4]);
+      break;
+      case 6:
+          follow_timeinput[5]--;
+            if (follow_timeinput[5]<0)follow_timeinput[5]=2;
+            prefs.putUChar("ch6_time_input",follow_timeinput[6]);
+            Blynk.virtualWrite(10,follow_timeinput[6]);
+      break;
+      case 7:
+          follow_timeinput[6]--;
+            if (follow_timeinput[6]<0)follow_timeinput[6]=2;
+            prefs.putUChar("ch7_time_input",follow_timeinput[6]);
+            Blynk.virtualWrite(10,follow_timeinput[6]);
+      break;
+      case 8:
+          follow_timeinput[7]--;
+            if (follow_timeinput[7]<0)follow_timeinput[7]=2;
+            prefs.putUChar("ch8_time_input",follow_timeinput[7]);
+            Blynk.virtualWrite(10,follow_timeinput[7]);
+      break;
+      prefs.end();
 
+      }
+      //}
+      menu.update();
 
   }
   else if((menu.get_currentScreen()==&screen8))
@@ -1979,6 +2108,48 @@ void event_hanler(EVENT event, int channel)
 void automation_handler()
 {
   uint8_t i;
+  int dayadjustment = -1;  
+    if(weekday() == 1)
+    {
+      dayadjustment =  6; // needed for Sunday, Time library is day 1 and Blynk is day 7
+    }
+    if(ti1.days_flag[ weekday() + dayadjustment])
+    {
+          nowseconds=(hour())*3600+(minute())*60+(second());
+          if((nowseconds>=ti1.start_time)&&(nowseconds<=ti1.start_time+30)) 
+           { for(int i=0; i<=7; i++)
+            {
+              if(((auto_light>>i)&0x01)&&follow_timeinput[i]==1)
+              event_hanler(TIME_START, channels[i]);
+            }
+           } 
+      
+    }
+    else if(ti2.days_flag[ weekday() + dayadjustment])
+    {
+          nowseconds=(hour())*3600+(minute())*60+(second());
+          if((nowseconds>=ti2.start_time)&&(nowseconds<=ti2.start_time+30)) 
+           { for(int i=0; i<=7; i++)
+            {
+              if(((auto_light>>i)&0x01)&&follow_timeinput[i]==2)
+              event_hanler(TIME_START, channels[i]);
+            }
+           } 
+      
+    }
+    else if(ti3.days_flag[ weekday() + dayadjustment])
+    {
+          nowseconds=(hour())*3600+(minute())*60+(second());
+          if((nowseconds>=ti3.start_time)&&(nowseconds<=ti3.start_time+30)) 
+           { for(int i=0; i<=7; i++)
+            {
+              if(((auto_light>>i)&0x01)&&follow_timeinput[i]==3)
+              event_hanler(TIME_START, channels[i]);
+            }
+           } 
+      
+    }
+  
   for (i=0;i<=7;i++)
   {
     if((auto_light>>i)&0x01)
