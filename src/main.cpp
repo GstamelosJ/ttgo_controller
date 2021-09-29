@@ -1979,7 +1979,8 @@ void time_sr_ss()
       {
         ti1.ss=false;
       }
-
+      else 
+        ti1.sr=true;
       break;
       case 4:
       if(ti2.sr)
@@ -1990,6 +1991,8 @@ void time_sr_ss()
       {
         ti2.ss=false;
       }
+      else 
+        ti2.sr=true;
       break;
       case 6:
       if(ti3.sr)
@@ -2000,6 +2003,8 @@ void time_sr_ss()
       {
         ti3.ss=false;
       }
+      else
+        ti3.sr=true;
       break;
     }
 
