@@ -1615,17 +1615,17 @@ void time_input_incr()
        ti2.days_blynk[i]='\0';
        if (ti2.sr)
        {
-          Blynk.virtualWrite(30,"sr",0,"Europe/Athens",ti2.days_blynk,10800);
+          Blynk.virtualWrite(31,"sr",0,"Europe/Athens",ti2.days_blynk,10800);
           sprintf(ti2.timeDisp,"sunrise");
        }
         else if (ti2.ss)
         {
-          Blynk.virtualWrite(30,"ss",0,"Europe/Athens",ti2.days_blynk,10800);
+          Blynk.virtualWrite(31,"ss",0,"Europe/Athens",ti2.days_blynk,10800);
           sprintf(ti2.timeDisp,"sunset");
         }
         else 
         {
-          Blynk.virtualWrite(30,((ti2.ti_hour*60+ti2.ti_min)*60),0,"Europe/Athens",ti2.days_blynk,10800);
+          Blynk.virtualWrite(31,((ti2.ti_hour*60+ti2.ti_min)*60),0,"Europe/Athens",ti2.days_blynk,10800);
           sprintf(ti2.timeDisp,"%2d:%2d",ti2.ti_hour,ti2.ti_min);
         }
       break;
@@ -1658,17 +1658,17 @@ void time_input_incr()
        ti3.days_blynk[i]='\0';
        if (ti3.sr)
        {
-          Blynk.virtualWrite(30,"sr",0,"Europe/Athens",ti3.days_blynk,10800);
+          Blynk.virtualWrite(32,"sr",0,"Europe/Athens",ti3.days_blynk,10800);
           sprintf(ti3.timeDisp,"sunrise");
        }
         else if (ti3.ss)
         {
-          Blynk.virtualWrite(30,"ss",0,"Europe/Athens",ti3.days_blynk,10800);
+          Blynk.virtualWrite(32,"ss",0,"Europe/Athens",ti3.days_blynk,10800);
           sprintf(ti3.timeDisp,"sunset");
         }
         else 
         {
-        Blynk.virtualWrite(30,(ti3.ti_hour*60+ti3.ti_min)*60,0,"Europe/Athens",ti3.days_blynk,10800);
+        Blynk.virtualWrite(32,(ti3.ti_hour*60+ti3.ti_min)*60,0,"Europe/Athens",ti3.days_blynk,10800);
         sprintf(ti3.timeDisp,"%2d:%2d",ti3.ti_hour,ti3.ti_min);
         }
       break;
@@ -1818,17 +1818,17 @@ void time_input_decr()
        ti2.days_blynk[i]='\0';
         if (ti2.sr)
        {
-          Blynk.virtualWrite(30,"sr",0,"Europe/Athens",ti2.days_blynk,10800);
+          Blynk.virtualWrite(31,"sr",0,"Europe/Athens",ti2.days_blynk,10800);
           sprintf(ti2.timeDisp,"sunrise");
        }
         else if (ti2.ss)
         {
-          Blynk.virtualWrite(30,"ss",0,"Europe/Athens",ti2.days_blynk,10800);
+          Blynk.virtualWrite(31,"ss",0,"Europe/Athens",ti2.days_blynk,10800);
           sprintf(ti2.timeDisp,"sunset");
         }
         else 
         {
-          Blynk.virtualWrite(30,((ti2.ti_hour*60+ti2.ti_min)*60),0,"Europe/Athens",ti2.days_blynk,10800);
+          Blynk.virtualWrite(31,((ti2.ti_hour*60+ti2.ti_min)*60),0,"Europe/Athens",ti2.days_blynk,10800);
           sprintf(ti2.timeDisp,"%2d:%2d",ti2.ti_hour,ti2.ti_min);
         }
       break;
@@ -1861,17 +1861,17 @@ void time_input_decr()
        ti3.days_blynk[i]='\0';
       if (ti3.sr)
        {
-          Blynk.virtualWrite(30,"sr",0,"Europe/Athens",ti3.days_blynk,10800);
+          Blynk.virtualWrite(32,"sr",0,"Europe/Athens",ti3.days_blynk,10800);
           sprintf(ti3.timeDisp,"sunrise");
        }
         else if (ti3.ss)
         {
-          Blynk.virtualWrite(30,"ss",0,"Europe/Athens",ti3.days_blynk,10800);
+          Blynk.virtualWrite(32,"ss",0,"Europe/Athens",ti3.days_blynk,10800);
           sprintf(ti3.timeDisp,"sunset");
         }
         else 
         {
-        Blynk.virtualWrite(30,(ti3.ti_hour*60+ti3.ti_min)*60,0,"Europe/Athens",ti3.days_blynk,10800);
+        Blynk.virtualWrite(32,(ti3.ti_hour*60+ti3.ti_min)*60,0,"Europe/Athens",ti3.days_blynk,10800);
         sprintf(ti3.timeDisp,"%2d:%2d",ti3.ti_hour,ti3.ti_min);
         }
       break;
@@ -1987,7 +1987,7 @@ void time_sr_ss()
       {
         ti2.sr=false;
         ti2.ss=true;
-      }else if(ti1.ss)
+      }else if(ti2.ss)
       {
         ti2.ss=false;
       }
@@ -1999,7 +1999,7 @@ void time_sr_ss()
       {
         ti3.sr=false;
         ti3.ss=true;
-      }else if(ti1.ss)
+      }else if(ti3.ss)
       {
         ti3.ss=false;
       }
@@ -2399,6 +2399,52 @@ void setup() {
   ti2.daysDisp[i]=ti2.days_flag[i]?days[i]:'X';
   ti3.daysDisp[i]=ti3.days_flag[i]?days[i]:'X';
  }
+
+  if (ti1.sr)
+       {
+          //Blynk.virtualWrite(30,"sr",0,"Europe/Athens",ti1.days_blynk,10800);
+          sprintf(ti1.timeDisp,"sunrise");
+       }
+  else if (ti1.ss)
+      {
+        // Blynk.virtualWrite(30,"ss",0,"Europe/Athens",ti1.days_blynk,10800);
+        sprintf(ti1.timeDisp,"sunset");
+      }
+  else 
+      {
+        // Blynk.virtualWrite(30,(ti1.ti_hour*60+ti1.ti_min)*60,0,"Europe/Athens",ti1.days_blynk,10800);
+        sprintf(ti1.timeDisp,"%2d:%2d",ti1.ti_hour,ti1.ti_min);
+      }
+  if (ti2.sr)
+       {
+          //Blynk.virtualWrite(30,"sr",0,"Europe/Athens",ti1.days_blynk,10800);
+          sprintf(ti2.timeDisp,"sunrise");
+       }
+  else if (ti2.ss)
+      {
+        // Blynk.virtualWrite(30,"ss",0,"Europe/Athens",ti1.days_blynk,10800);
+        sprintf(ti2.timeDisp,"sunset");
+      }
+  else 
+      {
+        // Blynk.virtualWrite(30,(ti1.ti_hour*60+ti1.ti_min)*60,0,"Europe/Athens",ti1.days_blynk,10800);
+        sprintf(ti2.timeDisp,"%2d:%2d",ti2.ti_hour,ti2.ti_min);
+      }
+  if (ti3.sr)
+       {
+          //Blynk.virtualWrite(30,"sr",0,"Europe/Athens",ti1.days_blynk,10800);
+          sprintf(ti3.timeDisp,"sunrise");
+       }
+  else if (ti3.ss)
+      {
+        // Blynk.virtualWrite(30,"ss",0,"Europe/Athens",ti1.days_blynk,10800);
+        sprintf(ti3.timeDisp,"sunset");
+      }
+  else 
+      {
+        // Blynk.virtualWrite(30,(ti1.ti_hour*60+ti1.ti_min)*60,0,"Europe/Athens",ti1.days_blynk,10800);
+        sprintf(ti3.timeDisp,"%2d:%2d",ti3.ti_hour,ti3.ti_min);
+      }  
  //sync_auto_light();
  // light_disp[8]='\0';
  // auto_light_disp[8]='\0';
