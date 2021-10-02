@@ -1486,51 +1486,51 @@ void time_input_incr()
     {
     case 1:
       follow_timeinput[0]++;
-      if (follow_timeinput[0]==3)follow_timeinput[0]=0;
+      if (follow_timeinput[0]==4)follow_timeinput[0]=1;
       prefs.putUChar("ch1_time_input",follow_timeinput[0]);
       Blynk.virtualWrite(10,follow_timeinput[0]);
     break;
     case 2:
       follow_timeinput[1]++;
-      if (follow_timeinput[1]==3)follow_timeinput[1]=0;
+      if (follow_timeinput[1]==4)follow_timeinput[1]=1;
       prefs.putUChar("ch2_time_input",follow_timeinput[1]);
-      Blynk.virtualWrite(10,follow_timeinput[1]);
+      Blynk.virtualWrite(11,follow_timeinput[1]);
     break;
     case 3:
           follow_timeinput[2]++;
-          if (follow_timeinput[2]==3)follow_timeinput[2]=0;
+          if (follow_timeinput[2]==4)follow_timeinput[2]=1;
           prefs.putUChar("ch3_time_input",follow_timeinput[2]);
-          Blynk.virtualWrite(10,follow_timeinput[2]);
+          Blynk.virtualWrite(12,follow_timeinput[2]);
     break;
     case 4:
           follow_timeinput[3]++;
-          if (follow_timeinput[3]==3)follow_timeinput[3]=0;
+          if (follow_timeinput[3]==4)follow_timeinput[3]=1;
           prefs.putUChar("ch4_time_input",follow_timeinput[3]);
-          Blynk.virtualWrite(10,follow_timeinput[3]);
+          Blynk.virtualWrite(13,follow_timeinput[3]);
     break;
     case 5:
         follow_timeinput[4]++;
-          if (follow_timeinput[4]==3)follow_timeinput[4]=0;
+          if (follow_timeinput[4]==4)follow_timeinput[4]=1;
           prefs.putUChar("ch5_time_input",follow_timeinput[4]);
-          Blynk.virtualWrite(10,follow_timeinput[4]);
+          Blynk.virtualWrite(14,follow_timeinput[4]);
     break;
     case 6:
         follow_timeinput[5]++;
-          if (follow_timeinput[5]==3)follow_timeinput[5]=0;
+          if (follow_timeinput[5]==4)follow_timeinput[5]=1;
           prefs.putUChar("ch6_time_input",follow_timeinput[6]);
-          Blynk.virtualWrite(10,follow_timeinput[6]);
+          Blynk.virtualWrite(15,follow_timeinput[6]);
     break; 
     case 7:
         follow_timeinput[6]++;
-          if (follow_timeinput[6]==3)follow_timeinput[6]=0;
+          if (follow_timeinput[6]==4)follow_timeinput[6]=1;
           prefs.putUChar("ch7_time_input",follow_timeinput[6]);
-          Blynk.virtualWrite(10,follow_timeinput[6]);
+          Blynk.virtualWrite(16,follow_timeinput[6]);
     break;
     case 8:
         follow_timeinput[7]++;
-          if (follow_timeinput[7]==3)follow_timeinput[7]=0;
+          if (follow_timeinput[7]==4)follow_timeinput[7]=1;
           prefs.putUChar("ch8_time_input",follow_timeinput[7]);
-          Blynk.virtualWrite(10,follow_timeinput[7]);
+          Blynk.virtualWrite(17,follow_timeinput[7]);
     break;
     prefs.end();
     }
@@ -1689,51 +1689,51 @@ void time_input_decr()
       {
       case 1:
             follow_timeinput[0]--;
-            if (follow_timeinput[0]<0)follow_timeinput[0]=2;
+            if (follow_timeinput[0]==0)follow_timeinput[0]=3;
             prefs.putUChar("ch1_time_input",follow_timeinput[0]);
             Blynk.virtualWrite(10,follow_timeinput[0]);
       break;
       case 2:
             follow_timeinput[1]--;
-            if (follow_timeinput[1]<0)follow_timeinput[1]=2;
+            if (follow_timeinput[1]==0)follow_timeinput[1]=3;
             prefs.putUChar("ch2_time_input",follow_timeinput[1]);
-            Blynk.virtualWrite(10,follow_timeinput[1]);
+            Blynk.virtualWrite(11,follow_timeinput[1]);
       break;
       case 3:
             follow_timeinput[2]--;
-            if (follow_timeinput[2]<0)follow_timeinput[2]=2;
+            if (follow_timeinput[2]==0)follow_timeinput[2]=3;
             prefs.putUChar("ch3_time_input",follow_timeinput[2]);
-            Blynk.virtualWrite(10,follow_timeinput[2]);
+            Blynk.virtualWrite(12,follow_timeinput[2]);
       break;
       case 4:
             follow_timeinput[3]--;
-            if (follow_timeinput[3]<0)follow_timeinput[3]=2;
+            if (follow_timeinput[3]==0)follow_timeinput[3]=3;
             prefs.putUChar("ch4_time_input",follow_timeinput[3]);
-            Blynk.virtualWrite(10,follow_timeinput[3]);
+            Blynk.virtualWrite(13,follow_timeinput[3]);
       break;
       case 5:
           follow_timeinput[4]--;
-            if (follow_timeinput[4]<0)follow_timeinput[4]=2;
+            if (follow_timeinput[4]==0)follow_timeinput[4]=3;
             prefs.putUChar("ch5_time_input",follow_timeinput[4]);
-            Blynk.virtualWrite(10,follow_timeinput[4]);
+            Blynk.virtualWrite(14,follow_timeinput[4]);
       break;
       case 6:
           follow_timeinput[5]--;
-            if (follow_timeinput[5]<0)follow_timeinput[5]=2;
+            if (follow_timeinput[5]==0)follow_timeinput[5]=3;
             prefs.putUChar("ch6_time_input",follow_timeinput[6]);
-            Blynk.virtualWrite(10,follow_timeinput[6]);
+            Blynk.virtualWrite(15,follow_timeinput[6]);
       break;
       case 7:
           follow_timeinput[6]--;
-            if (follow_timeinput[6]<0)follow_timeinput[6]=2;
+            if (follow_timeinput[6]==0)follow_timeinput[6]=3;
             prefs.putUChar("ch7_time_input",follow_timeinput[6]);
-            Blynk.virtualWrite(10,follow_timeinput[6]);
+            Blynk.virtualWrite(16,follow_timeinput[6]);
       break;
       case 8:
           follow_timeinput[7]--;
-            if (follow_timeinput[7]<0)follow_timeinput[7]=2;
+            if (follow_timeinput[7]==0)follow_timeinput[7]=3;
             prefs.putUChar("ch8_time_input",follow_timeinput[7]);
-            Blynk.virtualWrite(10,follow_timeinput[7]);
+            Blynk.virtualWrite(17,follow_timeinput[7]);
       break;
       prefs.end();
 
@@ -2681,7 +2681,7 @@ void setup() {
   //date_time = String(day()) + '-' + String(month()) + '-' +String(year()) + " T"+String(hour()) + ':' + String(minute());
   time_syncTimer.setInterval(6000, refresh_time);
   connectionHandlerTimer.setInterval(100, ConnectionHandler);
-  //refreshmenuTimer.setInterval(200,refresh_menu);
+  refreshmenuTimer.setInterval(200,refresh_menu);
   connectionState = AWAIT_GSM_CONNECTION;
   menu.update();
 }
@@ -2696,7 +2696,7 @@ void loop() {
   scan_buttons(&button_msg);
   time_syncTimer.run();
   connectionHandlerTimer.run();
- // refreshmenuTimer.run();
+  refreshmenuTimer.run();
   if(healthy) Blynk.run();
  delay(20);
  
