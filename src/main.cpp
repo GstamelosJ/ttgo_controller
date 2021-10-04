@@ -95,6 +95,7 @@ Preferences prefs;
 SimpleTimer connectionHandlerTimer;
 SimpleTimer refreshmenuTimer;
 SimpleTimer time_syncTimer;
+SimpleTimer automation_hundler_timer;
 Bounce bouncer_Enter = Bounce();
 Bounce bouncer_Up = Bounce();
 Bounce bouncer_Down = Bounce();
@@ -1488,49 +1489,49 @@ void time_input_incr()
       follow_timeinput[0]++;
       if (follow_timeinput[0]==4)follow_timeinput[0]=1;
       prefs.putUChar("ch1_time_input",follow_timeinput[0]);
-      Blynk.virtualWrite(10,follow_timeinput[0]);
+      Blynk.virtualWrite(50,follow_timeinput[0]);
     break;
     case 2:
       follow_timeinput[1]++;
       if (follow_timeinput[1]==4)follow_timeinput[1]=1;
       prefs.putUChar("ch2_time_input",follow_timeinput[1]);
-      Blynk.virtualWrite(11,follow_timeinput[1]);
+      Blynk.virtualWrite(51,follow_timeinput[1]);
     break;
     case 3:
           follow_timeinput[2]++;
           if (follow_timeinput[2]==4)follow_timeinput[2]=1;
           prefs.putUChar("ch3_time_input",follow_timeinput[2]);
-          Blynk.virtualWrite(12,follow_timeinput[2]);
+          Blynk.virtualWrite(52,follow_timeinput[2]);
     break;
     case 4:
           follow_timeinput[3]++;
           if (follow_timeinput[3]==4)follow_timeinput[3]=1;
           prefs.putUChar("ch4_time_input",follow_timeinput[3]);
-          Blynk.virtualWrite(13,follow_timeinput[3]);
+          Blynk.virtualWrite(53,follow_timeinput[3]);
     break;
     case 5:
         follow_timeinput[4]++;
           if (follow_timeinput[4]==4)follow_timeinput[4]=1;
           prefs.putUChar("ch5_time_input",follow_timeinput[4]);
-          Blynk.virtualWrite(14,follow_timeinput[4]);
+          Blynk.virtualWrite(54,follow_timeinput[4]);
     break;
     case 6:
         follow_timeinput[5]++;
           if (follow_timeinput[5]==4)follow_timeinput[5]=1;
           prefs.putUChar("ch6_time_input",follow_timeinput[6]);
-          Blynk.virtualWrite(15,follow_timeinput[6]);
+          Blynk.virtualWrite(55,follow_timeinput[6]);
     break; 
     case 7:
         follow_timeinput[6]++;
           if (follow_timeinput[6]==4)follow_timeinput[6]=1;
           prefs.putUChar("ch7_time_input",follow_timeinput[6]);
-          Blynk.virtualWrite(16,follow_timeinput[6]);
+          Blynk.virtualWrite(56,follow_timeinput[6]);
     break;
     case 8:
         follow_timeinput[7]++;
           if (follow_timeinput[7]==4)follow_timeinput[7]=1;
           prefs.putUChar("ch8_time_input",follow_timeinput[7]);
-          Blynk.virtualWrite(17,follow_timeinput[7]);
+          Blynk.virtualWrite(57,follow_timeinput[7]);
     break;
     prefs.end();
     }
@@ -1691,49 +1692,49 @@ void time_input_decr()
             follow_timeinput[0]--;
             if (follow_timeinput[0]==0)follow_timeinput[0]=3;
             prefs.putUChar("ch1_time_input",follow_timeinput[0]);
-            Blynk.virtualWrite(10,follow_timeinput[0]);
+            Blynk.virtualWrite(50,follow_timeinput[0]);
       break;
       case 2:
             follow_timeinput[1]--;
             if (follow_timeinput[1]==0)follow_timeinput[1]=3;
             prefs.putUChar("ch2_time_input",follow_timeinput[1]);
-            Blynk.virtualWrite(11,follow_timeinput[1]);
+            Blynk.virtualWrite(51,follow_timeinput[1]);
       break;
       case 3:
             follow_timeinput[2]--;
             if (follow_timeinput[2]==0)follow_timeinput[2]=3;
             prefs.putUChar("ch3_time_input",follow_timeinput[2]);
-            Blynk.virtualWrite(12,follow_timeinput[2]);
+            Blynk.virtualWrite(52,follow_timeinput[2]);
       break;
       case 4:
             follow_timeinput[3]--;
             if (follow_timeinput[3]==0)follow_timeinput[3]=3;
             prefs.putUChar("ch4_time_input",follow_timeinput[3]);
-            Blynk.virtualWrite(13,follow_timeinput[3]);
+            Blynk.virtualWrite(53,follow_timeinput[3]);
       break;
       case 5:
           follow_timeinput[4]--;
             if (follow_timeinput[4]==0)follow_timeinput[4]=3;
             prefs.putUChar("ch5_time_input",follow_timeinput[4]);
-            Blynk.virtualWrite(14,follow_timeinput[4]);
+            Blynk.virtualWrite(54,follow_timeinput[4]);
       break;
       case 6:
           follow_timeinput[5]--;
             if (follow_timeinput[5]==0)follow_timeinput[5]=3;
             prefs.putUChar("ch6_time_input",follow_timeinput[6]);
-            Blynk.virtualWrite(15,follow_timeinput[6]);
+            Blynk.virtualWrite(55,follow_timeinput[6]);
       break;
       case 7:
           follow_timeinput[6]--;
             if (follow_timeinput[6]==0)follow_timeinput[6]=3;
             prefs.putUChar("ch7_time_input",follow_timeinput[6]);
-            Blynk.virtualWrite(16,follow_timeinput[6]);
+            Blynk.virtualWrite(56,follow_timeinput[6]);
       break;
       case 8:
           follow_timeinput[7]--;
             if (follow_timeinput[7]==0)follow_timeinput[7]=3;
             prefs.putUChar("ch8_time_input",follow_timeinput[7]);
-            Blynk.virtualWrite(17,follow_timeinput[7]);
+            Blynk.virtualWrite(57,follow_timeinput[7]);
       break;
       prefs.end();
 
@@ -2102,8 +2103,10 @@ void assign_channel_()
 //####################################################
 void event_hanler(EVENT event, int channel)
 {
-  digitalWrite(channels[channel], 1);
-  Blynk.virtualWrite(channel,1);      
+  lights|=(1<<channel);
+  digitalWrite(channels[channel], HIGH);
+  Blynk.virtualWrite(channel,(((lights>>channel)&1)?1:0)); 
+  Blynk.virtualWrite(channel+20,(((lights>>channel)&1)?1:0));     
   started_times[channel]=now();
   stop_times[channel]=started_times[channel]+ch_hours[channel]*3600;
 
@@ -2125,31 +2128,31 @@ void automation_handler()
            { for(int i=0; i<=7; i++)
             {
               if(((auto_light>>i)&0x01)&&follow_timeinput[i]==1)
-              event_hanler(TIME_START, channels[i]);
+              event_hanler(TIME_START, i);
             }
            } 
       
     }
-    else if(ti2.days_flag[ weekday() + dayadjustment])
+    if(ti2.days_flag[ weekday() + dayadjustment])
     {
           nowseconds=(hour())*3600+(minute())*60+(second());
           if((nowseconds>=ti2.start_time)&&(nowseconds<=ti2.start_time+30)) 
            { for(int i=0; i<=7; i++)
             {
               if(((auto_light>>i)&0x01)&&follow_timeinput[i]==2)
-              event_hanler(TIME_START, channels[i]);
+              event_hanler(TIME_START, i);
             }
            } 
       
     }
-    else if(ti3.days_flag[ weekday() + dayadjustment])
+    if(ti3.days_flag[ weekday() + dayadjustment])
     {
           nowseconds=(hour())*3600+(minute())*60+(second());
           if((nowseconds>=ti3.start_time)&&(nowseconds<=ti3.start_time+30)) 
            { for(int i=0; i<=7; i++)
             {
               if(((auto_light>>i)&0x01)&&follow_timeinput[i]==3)
-              event_hanler(TIME_START, channels[i]);
+              event_hanler(TIME_START, i);
             }
            } 
       
@@ -2158,9 +2161,13 @@ void automation_handler()
   for (i=0;i<=7;i++)
   {
     if((auto_light>>i)&0x01)
-      if(stop_times[i]<=now()&&stop_times[i]>=(now()-30))
-        { digitalWrite(channels[i],0);
-          Blynk.virtualWrite(i,0);
+      if(stop_times[i]>=now()&&stop_times[i]<=(now()-30))
+        { 
+          lights&=~(1<<i);
+          digitalWrite(channels[i], LOW);
+          Blynk.virtualWrite(i,(((lights>>i)&1)?1:0));
+          Blynk.virtualWrite(i+20,(((lights>>i)&1)?1:0));
+          
         }
   }
 
@@ -2679,9 +2686,11 @@ void setup() {
   refresh_time();
   //setTime(hour_brd, *minute_brd, *second_brd, *day_brd, *month_brd, *year_brd);
   //date_time = String(day()) + '-' + String(month()) + '-' +String(year()) + " T"+String(hour()) + ':' + String(minute());
+  
   time_syncTimer.setInterval(6000, refresh_time);
   connectionHandlerTimer.setInterval(100, ConnectionHandler);
   refreshmenuTimer.setInterval(200,refresh_menu);
+  automation_hundler_timer.setInterval(1000,automation_handler);
   connectionState = AWAIT_GSM_CONNECTION;
   menu.update();
 }
@@ -2697,6 +2706,7 @@ void loop() {
   time_syncTimer.run();
   connectionHandlerTimer.run();
   refreshmenuTimer.run();
+  automation_hundler_timer.run();
   if(healthy) Blynk.run();
  delay(20);
  
