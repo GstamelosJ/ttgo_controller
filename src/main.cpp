@@ -114,7 +114,7 @@ int ch1_hours, ch2_hours, ch3_hours, ch4_hours, ch5_hours, ch6_hours, ch7_hours,
 int ch_hours[]={ch1_hours, ch2_hours, ch3_hours, ch4_hours, ch5_hours, ch6_hours, ch7_hours, ch8_hours};
 char days[7] = {'M','T','W','T','F','S','S'};
 
-static uint8_t days_id=0;
+static uint8_t days_id=1;
 uint8_t follow_timeinput[8];
 struct time_input {
    uint8_t  ti_hour;
@@ -122,7 +122,7 @@ struct time_input {
    int start_time;
    bool ss;
    bool sr;
-   uint8_t days_flag[7];
+   uint8_t days_flag[8];
    char * days_blynk=(char*)malloc(20);
    char * daysDisp=(char*)malloc(20);
    char * timeDisp=(char*)malloc(10);
@@ -1923,7 +1923,7 @@ void select_active_days()
   
   if(days_id==8) 
   {
-    days_id=0;
+    days_id=1;
    // menu.switch_focus();
    // lcd.noBlink();
    menu.set_focusPosition(Position::RIGHT);
@@ -2128,11 +2128,11 @@ void event_hanler(EVENT event, int channel)
 void automation_handler()
 {
   uint8_t i;
-  int dayadjustment = 0; // or -1;  
-   /*if(weekday() == 1)
+  int dayadjustment = -1;  
+   if(weekday() == 1)
     {
       dayadjustment =  6; // needed for Sunday, Time library is day 1 and Blynk is day 7
-    }*/
+    }
     if(ti1.days_flag[ weekday() + dayadjustment])
     {
           nowseconds=(hour())*3600+(minute())*60+(second());
