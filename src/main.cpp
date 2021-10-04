@@ -1551,8 +1551,10 @@ void time_input_incr()
           ti1.ti_hour++;
           if(ti1.ti_hour==24) ti1.ti_hour=0; 
         }
+        ti1.start_time=(ti1.ti_hour*3600)+(ti1.ti_min*60);
         prefs.putUChar("ti1.ti_hour",ti1.ti_hour);
         prefs.putUChar("ti1.ti_min",ti1.ti_min);
+        prefs.putUChar("ti1.start_time",ti1.start_time);
        // sprintf(str_buf, "%02d:%02d", ti1.ti_hour,ti1.ti_min );
        for(uint8_t d=0; d<7; d++)
        {
@@ -1595,8 +1597,10 @@ void time_input_incr()
           ti2.ti_hour++;
           if(ti2.ti_hour==24) ti2.ti_hour=0; 
         }
+        ti2.start_time=(ti2.ti_hour*3600)+(ti2.ti_min*60);
         prefs.putUChar("ti2.ti_hour",ti2.ti_hour);
         prefs.putUChar("ti2.ti_min",ti2.ti_min);
+        prefs.putUChar("ti2.start_time",ti2.start_time);
         for(uint8_t d=0; d<7; d++)
        {
        if(ti2.days_flag[d]&&d==0)
@@ -1638,8 +1642,10 @@ void time_input_incr()
           ti3.ti_hour++;
           if(ti3.ti_hour==24) ti3.ti_hour=0; 
         }
+        ti3.start_time=(ti3.ti_hour*3600)+(ti3.ti_min*60);
         prefs.putUChar("ti3.ti_hour",ti3.ti_hour);
         prefs.putUChar("ti3.ti_min",ti3.ti_min);
+        prefs.putUChar("ti3.start_time",ti3.start_time);
         for(uint8_t d=0; d<7; d++)
        {
        if(ti3.days_flag[d]&&d==0)
@@ -1755,8 +1761,10 @@ void time_input_decr()
           ti1.ti_hour--;
           if(ti1.ti_hour<0) ti1.ti_hour=23; 
         }
+        ti1.start_time=(ti1.ti_hour*3600)+(ti1.ti_min*60);
         prefs.putUChar("ti1.ti_hour",ti1.ti_hour);
         prefs.putUChar("ti1.ti_min",ti1.ti_min);
+        prefs.putUChar("ti1.start_time",ti1.start_time);
         for(uint8_t d=0; d<7; d++)
        {
        if(ti1.days_flag[d]&&d==0)
@@ -1798,8 +1806,10 @@ void time_input_decr()
           ti2.ti_hour--;
           if(ti2.ti_hour<0) ti2.ti_hour=23; 
         }
+        ti2.start_time=(ti2.ti_hour*3600)+(ti2.ti_min*60);
         prefs.putUChar("ti2.ti_hour",ti2.ti_hour);
         prefs.putUChar("ti2.ti_min",ti2.ti_min);
+        prefs.putUChar("ti2.start_time",ti2.start_time);
         for(uint8_t d=0; d<7; d++)
        {
        if(ti2.days_flag[d]&&d==0)
@@ -1841,8 +1851,10 @@ void time_input_decr()
           ti3.ti_hour--;
           if(ti3.ti_hour<0) ti3.ti_hour=23; 
         }
+        ti3.start_time=(ti3.ti_hour*3600)+(ti3.ti_min*60);
         prefs.putUChar("ti3.ti_hour",ti3.ti_hour);
         prefs.putUChar("ti3.ti_min",ti3.ti_min);
+        prefs.putUChar("ti3.start_time",ti3.start_time);
         for(uint8_t d=0; d<7; d++)
        {
        if(ti3.days_flag[d]&&d==0)
@@ -2116,44 +2128,47 @@ void event_hanler(EVENT event, int channel)
 void automation_handler()
 {
   uint8_t i;
-  int dayadjustment = -1;  
-    if(weekday() == 1)
+  int dayadjustment = 0; // or -1;  
+   /*if(weekday() == 1)
     {
       dayadjustment =  6; // needed for Sunday, Time library is day 1 and Blynk is day 7
-    }
+    }*/
     if(ti1.days_flag[ weekday() + dayadjustment])
     {
           nowseconds=(hour())*3600+(minute())*60+(second());
-          if((nowseconds>=ti1.start_time)&&(nowseconds<=ti1.start_time+30)) 
+          if((nowseconds>=ti1.start_time)&&((nowseconds<=ti1.start_time+30)||isFirstConnect)) 
            { for(int i=0; i<=7; i++)
             {
               if(((auto_light>>i)&0x01)&&follow_timeinput[i]==1)
               event_hanler(TIME_START, i);
             }
+            if(isFirstConnect) isFirstConnect = false;
            } 
       
     }
     if(ti2.days_flag[ weekday() + dayadjustment])
     {
           nowseconds=(hour())*3600+(minute())*60+(second());
-          if((nowseconds>=ti2.start_time)&&(nowseconds<=ti2.start_time+30)) 
+          if((nowseconds>=ti2.start_time)&&((nowseconds<=ti2.start_time+30)||isFirstConnect)) 
            { for(int i=0; i<=7; i++)
             {
               if(((auto_light>>i)&0x01)&&follow_timeinput[i]==2)
               event_hanler(TIME_START, i);
             }
+            if (isFirstConnect) isFirstConnect = false;
            } 
       
     }
     if(ti3.days_flag[ weekday() + dayadjustment])
     {
           nowseconds=(hour())*3600+(minute())*60+(second());
-          if((nowseconds>=ti3.start_time)&&(nowseconds<=ti3.start_time+30)) 
+          if((nowseconds>=ti3.start_time)&&((nowseconds<=ti3.start_time+30)||isFirstConnect)) 
            { for(int i=0; i<=7; i++)
             {
               if(((auto_light>>i)&0x01)&&follow_timeinput[i]==3)
               event_hanler(TIME_START, i);
             }
+            if (isFirstConnect) isFirstConnect=false;
            } 
       
     }
@@ -2161,7 +2176,7 @@ void automation_handler()
   for (i=0;i<=7;i++)
   {
     if((auto_light>>i)&0x01)
-      if(stop_times[i]>=now()&&stop_times[i]<=(now()-30))
+      if(stop_times[i]<=now()&&stop_times[i]>=(now()+30))
         { 
           lights&=~(1<<i);
           digitalWrite(channels[i], LOW);
@@ -2374,10 +2389,13 @@ void setup() {
   auto_light=prefs.getUChar("auto_light", 0);
   ti1.ti_hour=prefs.getUChar("ti1.ti_hour",00);
   ti1.ti_min=prefs.getUChar("ti1.ti_hour",00);
+  ti1.start_time=prefs.getUChar("ti1.start_time",00);
   ti2.ti_hour=prefs.getUChar("ti2.ti_hour",00);
   ti2.ti_min=prefs.getUChar("ti2.ti_hour",00);
+  ti2.start_time=prefs.getUChar("ti2.start_time",00);
   ti3.ti_hour=prefs.getUChar("ti3.ti_hour",00);
   ti3.ti_min=prefs.getUChar("ti3.ti_hour",00);
+  ti3.start_time=prefs.getUChar("ti3.start_time",00);
   prefs.end();
  /* free(light_disp);
   free(auto_light_disp);
