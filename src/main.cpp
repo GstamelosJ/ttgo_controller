@@ -122,7 +122,7 @@ struct time_input {
    int start_time;
    bool ss;
    bool sr;
-   uint8_t days_flag[8];
+   uint8_t days_flag[7];
    char * days_blynk=(char*)malloc(20);
    char * daysDisp=(char*)malloc(20);
    char * timeDisp=(char*)malloc(10);
@@ -1921,9 +1921,9 @@ void select_active_days()
   }
   days_id++;
   
-  if(days_id==8) 
+  if(days_id==7) 
   {
-    days_id=1;
+    days_id=0;
    // menu.switch_focus();
    // lcd.noBlink();
    menu.set_focusPosition(Position::RIGHT);
