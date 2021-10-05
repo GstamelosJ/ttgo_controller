@@ -7,7 +7,7 @@
 #define BLYNK_TEMPLATE_ID "TMPLcobjXTat"
 #define BLYNK_DEVICE_NAME "TTGOlights"
 char auth[]= "QlAhqepp7Trb57enFlHT5LreNeXNTNkS";
-#define DUMP_AT_COMMANDS
+//#define DUMP_AT_COMMANDS
 // Select your modem:
 #define TINY_GSM_MODEM_SIM800
 //#include <SevenSeg.h>
@@ -28,7 +28,7 @@ char auth[]= "QlAhqepp7Trb57enFlHT5LreNeXNTNkS";
 //#include <NTPClient.h>
 //#include <WiFiUdp.h>
 #include <Dusk2Dawn.h>
-#include <time.h>
+//#include <time.h>
 #include <TimeLib.h>
 #include <Timezone.h>
 #define ENTER 34
@@ -921,34 +921,42 @@ BLYNK_WRITE(V34)  // Manual selection
 BLYNK_WRITE(V10)
 {
 ch1_hours=param.asInt();
+int ch_hours[]={ch1_hours, ch2_hours, ch3_hours, ch4_hours, ch5_hours, ch6_hours, ch7_hours, ch8_hours};
 }
 BLYNK_WRITE(V11)
 {
 ch2_hours=param.asInt();
+int ch_hours[]={ch1_hours, ch2_hours, ch3_hours, ch4_hours, ch5_hours, ch6_hours, ch7_hours, ch8_hours};
 }
 BLYNK_WRITE(V12)
 {
 ch3_hours=param.asInt();
+int ch_hours[]={ch1_hours, ch2_hours, ch3_hours, ch4_hours, ch5_hours, ch6_hours, ch7_hours, ch8_hours};
 }
 BLYNK_WRITE(V13)
 {
 ch4_hours=param.asInt();
+int ch_hours[]={ch1_hours, ch2_hours, ch3_hours, ch4_hours, ch5_hours, ch6_hours, ch7_hours, ch8_hours};
 }
 BLYNK_WRITE(V14)
 {
 ch5_hours=param.asInt();
+int ch_hours[]={ch1_hours, ch2_hours, ch3_hours, ch4_hours, ch5_hours, ch6_hours, ch7_hours, ch8_hours};
 }
 BLYNK_WRITE(V15)
 {
 ch6_hours=param.asInt();
+int ch_hours[]={ch1_hours, ch2_hours, ch3_hours, ch4_hours, ch5_hours, ch6_hours, ch7_hours, ch8_hours};
 }
 BLYNK_WRITE(V16)
 {
 ch7_hours=param.asInt();
+int ch_hours[]={ch1_hours, ch2_hours, ch3_hours, ch4_hours, ch5_hours, ch6_hours, ch7_hours, ch8_hours};
 }
 BLYNK_WRITE(V17)
 {
 ch8_hours=param.asInt();
+int ch_hours[]={ch1_hours, ch2_hours, ch3_hours, ch4_hours, ch5_hours, ch6_hours, ch7_hours, ch8_hours};
 }
 
 BLYNK_WRITE(V50)
@@ -1411,6 +1419,7 @@ void time_increment()
   Blynk.virtualWrite(17,ch8_hours);
   break;
   prefs.end();
+  int ch_hours[]={ch1_hours, ch2_hours, ch3_hours, ch4_hours, ch5_hours, ch6_hours, ch7_hours, ch8_hours};
   }
   //}
   menu.update();
@@ -1471,6 +1480,7 @@ void time_decr()
   Blynk.virtualWrite(17,ch2_hours);
   break;
   prefs.end();
+  int ch_hours[]={ch1_hours, ch2_hours, ch3_hours, ch4_hours, ch5_hours, ch6_hours, ch7_hours, ch8_hours};
   }
   //}
   menu.update();
@@ -2120,7 +2130,11 @@ void event_hanler(EVENT event, int channel)
   Blynk.virtualWrite(channel,(((lights>>channel)&1)?1:0)); 
   Blynk.virtualWrite(channel+20,(((lights>>channel)&1)?1:0));     
   started_times[channel]=now();
-  stop_times[channel]=started_times[channel]+ch_hours[channel]*3600;
+  stop_times[channel]=(now()+(ch_hours[channel]*3600));
+  Serial.printf("ch+hours %d is %d \n",channel, ch_hours[channel]);
+  Serial.printf("now time is %ld \n", now());
+  Serial.printf("Start time %d is %ld \n",channel, started_times[channel]);
+  Serial.printf("Stop time %d is %ld \n",channel, stop_times[channel]);
 
 }
 
@@ -2182,7 +2196,6 @@ void automation_handler()
           digitalWrite(channels[i], LOW);
           Blynk.virtualWrite(i,(((lights>>i)&1)?1:0));
           Blynk.virtualWrite(i+20,(((lights>>i)&1)?1:0));
-          
         }
   }
 
@@ -2397,6 +2410,7 @@ void setup() {
   ti3.ti_min=prefs.getUChar("ti3.ti_hour",00);
   ti3.start_time=prefs.getUChar("ti3.start_time",00);
   prefs.end();
+  int ch_hours[]={ch1_hours, ch2_hours, ch3_hours, ch4_hours, ch5_hours, ch6_hours, ch7_hours, ch8_hours};
  /* free(light_disp);
   free(auto_light_disp);
   light_disp=(char *)malloc(10*sizeof(char));
