@@ -111,7 +111,7 @@ String msg1;
 String msg2;
 String date_time;
 int ch1_hours, ch2_hours, ch3_hours, ch4_hours, ch5_hours, ch6_hours, ch7_hours, ch8_hours, pg_hours, csq;
-int ch_hours[]={ch1_hours, ch2_hours, ch3_hours, ch4_hours, ch5_hours, ch6_hours, ch7_hours, ch8_hours};
+int ch_hours[8];
 char days[7] = {'M','T','W','T','F','S','S'};
 
 static uint8_t days_id=1;
@@ -921,42 +921,42 @@ BLYNK_WRITE(V34)  // Manual selection
 BLYNK_WRITE(V10)
 {
 ch1_hours=param.asInt();
-int ch_hours[]={ch1_hours, ch2_hours, ch3_hours, ch4_hours, ch5_hours, ch6_hours, ch7_hours, ch8_hours};
+ch_hours[0] =ch1_hours;
 }
 BLYNK_WRITE(V11)
 {
 ch2_hours=param.asInt();
-int ch_hours[]={ch1_hours, ch2_hours, ch3_hours, ch4_hours, ch5_hours, ch6_hours, ch7_hours, ch8_hours};
+ch_hours[1]=ch2_hours;
 }
 BLYNK_WRITE(V12)
 {
 ch3_hours=param.asInt();
-int ch_hours[]={ch1_hours, ch2_hours, ch3_hours, ch4_hours, ch5_hours, ch6_hours, ch7_hours, ch8_hours};
+ch_hours[2]=ch3_hours;
 }
 BLYNK_WRITE(V13)
 {
 ch4_hours=param.asInt();
-int ch_hours[]={ch1_hours, ch2_hours, ch3_hours, ch4_hours, ch5_hours, ch6_hours, ch7_hours, ch8_hours};
+ch_hours[3]=ch4_hours;
 }
 BLYNK_WRITE(V14)
 {
 ch5_hours=param.asInt();
-int ch_hours[]={ch1_hours, ch2_hours, ch3_hours, ch4_hours, ch5_hours, ch6_hours, ch7_hours, ch8_hours};
+ch_hours[4]=ch5_hours;
 }
 BLYNK_WRITE(V15)
 {
 ch6_hours=param.asInt();
-int ch_hours[]={ch1_hours, ch2_hours, ch3_hours, ch4_hours, ch5_hours, ch6_hours, ch7_hours, ch8_hours};
+ch_hours[5]=ch6_hours;
 }
 BLYNK_WRITE(V16)
 {
 ch7_hours=param.asInt();
-int ch_hours[]={ch1_hours, ch2_hours, ch3_hours, ch4_hours, ch5_hours, ch6_hours, ch7_hours, ch8_hours};
+ch_hours[6]= ch7_hours;
 }
 BLYNK_WRITE(V17)
 {
 ch8_hours=param.asInt();
-int ch_hours[]={ch1_hours, ch2_hours, ch3_hours, ch4_hours, ch5_hours, ch6_hours, ch7_hours, ch8_hours};
+ch_hours[7]=ch8_hours;
 }
 
 BLYNK_WRITE(V50)
@@ -1373,53 +1373,60 @@ void time_increment()
   case 1:
   ch1_hours++;
   if (ch1_hours==12)ch1_hours=0;
+  ch_hours[0]=ch1_hours;
   prefs.putUChar("ch1_time",ch1_hours);
   Blynk.virtualWrite(10,ch1_hours);
   break;
   case 2:
   ch2_hours++;
   if (ch2_hours==12)ch2_hours=0;
+  ch_hours[1]=ch2_hours;
   prefs.putUChar("ch2_time",ch2_hours);
   Blynk.virtualWrite(11,ch2_hours);
   break;
   case 3:
   ch3_hours++;
   if (ch3_hours==12)ch3_hours=0;
+  ch_hours[2]=ch3_hours;
   prefs.putUChar("ch3_time",ch3_hours);
   Blynk.virtualWrite(12,ch3_hours);
   break;
   case 4:
   ch4_hours++;
   if (ch4_hours==12)ch4_hours=0;
+  ch_hours[3]=ch4_hours;
   prefs.putUChar("ch4_time",ch4_hours);
   Blynk.virtualWrite(13,ch4_hours);
   break;
   case 5:
   ch5_hours++;
   if (ch5_hours==12)ch5_hours=0;
+  ch_hours[4]=ch5_hours;
   prefs.putUChar("ch5_time",ch5_hours);
   Blynk.virtualWrite(14,ch5_hours);
   break;
   case 6:
   ch6_hours++;
   if (ch6_hours==12)ch6_hours=0;
+  ch_hours[5]=ch6_hours;
   prefs.putUChar("ch6_time",ch6_hours);
   Blynk.virtualWrite(15,ch6_hours);
   break; 
   case 7:
   ch7_hours++;
   if (ch7_hours==12)ch7_hours=0;
+  ch_hours[6]=ch7_hours;
   prefs.putUChar("ch7_time",ch7_hours);
   Blynk.virtualWrite(16,ch7_hours);
   break;
   case 8:
   ch8_hours++;
   if (ch8_hours==12)ch8_hours=0;
+  ch_hours[7]=ch8_hours;
   prefs.putUChar("ch8_time",ch8_hours);
   Blynk.virtualWrite(17,ch8_hours);
   break;
   prefs.end();
-  int ch_hours[]={ch1_hours, ch2_hours, ch3_hours, ch4_hours, ch5_hours, ch6_hours, ch7_hours, ch8_hours};
   }
   //}
   menu.update();
@@ -1435,53 +1442,60 @@ void time_decr()
   case 1:
   ch1_hours--;
   if (ch1_hours==0)ch1_hours=12;
+  ch_hours[0]=ch1_hours;
   prefs.putUChar("ch1_time",ch1_hours);
   Blynk.virtualWrite(10,ch1_hours);
   break;
   case 2:
   ch2_hours--;
   if (ch2_hours==0)ch2_hours=12;
+  ch_hours[1]=ch2_hours;
   prefs.putUChar("ch2_time",ch2_hours);
   Blynk.virtualWrite(11,ch2_hours);
   break;
   case 3:
   ch3_hours--;
   if (ch3_hours==0)ch3_hours=12;
+  ch_hours[2]=ch3_hours;
   prefs.putUChar("ch3_time",ch3_hours);
   Blynk.virtualWrite(12,ch2_hours);
   case 4:
   ch4_hours--;
   if (ch4_hours==0)ch4_hours=12;
+  ch_hours[3]=ch4_hours;
   prefs.putUChar("ch4_time",ch4_hours);
   Blynk.virtualWrite(13,ch2_hours);
   break;
   case 5:
   ch5_hours--;
   if (ch5_hours==0)ch5_hours=12;
+  ch_hours[4]=ch5_hours;
   prefs.putUChar("ch5_time",ch5_hours);
   Blynk.virtualWrite(14,ch2_hours);
   break;
   case 6:
   ch6_hours--;
   if (ch6_hours==0)ch6_hours=12;
+  ch_hours[5]=ch6_hours;
   prefs.putUChar("ch6_time",ch6_hours);
   Blynk.virtualWrite(15,ch2_hours);
   break; 
   case 7:
   ch5_hours--;
   if (ch7_hours==0)ch7_hours=12;
+  ch_hours[6]=ch7_hours;
   prefs.putUChar("ch7_time",ch7_hours);
   Blynk.virtualWrite(16,ch2_hours);
   break;
   case 8:
   ch5_hours--;
   if (ch8_hours==0)ch8_hours=12;
+  ch_hours[7]=ch8_hours;
   prefs.putUChar("ch8_time",ch8_hours);
   Blynk.virtualWrite(17,ch2_hours);
   break;
   prefs.end();
-  int ch_hours[]={ch1_hours, ch2_hours, ch3_hours, ch4_hours, ch5_hours, ch6_hours, ch7_hours, ch8_hours};
-  }
+    }
   //}
   menu.update();
 }
