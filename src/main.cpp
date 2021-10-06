@@ -1099,7 +1099,7 @@ BLYNK_WRITE(V31)// lights sceduler
 BLYNK_WRITE(V32)// lights sceduler  
 {
    TimeInputParam t(param);
-    int dayadjustment = -1; 
+   // int dayadjustment = -1; 
     if(t.isStartSunrise())
     {
       ti3.sr=true;
@@ -2156,47 +2156,44 @@ void event_hanler(EVENT event, int channel)
 void automation_handler()
 {
   uint8_t i;
-  int dayadjustment = -1;  
+  int dayadjustment = -2;  
    if(weekday() == 1)
     {
-      dayadjustment =  6; // needed for Sunday, Time library is day 1 and Blynk is day 7
+      dayadjustment =  5; // needed for Sunday, Time library is day 1 and Blynk is day 7
     }
     if(ti1.days_flag[ weekday() + dayadjustment])
     {
           nowseconds=(hour())*3600+(minute())*60+(second());
-          if((nowseconds>=ti1.start_time)&&((nowseconds<=ti1.start_time+30)||isFirstConnect)) 
+          if((nowseconds>=ti1.start_time)&&(nowseconds<=ti1.start_time+30)) 
            { for(int i=0; i<=7; i++)
             {
               if(((auto_light>>i)&0x01)&&follow_timeinput[i]==1)
               event_hanler(TIME_START, i);
             }
-            if(isFirstConnect) isFirstConnect = false;
            } 
       
     }
     if(ti2.days_flag[ weekday() + dayadjustment])
     {
           nowseconds=(hour())*3600+(minute())*60+(second());
-          if((nowseconds>=ti2.start_time)&&((nowseconds<=ti2.start_time+30)||isFirstConnect)) 
+          if((nowseconds>=ti2.start_time)&&(nowseconds<=ti2.start_time+30)) 
            { for(int i=0; i<=7; i++)
             {
               if(((auto_light>>i)&0x01)&&follow_timeinput[i]==2)
               event_hanler(TIME_START, i);
             }
-            if (isFirstConnect) isFirstConnect = false;
            } 
       
     }
     if(ti3.days_flag[ weekday() + dayadjustment])
     {
           nowseconds=(hour())*3600+(minute())*60+(second());
-          if((nowseconds>=ti3.start_time)&&((nowseconds<=ti3.start_time+30)||isFirstConnect)) 
+          if((nowseconds>=ti3.start_time)&&(nowseconds<=ti3.start_time+30)) 
            { for(int i=0; i<=7; i++)
             {
               if(((auto_light>>i)&0x01)&&follow_timeinput[i]==3)
               event_hanler(TIME_START, i);
             }
-            if (isFirstConnect) isFirstConnect=false;
            } 
       
     }
@@ -2440,7 +2437,20 @@ void setup() {
     case 4:
       ch_hours[i]=ch4_hours;
     break;
+    case 5:
+      ch_hours[i]=ch5_hours;
+    break;
+    case 6:
+      ch_hours[i]=ch6_hours;
+    break;
+    case 7:
+      ch_hours[i]=ch7_hours;
+    break;
+    case 8:
+      ch_hours[i]=ch8_hours;
+    break;
     }
+
   }
  /* free(light_disp);
   free(auto_light_disp);
