@@ -2424,7 +2424,24 @@ void setup() {
   ti3.ti_min=prefs.getUChar("ti3.ti_hour",00);
   ti3.start_time=prefs.getUChar("ti3.start_time",00);
   prefs.end();
-  int ch_hours[]={ch1_hours, ch2_hours, ch3_hours, ch4_hours, ch5_hours, ch6_hours, ch7_hours, ch8_hours};
+  for (uint8_t i=0; i==7; i++)
+  {
+    switch (i)
+    {
+    case 1:
+      ch_hours[i]=ch1_hours;
+    break;
+    case 2:
+      ch_hours[i]=ch2_hours;
+    break;
+    case 3:
+      ch_hours[i]=ch3_hours;
+    break;
+    case 4:
+      ch_hours[i]=ch4_hours;
+    break;
+    }
+  }
  /* free(light_disp);
   free(auto_light_disp);
   light_disp=(char *)malloc(10*sizeof(char));
