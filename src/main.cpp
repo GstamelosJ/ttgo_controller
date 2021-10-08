@@ -122,6 +122,7 @@ struct time_input {
    int start_time;
    bool ss;
    bool sr;
+   bool ldr;
    uint8_t days_flag[7];
    char * days_blynk=(char*)malloc(20);
    char * daysDisp=(char*)malloc(20);
@@ -478,7 +479,7 @@ BLYNK_WRITE(V2)  // Manual selection
      Serial.println("The CH3 set off");
     Blynk.notify("CH3 OFF!");
     delay(100);
-    Blynk.virtualWrite(22,(((lights>>0)&2)?1:0));
+    Blynk.virtualWrite(22,(((lights>>2)&2)?1:0));
    // Blynk.virtualWrite(12,0);
     //msg1="The CH3 set off";
     //msg2="after "+ String(pg_hours)+" Hours";
@@ -2201,8 +2202,9 @@ void automation_handler()
   for (i=0;i<=7;i++)
   {
     if((auto_light>>i)&0x01)
-      if(stop_times[i]<=now()&&stop_times[i]>=(now()+30))
+      if((stop_times[i]<=now())&&(stop_times[i]+30>=now()))
         { 
+          Serial.printf("Stop time expired at %ld \n", now());
           lights&=~(1<<i);
           digitalWrite(channels[i], LOW);
           Blynk.virtualWrite(i,(((lights>>i)&1)?1:0));
@@ -2425,28 +2427,28 @@ void setup() {
   {
     switch (i)
     {
-    case 1:
+    case 0:
       ch_hours[i]=ch1_hours;
     break;
-    case 2:
+    case 1:
       ch_hours[i]=ch2_hours;
     break;
-    case 3:
+    case 2:
       ch_hours[i]=ch3_hours;
     break;
-    case 4:
+    case 3:
       ch_hours[i]=ch4_hours;
     break;
-    case 5:
+    case 4:
       ch_hours[i]=ch5_hours;
     break;
-    case 6:
+    case 5:
       ch_hours[i]=ch6_hours;
     break;
-    case 7:
+    case 6:
       ch_hours[i]=ch7_hours;
     break;
-    case 8:
+    case 7:
       ch_hours[i]=ch8_hours;
     break;
     }
