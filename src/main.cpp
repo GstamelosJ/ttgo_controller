@@ -2011,11 +2011,20 @@ void time_sr_ss()
       if(ti1.sr)
       {
         ti1.sr=false;
+        ti1.ldr=false;
         ti1.ss=true;
       }
       else if(ti1.ss)
       {
         ti1.ss=false;
+        ti1.ldr=true;
+        ti1.sr=false;
+      }
+      else if(ti1.ldr)
+      {
+        ti1.ss=false;
+        ti1.ldr=false;
+        ti1.sr=false;
       }
       else 
         ti1.sr=true;
@@ -2024,26 +2033,44 @@ void time_sr_ss()
       if(ti2.sr)
       {
         ti2.sr=false;
+        ti2.ldr=false;
         ti2.ss=true;
-      }else if(ti2.ss)
+      }
+      else if(ti2.ss)
       {
         ti2.ss=false;
+        ti2.ldr=true;
+        ti2.sr=false;
+      }
+      else if(ti2.ldr)
+      {
+        ti2.ss=false;
+        ti2.ldr=false;
+        ti2.sr=false;
       }
       else 
         ti2.sr=true;
-      break;
       case 6:
       if(ti3.sr)
       {
         ti3.sr=false;
+        ti3.ldr=false;
         ti3.ss=true;
-      }else if(ti3.ss)
+      }
+      else if(ti1.ss)
       {
         ti3.ss=false;
+        ti3.ldr=true;
+        ti3.sr=false;
       }
-      else
+      else if(ti1.ldr)
+      {
+        ti3.ss=false;
+        ti3.ldr=false;
+        ti3.sr=false;
+      }
+      else 
         ti3.sr=true;
-      break;
     }
 
   }
