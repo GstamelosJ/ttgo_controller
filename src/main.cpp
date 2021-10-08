@@ -1880,6 +1880,7 @@ void time_input_decr()
         prefs.putUChar("ti3.ti_hour",ti3.ti_hour);
         prefs.putUChar("ti3.ti_min",ti3.ti_min);
         prefs.putUChar("ti3.start_time",ti3.start_time);
+        prefs.end();
         for(uint8_t d=0; d<7; d++)
        {
        if(ti3.days_flag[d]&&d==0)
@@ -2057,13 +2058,13 @@ void time_sr_ss()
         ti3.ldr=false;
         ti3.ss=true;
       }
-      else if(ti1.ss)
+      else if(ti3.ss)
       {
         ti3.ss=false;
         ti3.ldr=true;
         ti3.sr=false;
       }
-      else if(ti1.ldr)
+      else if(ti3.ldr)
       {
         ti3.ss=false;
         ti3.ldr=false;
@@ -2173,6 +2174,9 @@ void event_hanler(EVENT event, int channel)
   Blynk.virtualWrite(channel+20,(((lights>>channel)&1)?1:0));     
   started_times[channel]=now();
   stop_times[channel]=(now()+(ch_hours[channel]*3600));
+  //prefs.begin("values_store",false);
+  //prefs.putBytes("stop_times",stop_times,8);
+ // prefs.end();
   Serial.printf("ch+hours %d is %d \n",channel, ch_hours[channel]);
   Serial.printf("now time is %ld \n", now());
   Serial.printf("Start time %d is %ld \n",channel, started_times[channel]);
@@ -2343,9 +2347,27 @@ void serial_input_handler()
         lights|=auto_light;
         for(uint8_t i=0;i<8;i++)
         {
-          digitalWrite(channels[i], (0x01&(lights>>i)));
-          Blynk.virtualWrite(i,(0x01&(lights>>i)));
+          if(ti1.ldr&&follow_timeinput[i]==1)
+          {
+            event_hanler(LDR,i);
+         // digitalWrite(channels[i], (0x01&(lights>>i)));
+         // Blynk.virtualWrite(i,(0x01&(lights>>i)));
           delay(200);
+          }
+           if(ti2.ldr&&follow_timeinput[i]==2)
+          {
+            event_hanler(LDR,i);
+         // digitalWrite(channels[i], (0x01&(lights>>i)));
+         // Blynk.virtualWrite(i,(0x01&(lights>>i)));
+          delay(200);
+          }
+           if(ti3.ldr&&follow_timeinput[i]==3)
+          {
+            event_hanler(LDR,i);
+         // digitalWrite(channels[i], (0x01&(lights>>i)));
+         // Blynk.virtualWrite(i,(0x01&(lights>>i)));
+          delay(200);
+          }
         }
         
         break;
@@ -2354,8 +2376,21 @@ void serial_input_handler()
         lights&=~auto_light;
         for(uint8_t i=0;i<8;i++)
         {
+           if(ti1.ldr&&follow_timeinput[i]==1)
+          {
           digitalWrite(channels[i], (0x01&(lights>>i)));
           Blynk.virtualWrite(i,(0x01&(lights>>i)));
+          }
+          if(ti2.ldr&&follow_timeinput[i]==2)
+          {
+          digitalWrite(channels[i], (0x01&(lights>>i)));
+          Blynk.virtualWrite(i,(0x01&(lights>>i)));
+          }
+          if(ti3.ldr&&follow_timeinput[i]==3)
+          {
+          digitalWrite(channels[i], (0x01&(lights>>i)));
+          Blynk.virtualWrite(i,(0x01&(lights>>i)));
+          }
           delay(200);
         }
         
@@ -2449,6 +2484,7 @@ void setup() {
   ti3.ti_hour=prefs.getUChar("ti3.ti_hour",00);
   ti3.ti_min=prefs.getUChar("ti3.ti_hour",00);
   ti3.start_time=prefs.getUChar("ti3.start_time",00);
+  prefs.getBytes("stop_times",stop_times,8);
   prefs.end();
   for (uint8_t i=0; i==7; i++)
   {
