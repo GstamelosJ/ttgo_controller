@@ -131,6 +131,8 @@ struct time_input {
 time_input ti1;
 time_input ti2;
 time_input ti3;
+time_t unixTime; // a time stamp
+tmElements_t te;
 int year_brd,month_brd,day_brd,hour_brd,minute_brd,second_brd;
 float tz;
 //int current_hours;
@@ -385,11 +387,56 @@ BLYNK_CONNECTED() {
 if (isFirstConnect) {
   Blynk.syncAll();
   refresh_menu();
+ 
+
  // Blynk.notify("TIMER STARTING!!!!");
 isFirstConnect = false;
 }
 }
 
+//restore the stop values taking into account the time passed while the device was disconnected
+void restore_stop(){
+  uint8_t i;
+  te.Year=year();
+  te.Month=month();
+  te.Day=day();
+  te.Hour=ti1.ti_hour;
+  te.Minute=ti1.ti_min;
+  te.Second=0;
+  unixTime=makeTime(te);
+  if(ti1.days_flag[weekday()+(weekday()==1?5:-2)])
+  {
+    if(unixTime<=now()) 
+    {
+      for(i=0;i<=8;i++)
+      if(follow_timeinput[i]==1) stop_times[i] = now()+ch_hours[i]*3600 - ti1.start_time;
+    }
+  }
+  if(ti2.days_flag[weekday()+(weekday()==1?5:-2)])
+  {
+    te.Hour=ti2.ti_hour;
+    te.Minute=ti2.ti_min;
+    unixTime=makeTime(te);
+    if(unixTime<=now()) 
+    {
+      for(i=0;i<=8;i++)
+      if(follow_timeinput[i]==1) stop_times[i] = now()+ch_hours[i]*3600 - ti2.start_time;
+    }
+  }
+  if(ti3.days_flag[weekday()+(weekday()==1?5:-2)])
+  {
+    te.Hour=ti3.ti_hour;
+    te.Minute=ti3.ti_min;
+    unixTime=makeTime(te);
+    if(unixTime<=now()) 
+    {
+      for(i=0;i<=8;i++)
+      if(follow_timeinput[i]==1) stop_times[i] = now()+ch_hours[i]*3600 - ti3.start_time;
+    }
+  }
+}
+
+//BLYNK routines
 BLYNK_WRITE(V0)  // Manual selection
 {
   if ((param.asInt()==1)) 
@@ -2484,7 +2531,7 @@ void setup() {
   ti3.ti_hour=prefs.getUChar("ti3.ti_hour",00);
   ti3.ti_min=prefs.getUChar("ti3.ti_hour",00);
   ti3.start_time=prefs.getUChar("ti3.start_time",00);
-  prefs.getBytes("stop_times",stop_times,8);
+  //prefs.getBytes("stop_times",stop_times,8);
   prefs.end();
   for (uint8_t i=0; i==7; i++)
   {
@@ -2517,6 +2564,7 @@ void setup() {
     }
 
   }
+  restore_stop();
  /* free(light_disp);
   free(auto_light_disp);
   light_disp=(char *)malloc(10*sizeof(char));
