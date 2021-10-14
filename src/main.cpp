@@ -146,7 +146,8 @@ boolean isFirstConnect=true;
 typedef enum {
   TIME_START,
   LDR,
-  MANUAL
+  MANUAL,
+  I2C_event
 } EVENT;
 void event_hanler(EVENT event, int channel);
 //uncoment the following three rows in case of incorporating 7 segment display module
@@ -1379,13 +1380,15 @@ void toggle_lights()
   Serial.printf("lights=%d \n", lights);
   //if(menu.get_currentScreen()==&screen3)
   //{
-    
+     if(((auto_light>>channel)&1)&& !((lights>>channel)&1)) event_hanler(MANUAL,channel);
+  else
+  {
     lights^=(1<<channel);
     digitalWrite(channels[channel], (0x01&(lights>>channel)));
     Blynk.virtualWrite(channel,(0x01&(lights>>channel)));
     Blynk.virtualWrite(channel+20,(0x01&(lights>>channel)));
    // Blynk.virtualWrite(channel+9,(0x01&(lights>>channel))?255:0);
-  //}
+  }
   light_stat[channel]=(char*)(((lights>>channel)&0x01)?"On ":"Off");
   for (uint8_t i = 0; i<8; i++)
  {
@@ -2985,9 +2988,13 @@ void scan_buttons(uint8_t * buttons)
   I2Cbuttons.readBytes(buttons,1);
   if (((*buttons)!=0xff)&&((*buttons)!=0x00))
   {
+   if(!((auto_light>>(*buttons-1))&1)) event_hanler(I2C_event,(*buttons-1));
+  else
+  {
    lights^=(1<<(*buttons-1));
     digitalWrite(channels[(*buttons-1)], (0x01&(lights>>(*buttons-1))));
     Blynk.virtualWrite((*buttons-1),(0x01&(lights>>(*buttons-1))));
+  }
     delay(200);
     *buttons=0xff;
   }
