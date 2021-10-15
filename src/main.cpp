@@ -73,6 +73,7 @@ TwoWire I2Cbuttons = TwoWire(1);
 TimeChangeRule EEST = {"EEST", Last, Sun, Mar, 2, 180};  //UTC + 3 hours
 TimeChangeRule EET = {"EET", Last, Sun, Oct, 2, 120};  //UTC + 2 hours
 Timezone GR(EET, EEST);
+int daylight_offset;
 
 char apn[] = "internet"; //COSMOTE 
 char user[] = "";
@@ -1594,6 +1595,9 @@ void time_decr()
 
 void time_input_incr()
 {
+  if(GR.utcIsDST(now())) daylight_offset=10800;
+  else daylight_offset=7200;
+  Serial.println("Daylight offset="+daylight_offset);
   //char str_buf[10];
   uint8_t i=0;
   if((menu.get_currentScreen()==&screen7))
@@ -1691,17 +1695,17 @@ void time_input_incr()
        ti1.days_blynk[i]='\0';
        if (ti1.sr)
        {
-          Blynk.virtualWrite(30,"sr",0,"Europe/Athens",ti1.days_blynk,10800);
+          Blynk.virtualWrite(30,"sr",0,"Europe/Athens",ti1.days_blynk,daylight_offset);
           sprintf(ti1.timeDisp,"sunrise");
        }
         else if (ti1.ss)
         {
-          Blynk.virtualWrite(30,"ss",0,"Europe/Athens",ti1.days_blynk,10800);
+          Blynk.virtualWrite(30,"ss",0,"Europe/Athens",ti1.days_blynk,daylight_offset);
           sprintf(ti1.timeDisp,"sunset");
         }
         else 
         {
-          Blynk.virtualWrite(30,(ti1.ti_hour*60+ti1.ti_min)*60,0,"Europe/Athens",ti1.days_blynk,10800);
+          Blynk.virtualWrite(30,(ti1.ti_hour*60+ti1.ti_min)*60,0,"Europe/Athens",ti1.days_blynk,daylight_offset);
           sprintf(ti1.timeDisp,"%2d:%2d",ti1.ti_hour,ti1.ti_min);
         }
       break;
@@ -1736,17 +1740,17 @@ void time_input_incr()
        ti2.days_blynk[i]='\0';
        if (ti2.sr)
        {
-          Blynk.virtualWrite(31,"sr",0,"Europe/Athens",ti2.days_blynk,10800);
+          Blynk.virtualWrite(31,"sr",0,"Europe/Athens",ti2.days_blynk,daylight_offset);
           sprintf(ti2.timeDisp,"sunrise");
        }
         else if (ti2.ss)
         {
-          Blynk.virtualWrite(31,"ss",0,"Europe/Athens",ti2.days_blynk,10800);
+          Blynk.virtualWrite(31,"ss",0,"Europe/Athens",ti2.days_blynk,daylight_offset);
           sprintf(ti2.timeDisp,"sunset");
         }
         else 
         {
-          Blynk.virtualWrite(31,((ti2.ti_hour*60+ti2.ti_min)*60),0,"Europe/Athens",ti2.days_blynk,10800);
+          Blynk.virtualWrite(31,((ti2.ti_hour*60+ti2.ti_min)*60),0,"Europe/Athens",ti2.days_blynk,daylight_offset);
           sprintf(ti2.timeDisp,"%2d:%2d",ti2.ti_hour,ti2.ti_min);
         }
       break;
@@ -1781,17 +1785,17 @@ void time_input_incr()
        ti3.days_blynk[i]='\0';
        if (ti3.sr)
        {
-          Blynk.virtualWrite(32,"sr",0,"Europe/Athens",ti3.days_blynk,10800);
+          Blynk.virtualWrite(32,"sr",0,"Europe/Athens",ti3.days_blynk,daylight_offset);
           sprintf(ti3.timeDisp,"sunrise");
        }
         else if (ti3.ss)
         {
-          Blynk.virtualWrite(32,"ss",0,"Europe/Athens",ti3.days_blynk,10800);
+          Blynk.virtualWrite(32,"ss",0,"Europe/Athens",ti3.days_blynk,daylight_offset);
           sprintf(ti3.timeDisp,"sunset");
         }
         else 
         {
-        Blynk.virtualWrite(32,(ti3.ti_hour*60+ti3.ti_min)*60,0,"Europe/Athens",ti3.days_blynk,10800);
+        Blynk.virtualWrite(32,(ti3.ti_hour*60+ti3.ti_min)*60,0,"Europe/Athens",ti3.days_blynk,daylight_offset);
         sprintf(ti3.timeDisp,"%2d:%2d",ti3.ti_hour,ti3.ti_min);
         }
       break;
@@ -1803,6 +1807,8 @@ void time_input_incr()
 
 void time_input_decr()
 {
+  if(GR.utcIsDST(now())) daylight_offset=10800;
+  else daylight_offset=7200;
   uint8_t i=0;
   //char str_buf[10];
   if((menu.get_currentScreen()==&screen7))
@@ -1900,17 +1906,17 @@ void time_input_decr()
        ti1.days_blynk[i]='\0';
       if (ti1.sr)
        {
-          Blynk.virtualWrite(30,"sr",0,"Europe/Athens",ti1.days_blynk,10800);
+          Blynk.virtualWrite(30,"sr",0,"Europe/Athens",ti1.days_blynk,daylight_offset);
           sprintf(ti1.timeDisp,"sunrise");
        }
         else if (ti1.ss)
         {
-          Blynk.virtualWrite(30,"ss",0,"Europe/Athens",ti1.days_blynk,10800);
+          Blynk.virtualWrite(30,"ss",0,"Europe/Athens",ti1.days_blynk,daylight_offset);
           sprintf(ti1.timeDisp,"sunset");
         }
         else 
         {
-          Blynk.virtualWrite(30,(ti1.ti_hour*60+ti1.ti_min)*60,0,"Europe/Athens",ti1.days_blynk,10800);
+          Blynk.virtualWrite(30,(ti1.ti_hour*60+ti1.ti_min)*60,0,"Europe/Athens",ti1.days_blynk,daylight_offset);
           sprintf(ti1.timeDisp,"%2d:%2d",ti1.ti_hour,ti1.ti_min);
         }
       break;
@@ -1945,17 +1951,17 @@ void time_input_decr()
        ti2.days_blynk[i]='\0';
         if (ti2.sr)
        {
-          Blynk.virtualWrite(31,"sr",0,"Europe/Athens",ti2.days_blynk,10800);
+          Blynk.virtualWrite(31,"sr",0,"Europe/Athens",ti2.days_blynk,daylight_offset);
           sprintf(ti2.timeDisp,"sunrise");
        }
         else if (ti2.ss)
         {
-          Blynk.virtualWrite(31,"ss",0,"Europe/Athens",ti2.days_blynk,10800);
+          Blynk.virtualWrite(31,"ss",0,"Europe/Athens",ti2.days_blynk,daylight_offset);
           sprintf(ti2.timeDisp,"sunset");
         }
         else 
         {
-          Blynk.virtualWrite(31,((ti2.ti_hour*60+ti2.ti_min)*60),0,"Europe/Athens",ti2.days_blynk,10800);
+          Blynk.virtualWrite(31,((ti2.ti_hour*60+ti2.ti_min)*60),0,"Europe/Athens",ti2.days_blynk,daylight_offset);
           sprintf(ti2.timeDisp,"%2d:%2d",ti2.ti_hour,ti2.ti_min);
         }
       break;
@@ -1991,17 +1997,17 @@ void time_input_decr()
        ti3.days_blynk[i]='\0';
       if (ti3.sr)
        {
-          Blynk.virtualWrite(32,"sr",0,"Europe/Athens",ti3.days_blynk,10800);
+          Blynk.virtualWrite(32,"sr",0,"Europe/Athens",ti3.days_blynk,daylight_offset);
           sprintf(ti3.timeDisp,"sunrise");
        }
         else if (ti3.ss)
         {
-          Blynk.virtualWrite(32,"ss",0,"Europe/Athens",ti3.days_blynk,10800);
+          Blynk.virtualWrite(32,"ss",0,"Europe/Athens",ti3.days_blynk,daylight_offset);
           sprintf(ti3.timeDisp,"sunset");
         }
         else 
         {
-        Blynk.virtualWrite(32,(ti3.ti_hour*60+ti3.ti_min)*60,0,"Europe/Athens",ti3.days_blynk,10800);
+        Blynk.virtualWrite(32,(ti3.ti_hour*60+ti3.ti_min)*60,0,"Europe/Athens",ti3.days_blynk,daylight_offset);
         sprintf(ti3.timeDisp,"%2d:%2d",ti3.ti_hour,ti3.ti_min);
         }
       break;
@@ -2686,6 +2692,8 @@ void setup() {
  // light_disp[8]='\0';
  // auto_light_disp[8]='\0';
   pinMode(LED_BUILTIN, OUTPUT);
+  if(GR.utcIsDST(now())) daylight_offset=10800;
+  else daylight_offset=7200;
  //uncoment following 2 rows if using 7 segment display
   //disp.setDigitPins(digitNum,digits);
   //disp.setCommonCathode();
