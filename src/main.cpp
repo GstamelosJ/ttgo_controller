@@ -392,7 +392,7 @@ if (isFirstConnect) {
  
 
  // Blynk.notify("TIMER STARTING!!!!");
-isFirstConnect = false;
+//isFirstConnect = false;
 }
 }
 
@@ -436,6 +436,8 @@ void restore_stop(){
       if(follow_timeinput[i]==1) stop_times[i] = now()+ch_hours[i]*3600 - ti3.start_time;
     }
   }
+ Serial.println("ch1 stop="+stop_times[1]);
+ Serial.println("ch1 stop="+stop_times[2]);
 }
 
 //BLYNK routines
@@ -1703,6 +1705,11 @@ void time_input_incr()
           Blynk.virtualWrite(30,"ss",0,"Europe/Athens",ti1.days_blynk,daylight_offset);
           sprintf(ti1.timeDisp,"sunset");
         }
+        else if (ti1.ldr)
+        {
+          Blynk.virtualWrite(30,"ss",0,"Europe/Athens",ti1.days_blynk,daylight_offset);
+          sprintf(ti1.timeDisp,"LDR");
+        }
         else 
         {
           Blynk.virtualWrite(30,(ti1.ti_hour*60+ti1.ti_min)*60,0,"Europe/Athens",ti1.days_blynk,daylight_offset);
@@ -1748,6 +1755,11 @@ void time_input_incr()
           Blynk.virtualWrite(31,"ss",0,"Europe/Athens",ti2.days_blynk,daylight_offset);
           sprintf(ti2.timeDisp,"sunset");
         }
+        else if (ti2.ldr)
+        {
+          Blynk.virtualWrite(31,"ss",0,"Europe/Athens",ti2.days_blynk,daylight_offset);
+          sprintf(ti2.timeDisp,"LDR");
+        }
         else 
         {
           Blynk.virtualWrite(31,((ti2.ti_hour*60+ti2.ti_min)*60),0,"Europe/Athens",ti2.days_blynk,daylight_offset);
@@ -1792,6 +1804,11 @@ void time_input_incr()
         {
           Blynk.virtualWrite(32,"ss",0,"Europe/Athens",ti3.days_blynk,daylight_offset);
           sprintf(ti3.timeDisp,"sunset");
+        }
+        else if (ti3.ldr)
+        {
+          Blynk.virtualWrite(32,"ss",0,"Europe/Athens",ti3.days_blynk,daylight_offset);
+          sprintf(ti3.timeDisp,"LDR");
         }
         else 
         {
@@ -1914,6 +1931,11 @@ void time_input_decr()
           Blynk.virtualWrite(30,"ss",0,"Europe/Athens",ti1.days_blynk,daylight_offset);
           sprintf(ti1.timeDisp,"sunset");
         }
+        else if (ti1.ldr)
+        {
+          Blynk.virtualWrite(30,"ss",0,"Europe/Athens",ti1.days_blynk,daylight_offset);
+          sprintf(ti1.timeDisp,"LDR");
+        }
         else 
         {
           Blynk.virtualWrite(30,(ti1.ti_hour*60+ti1.ti_min)*60,0,"Europe/Athens",ti1.days_blynk,daylight_offset);
@@ -1958,6 +1980,11 @@ void time_input_decr()
         {
           Blynk.virtualWrite(31,"ss",0,"Europe/Athens",ti2.days_blynk,daylight_offset);
           sprintf(ti2.timeDisp,"sunset");
+        }
+         else if (ti2.ldr)
+        {
+          Blynk.virtualWrite(31,"ss",0,"Europe/Athens",ti2.days_blynk,daylight_offset);
+          sprintf(ti2.timeDisp,"LDR");
         }
         else 
         {
@@ -2004,6 +2031,11 @@ void time_input_decr()
         {
           Blynk.virtualWrite(32,"ss",0,"Europe/Athens",ti3.days_blynk,daylight_offset);
           sprintf(ti3.timeDisp,"sunset");
+        }
+        else if (ti3.ldr)
+        {
+          Blynk.virtualWrite(32,"ss",0,"Europe/Athens",ti3.days_blynk,daylight_offset);
+          sprintf(ti3.timeDisp,"LDR");
         }
         else 
         {
@@ -2330,13 +2362,14 @@ void automation_handler()
   for (i=0;i<=7;i++)
   {
     if((auto_light>>i)&0x01)
-      if((stop_times[i]<=now())&&(stop_times[i]+30>=now()))
+      if((stop_times[i]<=now())&&(stop_times[i]+30>=now())&&!isFirstConnect)
         { 
           Serial.printf("Stop time expired at %ld \n", now());
           lights&=~(1<<i);
           digitalWrite(channels[i], LOW);
           Blynk.virtualWrite(i,(((lights>>i)&1)?1:0));
           Blynk.virtualWrite(i+20,(((lights>>i)&1)?1:0));
+          isFirstConnect = false;
         }
   }
 
