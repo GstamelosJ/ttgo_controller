@@ -70,9 +70,9 @@ TwoWire I2CPower = TwoWire(0);
 TwoWire I2Cbuttons = TwoWire(1);
 // Your GPRS credentials
 // Leave empty, if missing user or pass
-TimeChangeRule EEST = {"EEST", Last, Sun, Mar, 2, 180};  //UTC + 3 hours
-TimeChangeRule EET = {"EET", Last, Sun, Oct, 2, 120};  //UTC + 2 hours
-Timezone GR(EET, EEST);
+TimeChangeRule EEST = {"EEST", Fourth, Sun, Mar, 3, 180};  //UTC + 3 hours
+TimeChangeRule EET = {"EET", Fourth, Sun, Oct, 3, 120};  //UTC + 2 hours
+Timezone GR(EEST, EET);
 int daylight_offset;
 
 char apn[] = "internet"; //COSMOTE 
@@ -90,6 +90,7 @@ bool setPowerBoostKeepOn(int en);
 void scan_buttons(uint8_t * buttons);
 void day_night_check(int ldr_value);
 char* date_timebuf=(char*)malloc(24);
+void restore_stop();
 
 Preferences prefs;
 
@@ -389,10 +390,10 @@ BLYNK_CONNECTED() {
 if (isFirstConnect) {
   Blynk.syncAll();
   refresh_menu();
- 
+  restore_stop();
 
  // Blynk.notify("TIMER STARTING!!!!");
-//isFirstConnect = false;
+  isFirstConnect = false;
 }
 }
 
@@ -404,7 +405,7 @@ void restore_stop(){
   te.Day=day();
   te.Hour=ti1.ti_hour;
   te.Minute=ti1.ti_min;
-  te.Second=0;
+  //te.Second=0;
   unixTime=makeTime(te);
   if(ti1.days_flag[weekday()+(weekday()==1?5:-2)])
   {
@@ -436,8 +437,8 @@ void restore_stop(){
       if(follow_timeinput[i]==1) stop_times[i] = now()+ch_hours[i]*3600 - ti3.start_time;
     }
   }
- Serial.println("ch1 stop="+stop_times[1]);
- Serial.println("ch1 stop="+stop_times[2]);
+ Serial.printf("ch1 stop=%d\n",stop_times[1]);
+ Serial.printf("ch2 stop=%d\n",stop_times[2]);
 }
 
 //BLYNK routines
@@ -1128,6 +1129,26 @@ BLYNK_WRITE(V30)// lights sceduler
            } 
       }
     } */  
+    if (ti1.sr)
+       {
+          //Blynk.virtualWrite(30,"sr",0,"Europe/Athens",ti1.days_blynk,10800);
+          sprintf(ti1.timeDisp,"sunrise");
+       }
+  else if (ti1.ss)
+      {
+        // Blynk.virtualWrite(30,"ss",0,"Europe/Athens",ti1.days_blynk,10800);
+        sprintf(ti1.timeDisp,"sunset");
+      }
+  else if (ti1.ldr)
+      {
+        // Blynk.virtualWrite(30,"ss",0,"Europe/Athens",ti1.days_blynk,10800);
+        sprintf(ti1.timeDisp,"LDR");
+      }  
+  else 
+      {
+        // Blynk.virtualWrite(30,(ti1.ti_hour*60+ti1.ti_min)*60,0,"Europe/Athens",ti1.days_blynk,10800);
+        sprintf(ti1.timeDisp,"%2d:%2d",ti1.ti_hour,ti1.ti_min);
+      }
     
     for (int d=0; d<7; d++)
     {
@@ -1180,11 +1201,31 @@ BLYNK_WRITE(V31)// lights sceduler
            } 
       }
     }*/
+    if (ti2.sr)
+       {
+          //Blynk.virtualWrite(30,"sr",0,"Europe/Athens",ti1.days_blynk,10800);
+          sprintf(ti2.timeDisp,"sunrise");
+       }
+  else if (ti2.ss)
+      {
+        // Blynk.virtualWrite(30,"ss",0,"Europe/Athens",ti1.days_blynk,10800);
+        sprintf(ti2.timeDisp,"sunset");
+      }
+  else if (ti2.ldr)
+      {
+        // Blynk.virtualWrite(30,"ss",0,"Europe/Athens",ti1.days_blynk,10800);
+        sprintf(ti2.timeDisp,"LDR");
+      }  
+  else 
+      {
+        // Blynk.virtualWrite(30,(ti1.ti_hour*60+ti1.ti_min)*60,0,"Europe/Athens",ti1.days_blynk,10800);
+        sprintf(ti2.timeDisp,"%2d:%2d",ti2.ti_hour,ti2.ti_min);
+      }
      
     for (int d=0; d<7; d++)
     {
        ti2.days_flag[d] = t.isWeekdaySelected(d+1) ? 1 : 0;
-       ti2.daysDisp[d]=ti1.days_flag[d] ? days[d] : 'X';
+       ti2.daysDisp[d]=ti2.days_flag[d] ? days[d] : 'X';
     }
     ti2.daysDisp[7]='\0'; 
 }
@@ -1232,11 +1273,31 @@ BLYNK_WRITE(V32)// lights sceduler
            } 
       }
     }*/ 
+    if (ti3.sr)
+       {
+          //Blynk.virtualWrite(30,"sr",0,"Europe/Athens",ti1.days_blynk,10800);
+          sprintf(ti3.timeDisp,"sunrise");
+       }
+  else if (ti3.ss)
+      {
+        // Blynk.virtualWrite(30,"ss",0,"Europe/Athens",ti1.days_blynk,10800);
+        sprintf(ti3.timeDisp,"sunset");
+      }
+  else if (ti3.ldr)
+      {
+        // Blynk.virtualWrite(30,"ss",0,"Europe/Athens",ti1.days_blynk,10800);
+        sprintf(ti3.timeDisp,"LDR");
+      }  
+  else 
+      {
+        // Blynk.virtualWrite(30,(ti1.ti_hour*60+ti1.ti_min)*60,0,"Europe/Athens",ti1.days_blynk,10800);
+        sprintf(ti3.timeDisp,"%2d:%2d",ti3.ti_hour,ti3.ti_min);
+      }
       
     for (int d=0; d<7; d++)
     {
        ti3.days_flag[d] = t.isWeekdaySelected(d+1) ? 1 : 0;
-       ti3.daysDisp[d]=ti1.days_flag[d] ? days[d] : 'X';
+       ti3.daysDisp[d]=ti3.days_flag[d] ? days[d] : 'X';
     }
     ti3.daysDisp[7]='\0';
 }
@@ -2089,20 +2150,132 @@ void select_active_days()
 
 void activate_day()
 {
+  uint8_t i=0;
   switch(menu.get_focusedLine())
   {
     case 1:
     ti1.days_flag[days_id]=1;
     ti1.daysDisp[days_id]=ti1.days_flag[days_id]?days[days_id]:'X';
    // line82.set_focusPosition(Position::CUSTOM,7+days_id,1);
+   for(uint8_t d=0; d<7; d++)
+       {
+       if(ti1.days_flag[d]&&d==0)
+        {
+          ti1.days_blynk[i]=d+1+'0';
+          i++;
+        }
+        else if(ti1.days_flag[d]&&d>0&&d<=6)
+          {
+            ti1.days_blynk[i]=',';
+            i++;
+            ti1.days_blynk[i]=d+1+'0';
+            i++;
+          }
+        
+       }
+       ti1.days_blynk[i]='\0';
+      if (ti1.sr)
+       {
+          Blynk.virtualWrite(30,"sr",0,"Europe/Athens",ti1.days_blynk,daylight_offset);
+          sprintf(ti1.timeDisp,"sunrise");
+       }
+        else if (ti1.ss)
+        {
+          Blynk.virtualWrite(30,"ss",0,"Europe/Athens",ti1.days_blynk,daylight_offset);
+          sprintf(ti1.timeDisp,"sunset");
+        }
+        else if (ti1.ldr)
+        {
+          Blynk.virtualWrite(30,"ss",0,"Europe/Athens",ti1.days_blynk,daylight_offset);
+          sprintf(ti1.timeDisp,"LDR");
+        }
+        else 
+        {
+          Blynk.virtualWrite(30,(ti1.ti_hour*60+ti1.ti_min)*60,0,"Europe/Athens",ti1.days_blynk,daylight_offset);
+          sprintf(ti1.timeDisp,"%2d:%2d",ti1.ti_hour,ti1.ti_min);
+        }
     break;
     case 3:
     ti2.days_flag[days_id]=1;
     ti2.daysDisp[days_id]=ti2.days_flag[days_id]?days[days_id]:'X';
+    for(uint8_t d=0; d<7; d++)
+       {
+       if(ti2.days_flag[d]&&d==0)
+        {
+          ti2.days_blynk[i]=d+1+'0';
+          i++;
+        }
+        else if(ti2.days_flag[d]&&d>0&&d<=6)
+          {
+            ti2.days_blynk[i]=',';
+            i++;
+            ti2.days_blynk[i]=d+1+'0';
+            i++;
+          }
+        
+       }
+       ti2.days_blynk[i]='\0';
+        if (ti2.sr)
+       {
+          Blynk.virtualWrite(31,"sr",0,"Europe/Athens",ti2.days_blynk,daylight_offset);
+          sprintf(ti2.timeDisp,"sunrise");
+       }
+        else if (ti2.ss)
+        {
+          Blynk.virtualWrite(31,"ss",0,"Europe/Athens",ti2.days_blynk,daylight_offset);
+          sprintf(ti2.timeDisp,"sunset");
+        }
+         else if (ti2.ldr)
+        {
+          Blynk.virtualWrite(31,"ss",0,"Europe/Athens",ti2.days_blynk,daylight_offset);
+          sprintf(ti2.timeDisp,"LDR");
+        }
+        else 
+        {
+          Blynk.virtualWrite(31,((ti2.ti_hour*60+ti2.ti_min)*60),0,"Europe/Athens",ti2.days_blynk,daylight_offset);
+          sprintf(ti2.timeDisp,"%2d:%2d",ti2.ti_hour,ti2.ti_min);
+        }
     break;
     case 5:
     ti3.days_flag[days_id]=1;
     ti3.daysDisp[days_id]=ti3.days_flag[days_id]?days[days_id]:'X';
+    for(uint8_t d=0; d<7; d++)
+       {
+       if(ti3.days_flag[d]&&d==0)
+        {
+          ti3.days_blynk[i]=d+1+'0';
+          i++;
+        }
+        else if(ti3.days_flag[d]&&d>0&&d<=6)
+          {
+            ti3.days_blynk[i]=',';
+            i++;
+            ti3.days_blynk[i]=d+1+'0';
+            i++;
+          }
+        
+       }
+       ti3.days_blynk[i]='\0';
+      if (ti3.sr)
+       {
+          Blynk.virtualWrite(32,"sr",0,"Europe/Athens",ti3.days_blynk,daylight_offset);
+          sprintf(ti3.timeDisp,"sunrise");
+       }
+        else if (ti3.ss)
+        {
+          Blynk.virtualWrite(32,"ss",0,"Europe/Athens",ti3.days_blynk,daylight_offset);
+          sprintf(ti3.timeDisp,"sunset");
+        }
+        else if (ti3.ldr)
+        {
+          Blynk.virtualWrite(32,"ss",0,"Europe/Athens",ti3.days_blynk,daylight_offset);
+          sprintf(ti3.timeDisp,"LDR");
+        }
+        else 
+        {
+        Blynk.virtualWrite(32,(ti3.ti_hour*60+ti3.ti_min)*60,0,"Europe/Athens",ti3.days_blynk,daylight_offset);
+        sprintf(ti3.timeDisp,"%2d:%2d",ti3.ti_hour,ti3.ti_min);
+        }
     break;
     
   }
@@ -2112,19 +2285,131 @@ void activate_day()
 
 void deactivate_day()
 {
+  uint8_t i=0;
   switch(menu.get_focusedLine())
   {
     case 1:
     ti1.days_flag[days_id]=0;
     ti1.daysDisp[days_id]=ti1.days_flag[days_id]?days[days_id]:'X';
+    for(uint8_t d=0; d<7; d++)
+       {
+       if(ti1.days_flag[d]&&d==0)
+        {
+          ti1.days_blynk[i]=d+1+'0';
+          i++;
+        }
+        else if(ti1.days_flag[d]&&d>0&&d<=6)
+          {
+            ti1.days_blynk[i]=',';
+            i++;
+            ti1.days_blynk[i]=d+1+'0';
+            i++;
+          }
+        
+       }
+       ti1.days_blynk[i]='\0';
+      if (ti1.sr)
+       {
+          Blynk.virtualWrite(30,"sr",0,"Europe/Athens",ti1.days_blynk,daylight_offset);
+          sprintf(ti1.timeDisp,"sunrise");
+       }
+        else if (ti1.ss)
+        {
+          Blynk.virtualWrite(30,"ss",0,"Europe/Athens",ti1.days_blynk,daylight_offset);
+          sprintf(ti1.timeDisp,"sunset");
+        }
+        else if (ti1.ldr)
+        {
+          Blynk.virtualWrite(30,"ss",0,"Europe/Athens",ti1.days_blynk,daylight_offset);
+          sprintf(ti1.timeDisp,"LDR");
+        }
+        else 
+        {
+          Blynk.virtualWrite(30,(ti1.ti_hour*60+ti1.ti_min)*60,0,"Europe/Athens",ti1.days_blynk,daylight_offset);
+          sprintf(ti1.timeDisp,"%2d:%2d",ti1.ti_hour,ti1.ti_min);
+        }
     break;
     case 3:
     ti2.days_flag[days_id]=0;
     ti2.daysDisp[days_id]=ti2.days_flag[days_id]?days[days_id]:'X';
+    for(uint8_t d=0; d<7; d++)
+       {
+       if(ti2.days_flag[d]&&d==0)
+        {
+          ti2.days_blynk[i]=d+1+'0';
+          i++;
+        }
+        else if(ti2.days_flag[d]&&d>0&&d<=6)
+          {
+            ti2.days_blynk[i]=',';
+            i++;
+            ti2.days_blynk[i]=d+1+'0';
+            i++;
+          }
+        
+       }
+       ti2.days_blynk[i]='\0';
+        if (ti2.sr)
+       {
+          Blynk.virtualWrite(31,"sr",0,"Europe/Athens",ti2.days_blynk,daylight_offset);
+          sprintf(ti2.timeDisp,"sunrise");
+       }
+        else if (ti2.ss)
+        {
+          Blynk.virtualWrite(31,"ss",0,"Europe/Athens",ti2.days_blynk,daylight_offset);
+          sprintf(ti2.timeDisp,"sunset");
+        }
+         else if (ti2.ldr)
+        {
+          Blynk.virtualWrite(31,"ss",0,"Europe/Athens",ti2.days_blynk,daylight_offset);
+          sprintf(ti2.timeDisp,"LDR");
+        }
+        else 
+        {
+          Blynk.virtualWrite(31,((ti2.ti_hour*60+ti2.ti_min)*60),0,"Europe/Athens",ti2.days_blynk,daylight_offset);
+          sprintf(ti2.timeDisp,"%2d:%2d",ti2.ti_hour,ti2.ti_min);
+        }
     break;
     case 5:
     ti3.days_flag[days_id]=0;
     ti3.daysDisp[days_id]=ti3.days_flag[days_id]?days[days_id]:'X';
+    for(uint8_t d=0; d<7; d++)
+       {
+       if(ti3.days_flag[d]&&d==0)
+        {
+          ti3.days_blynk[i]=d+1+'0';
+          i++;
+        }
+        else if(ti3.days_flag[d]&&d>0&&d<=6)
+          {
+            ti3.days_blynk[i]=',';
+            i++;
+            ti3.days_blynk[i]=d+1+'0';
+            i++;
+          }
+        
+       }
+       ti3.days_blynk[i]='\0';
+      if (ti3.sr)
+       {
+          Blynk.virtualWrite(32,"sr",0,"Europe/Athens",ti3.days_blynk,daylight_offset);
+          sprintf(ti3.timeDisp,"sunrise");
+       }
+        else if (ti3.ss)
+        {
+          Blynk.virtualWrite(32,"ss",0,"Europe/Athens",ti3.days_blynk,daylight_offset);
+          sprintf(ti3.timeDisp,"sunset");
+        }
+        else if (ti3.ldr)
+        {
+          Blynk.virtualWrite(32,"ss",0,"Europe/Athens",ti3.days_blynk,daylight_offset);
+          sprintf(ti3.timeDisp,"LDR");
+        }
+        else 
+        {
+        Blynk.virtualWrite(32,(ti3.ti_hour*60+ti3.ti_min)*60,0,"Europe/Athens",ti3.days_blynk,daylight_offset);
+        sprintf(ti3.timeDisp,"%2d:%2d",ti3.ti_hour,ti3.ti_min);
+        }
     break;
     
   }
@@ -2362,14 +2647,13 @@ void automation_handler()
   for (i=0;i<=7;i++)
   {
     if((auto_light>>i)&0x01)
-      if((stop_times[i]<=now())&&(stop_times[i]+30>=now())&&!isFirstConnect)
+      if((stop_times[i]<=now())&&(stop_times[i]+30>=now()))
         { 
           Serial.printf("Stop time expired at %ld \n", now());
           lights&=~(1<<i);
           digitalWrite(channels[i], LOW);
           Blynk.virtualWrite(i,(((lights>>i)&1)?1:0));
           Blynk.virtualWrite(i+20,(((lights>>i)&1)?1:0));
-          isFirstConnect = false;
         }
   }
 
@@ -2605,15 +2889,15 @@ void setup() {
   ch7_hours=prefs.getUChar("ch7_hours",1);
   ch8_hours=prefs.getUChar("ch8_hours",1);
   auto_light=prefs.getUChar("auto_light", 0);
-  ti1.ti_hour=prefs.getUChar("ti1.ti_hour",00);
-  ti1.ti_min=prefs.getUChar("ti1.ti_hour",00);
-  ti1.start_time=prefs.getUChar("ti1.start_time",00);
-  ti2.ti_hour=prefs.getUChar("ti2.ti_hour",00);
-  ti2.ti_min=prefs.getUChar("ti2.ti_hour",00);
-  ti2.start_time=prefs.getUChar("ti2.start_time",00);
-  ti3.ti_hour=prefs.getUChar("ti3.ti_hour",00);
-  ti3.ti_min=prefs.getUChar("ti3.ti_hour",00);
-  ti3.start_time=prefs.getUChar("ti3.start_time",00);
+  ti1.ti_hour=prefs.getUChar("ti1.ti_hour",0);
+  ti1.ti_min=prefs.getUChar("ti1.ti_hour",0);
+  ti1.start_time=prefs.getUChar("ti1.start_time",0);
+  ti2.ti_hour=prefs.getUChar("ti2.ti_hour",0);
+  ti2.ti_min=prefs.getUChar("ti2.ti_hour",0);
+  ti2.start_time=prefs.getUChar("ti2.start_time",0);
+  ti3.ti_hour=prefs.getUChar("ti3.ti_hour",0);
+  ti3.ti_min=prefs.getUChar("ti3.ti_hour",0);
+  ti3.start_time=prefs.getUChar("ti3.start_time",0);
   //prefs.getBytes("stop_times",stop_times,8);
   prefs.end();
   for (uint8_t i=0; i==7; i++)
@@ -2647,7 +2931,6 @@ void setup() {
     }
 
   }
-  restore_stop();
  /* free(light_disp);
   free(auto_light_disp);
   light_disp=(char *)malloc(10*sizeof(char));
@@ -2686,6 +2969,11 @@ void setup() {
         // Blynk.virtualWrite(30,"ss",0,"Europe/Athens",ti1.days_blynk,10800);
         sprintf(ti1.timeDisp,"sunset");
       }
+  else if (ti1.ldr)
+      {
+        // Blynk.virtualWrite(30,"ss",0,"Europe/Athens",ti1.days_blynk,10800);
+        sprintf(ti1.timeDisp,"LDR");
+      }  
   else 
       {
         // Blynk.virtualWrite(30,(ti1.ti_hour*60+ti1.ti_min)*60,0,"Europe/Athens",ti1.days_blynk,10800);
@@ -2700,6 +2988,11 @@ void setup() {
       {
         // Blynk.virtualWrite(30,"ss",0,"Europe/Athens",ti1.days_blynk,10800);
         sprintf(ti2.timeDisp,"sunset");
+      }
+  else if (ti2.ldr)
+      {
+        // Blynk.virtualWrite(30,"ss",0,"Europe/Athens",ti1.days_blynk,10800);
+        sprintf(ti2.timeDisp,"LDR");
       }
   else 
       {
@@ -2716,6 +3009,11 @@ void setup() {
         // Blynk.virtualWrite(30,"ss",0,"Europe/Athens",ti1.days_blynk,10800);
         sprintf(ti3.timeDisp,"sunset");
       }
+  else if (ti3.ldr)
+      {
+        // Blynk.virtualWrite(30,"ss",0,"Europe/Athens",ti1.days_blynk,10800);
+        sprintf(ti3.timeDisp,"LDR");
+      }   
   else 
       {
         // Blynk.virtualWrite(30,(ti1.ti_hour*60+ti1.ti_min)*60,0,"Europe/Athens",ti1.days_blynk,10800);
@@ -2725,8 +3023,7 @@ void setup() {
  // light_disp[8]='\0';
  // auto_light_disp[8]='\0';
   pinMode(LED_BUILTIN, OUTPUT);
-  if(GR.utcIsDST(now())) daylight_offset=10800;
-  else daylight_offset=7200;
+  
  //uncoment following 2 rows if using 7 segment display
   //disp.setDigitPins(digitNum,digits);
   //disp.setCommonCathode();
@@ -2957,7 +3254,10 @@ void setup() {
   refresh_time();
   //setTime(hour_brd, *minute_brd, *second_brd, *day_brd, *month_brd, *year_brd);
   //date_time = String(day()) + '-' + String(month()) + '-' +String(year()) + " T"+String(hour()) + ':' + String(minute());
-  
+  if(GR.utcIsDST(now())) daylight_offset=10800; //check if current time is inside daylight summer time
+  else daylight_offset=7200;
+ Serial.printf("Daylight=%d\n",daylight_offset);
+
   time_syncTimer.setInterval(6000, refresh_time);
   connectionHandlerTimer.setInterval(100, ConnectionHandler);
   refreshmenuTimer.setInterval(200,refresh_menu);
