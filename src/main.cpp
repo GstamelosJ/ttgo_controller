@@ -407,8 +407,10 @@ void restore_stop(){
   te.Minute=ti1.ti_min;
   //te.Second=0;
   unixTime=makeTime(te);
+  Serial.printf("unixTime1=%ld\n",unixTime);
   if(ti1.days_flag[weekday()+(weekday()==1?5:-2)])
   {
+    Serial.printf("it's day.1 selected=%d\n",weekday());
     if(unixTime<=now()) 
     {
       for(i=0;i<=8;i++)
@@ -417,9 +419,11 @@ void restore_stop(){
   }
   if(ti2.days_flag[weekday()+(weekday()==1?5:-2)])
   {
+    Serial.printf("it's day.2 selected=%d\n",weekday());
     te.Hour=ti2.ti_hour;
     te.Minute=ti2.ti_min;
     unixTime=makeTime(te);
+    Serial.printf("unixTime2=%ld\n",unixTime);
     if(unixTime<=now()) 
     {
       for(i=0;i<=8;i++)
@@ -428,9 +432,11 @@ void restore_stop(){
   }
   if(ti3.days_flag[weekday()+(weekday()==1?5:-2)])
   {
+    Serial.printf("it's day.2 selected=%d\n",weekday());
     te.Hour=ti3.ti_hour;
     te.Minute=ti3.ti_min;
     unixTime=makeTime(te);
+    Serial.printf("unixTime3=%ld\n",unixTime);
     if(unixTime<=now()) 
     {
       for(i=0;i<=8;i++)
