@@ -390,7 +390,6 @@ BLYNK_CONNECTED() {
 if (isFirstConnect) {
   Blynk.syncAll();
   refresh_menu();
-  restore_stop();
 
  // Blynk.notify("TIMER STARTING!!!!");
   isFirstConnect = false;
@@ -399,6 +398,11 @@ if (isFirstConnect) {
 
 //restore the stop values taking into account the time passed while the device was disconnected
 void restore_stop(){
+   int dayadjustment = -2;  
+   if(weekday() == 1)
+    {
+      dayadjustment =  5; // needed for Sunday, Time library is day 1 and Blynk is day 7
+    }
   uint8_t i;
   te.Year=year();
   te.Month=month();
@@ -407,8 +411,13 @@ void restore_stop(){
   te.Minute=ti1.ti_min;
   //te.Second=0;
   unixTime=makeTime(te);
+  Serial.printf("Start Min1=%d\n",te.Minute);
+  Serial.printf("Start Hour1=%d\n",te.Hour);
+  Serial.printf("Day=%d\n",day());
+  Serial.printf("Month=%d\n",month());
+  Serial.printf("Year=%d\n",year());
   Serial.printf("unixTime1=%ld\n",unixTime);
-  if(ti1.days_flag[weekday()+(weekday()==1?5:-2)])
+  if(ti1.days_flag[weekday()+dayadjustment])
   {
     Serial.printf("it's day.1 selected=%d\n",weekday());
     if(unixTime<=now()) 
@@ -417,7 +426,7 @@ void restore_stop(){
       if(follow_timeinput[i]==1) stop_times[i] = now()+ch_hours[i]*3600 - ti1.start_time;
     }
   }
-  if(ti2.days_flag[weekday()+(weekday()==1?5:-2)])
+  if(ti2.days_flag[weekday()+dayadjustment])
   {
     Serial.printf("it's day.2 selected=%d\n",weekday());
     te.Hour=ti2.ti_hour;
@@ -430,7 +439,7 @@ void restore_stop(){
       if(follow_timeinput[i]==1) stop_times[i] = now()+ch_hours[i]*3600 - ti2.start_time;
     }
   }
-  if(ti3.days_flag[weekday()+(weekday()==1?5:-2)])
+  if(ti3.days_flag[weekday()+dayadjustment])
   {
     Serial.printf("it's day.2 selected=%d\n",weekday());
     te.Hour=ti3.ti_hour;
@@ -1669,6 +1678,7 @@ void time_input_incr()
   Serial.println("Daylight offset="+daylight_offset);
   //char str_buf[10];
   uint8_t i=0;
+  prefs.begin("values_store",false);
   if((menu.get_currentScreen()==&screen7))
   {
     prefs.begin("values_store",false);
@@ -1887,10 +1897,12 @@ void time_input_incr()
     }
 
   }
+  prefs.end();
 }
 
 void time_input_decr()
 {
+  prefs.begin("values_store",false);
   if(GR.utcIsDST(now())) daylight_offset=10800;
   else daylight_offset=7200;
   uint8_t i=0;
@@ -2114,6 +2126,7 @@ void time_input_decr()
     }
 
   }
+  prefs.end();
 }
 
 void select_active_days()
@@ -2896,13 +2909,13 @@ void setup() {
   ch8_hours=prefs.getUChar("ch8_hours",1);
   auto_light=prefs.getUChar("auto_light", 0);
   ti1.ti_hour=prefs.getUChar("ti1.ti_hour",0);
-  ti1.ti_min=prefs.getUChar("ti1.ti_hour",0);
+  ti1.ti_min=prefs.getUChar("ti1.ti_min",0);
   ti1.start_time=prefs.getUChar("ti1.start_time",0);
   ti2.ti_hour=prefs.getUChar("ti2.ti_hour",0);
-  ti2.ti_min=prefs.getUChar("ti2.ti_hour",0);
+  ti2.ti_min=prefs.getUChar("ti2.ti_min",0);
   ti2.start_time=prefs.getUChar("ti2.start_time",0);
   ti3.ti_hour=prefs.getUChar("ti3.ti_hour",0);
-  ti3.ti_min=prefs.getUChar("ti3.ti_hour",0);
+  ti3.ti_min=prefs.getUChar("ti3.ti_min",0);
   ti3.start_time=prefs.getUChar("ti3.start_time",0);
   //prefs.getBytes("stop_times",stop_times,8);
   prefs.end();
@@ -3258,6 +3271,7 @@ void setup() {
   //@@@@@@@@@@@@@@@@@@@@@@@@@
  //%%%%%%%%%%%%%%%%%%%%
   refresh_time();
+  restore_stop();
   //setTime(hour_brd, *minute_brd, *second_brd, *day_brd, *month_brd, *year_brd);
   //date_time = String(day()) + '-' + String(month()) + '-' +String(year()) + " T"+String(hour()) + ':' + String(minute());
   if(GR.utcIsDST(now())) daylight_offset=10800; //check if current time is inside daylight summer time
