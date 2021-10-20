@@ -404,7 +404,7 @@ void restore_stop(){
       dayadjustment =  5; // needed for Sunday, Time library is day 1 and Blynk is day 7
     }
   uint8_t i;
-  te.Year=year();
+  te.Year=CalendarYrToTm(year());
   te.Month=month();
   te.Day=day();
   te.Hour=ti1.ti_hour;
@@ -417,6 +417,8 @@ void restore_stop(){
   Serial.printf("Month=%d\n",month());
   Serial.printf("Year=%d\n",year());
   Serial.printf("unixTime1=%ld\n",unixTime);
+  Serial.printf("Start_hour=%d\n",te.Hour);
+  Serial.printf("Start_min=%d\n",te.Minute);
   if(ti1.days_flag[weekday()+dayadjustment])
   {
     Serial.printf("it's day.1 selected=%d\n",weekday());
@@ -791,9 +793,9 @@ BLYNK_WRITE(V8)  // Manual selection
     //LCDwrite(msg1, msg2 );
     refresh_menu();
   }
-  prefs.begin("values_store",false);
+  //prefs.begin("values_store",false);
   prefs.putUChar("auto_light", auto_light);
-  prefs.end();
+  //prefs.end();
 }
 
 BLYNK_WRITE(V9)  // Manual selection
@@ -824,9 +826,9 @@ BLYNK_WRITE(V9)  // Manual selection
     //LCDwrite(msg1, msg2 );
     refresh_menu();
   }
-  prefs.begin("values_store",false);
+  //prefs.begin("values_store",false);
   prefs.putUChar("auto_light", auto_light);
-  prefs.end();
+  //prefs.end();
 }
 
 BLYNK_WRITE(V18)  // Manual selection
@@ -857,9 +859,9 @@ BLYNK_WRITE(V18)  // Manual selection
     //LCDwrite(msg1, msg2 );
     refresh_menu();
   }
-  prefs.begin("values_store",false);
+  //prefs.begin("values_store",false);
   prefs.putUChar("auto_light", auto_light);
-  prefs.end();
+  //prefs.end();
 }
 
 BLYNK_WRITE(V19)  // Manual selection
@@ -890,9 +892,9 @@ BLYNK_WRITE(V19)  // Manual selection
    // LCDwrite(msg1, msg2 );
    refresh_menu();
   }
-  prefs.begin("values_store",false);
+  //prefs.begin("values_store",false);
   prefs.putUChar("auto_light", auto_light);
-  prefs.end();
+  //prefs.end();
 }
 
 BLYNK_WRITE(V28)  // Manual selection
@@ -923,9 +925,9 @@ BLYNK_WRITE(V28)  // Manual selection
     //LCDwrite(msg1, msg2 );
     refresh_menu();
   }
-  prefs.begin("values_store",false);
+ // prefs.begin("values_store",false);
   prefs.putUChar("auto_light", auto_light);
-  prefs.end();
+  //prefs.end();
 }
 
 BLYNK_WRITE(V29)  // Manual selection
@@ -956,9 +958,9 @@ BLYNK_WRITE(V29)  // Manual selection
     //LCDwrite(msg1, msg2 );
     refresh_menu();
   }
-  prefs.begin("values_store",false);
+  //prefs.begin("values_store",false);
   prefs.putUChar("auto_light", auto_light);
-  prefs.end();
+  //prefs.end();
 }
 
 BLYNK_WRITE(V33)  // Manual selection
@@ -989,9 +991,9 @@ BLYNK_WRITE(V33)  // Manual selection
     //LCDwrite(msg1, msg2 );
     refresh_menu();
   }
-  prefs.begin("values_store",false);
+  //prefs.begin("values_store",false);
   prefs.putUChar("auto_light", auto_light);
-  prefs.end();
+  //prefs.end();
 }
 
 BLYNK_WRITE(V34)  // Manual selection
@@ -1022,9 +1024,9 @@ BLYNK_WRITE(V34)  // Manual selection
     //LCDwrite(msg1, msg2 );
     refresh_menu();
   }
-  prefs.begin("values_store",false);
+  //prefs.begin("values_store",false);
   prefs.putUChar("auto_light", auto_light);
-  prefs.end();
+  //prefs.end();
 }
 
 BLYNK_WRITE(V10)
@@ -1171,6 +1173,10 @@ BLYNK_WRITE(V30)// lights sceduler
        ti1.daysDisp[d]=ti1.days_flag[d] ? days[d] : 'X';
     }
     ti1.daysDisp[7]='\0';
+  prefs.putUChar("ti1.ti_hour",ti1.ti_hour);
+  prefs.putUChar("ti1.ti_min",ti1.ti_min);
+  prefs.putUChar("ti1.start_time",ti1.start_time);
+  prefs.putBytes("ti1.days_flag",ti1.days_flag,8);
 }
 
 BLYNK_WRITE(V31)// lights sceduler  
@@ -1243,6 +1249,11 @@ BLYNK_WRITE(V31)// lights sceduler
        ti2.daysDisp[d]=ti2.days_flag[d] ? days[d] : 'X';
     }
     ti2.daysDisp[7]='\0'; 
+  prefs.putUChar("ti2.ti_hour",ti2.ti_hour);
+  prefs.putUChar("ti2.ti_min",ti2.ti_min);
+  prefs.putUChar("ti2.start_time",ti2.start_time);
+  prefs.putBytes("ti2.days_flag",ti2.days_flag,8);
+
 }
 
 BLYNK_WRITE(V32)// lights sceduler  
@@ -1315,6 +1326,10 @@ BLYNK_WRITE(V32)// lights sceduler
        ti3.daysDisp[d]=ti3.days_flag[d] ? days[d] : 'X';
     }
     ti3.daysDisp[7]='\0';
+  prefs.putUChar("ti3.ti_hour",ti3.ti_hour);
+  prefs.putUChar("ti3.ti_min",ti3.ti_min);
+  prefs.putUChar("ti3.start_time",ti3.start_time);
+  prefs.putBytes("ti3.days_flag",ti3.days_flag,8);
 }
 
 void reconnectBlynk() {
@@ -1521,9 +1536,9 @@ void toggle_lights_auto()
   }
   
   //EEPROM.put(1,auto_light);
-  prefs.begin("values_store",false);
+  //prefs.begin("values_store",false);
   prefs.putUChar("auto_light", auto_light);
-  prefs.end();
+  //prefs.end();
   light_aut_stat[channel]=(char*)(((auto_light>>channel)&0x01)?"On ":"Off");
  for (uint8_t i = 0; i<8; i++)
  {
@@ -1538,7 +1553,7 @@ void time_increment()
 {
   //if(menu.get_currentScreen()==&screen5)
   //{
-  prefs.begin("values_store",false);
+  //prefs.begin("values_store",false);
   switch(menu.get_focusedLine())
   {
   case 1:
@@ -1607,7 +1622,7 @@ void time_decr()
 {
 //if(menu.get_currentScreen()==&screen5)
   //{
-  prefs.begin("values_store",false);
+  //prefs.begin("values_store",false);
   switch(menu.get_focusedLine())
   {
   case 1:
@@ -1678,10 +1693,10 @@ void time_input_incr()
   Serial.println("Daylight offset="+daylight_offset);
   //char str_buf[10];
   uint8_t i=0;
-  prefs.begin("values_store",false);
+  //prefs.begin("values_store",false);
   if((menu.get_currentScreen()==&screen7))
   {
-    prefs.begin("values_store",false);
+    //prefs.begin("values_store",false);
     switch(menu.get_focusedLine())
     {
     case 1:
@@ -1902,14 +1917,14 @@ void time_input_incr()
 
 void time_input_decr()
 {
-  prefs.begin("values_store",false);
+  //prefs.begin("values_store",false);
   if(GR.utcIsDST(now())) daylight_offset=10800;
   else daylight_offset=7200;
   uint8_t i=0;
   //char str_buf[10];
   if((menu.get_currentScreen()==&screen7))
   {
-      prefs.begin("values_store",false);
+     // prefs.begin("values_store",false);
       switch(menu.get_focusedLine())
       {
       case 1:
@@ -2298,6 +2313,9 @@ void activate_day()
     break;
     
   }
+  prefs.putBytes("ti1.days_flag",ti1.days_flag,8);
+  prefs.putBytes("ti2.days_flag",ti2.days_flag,8);
+  prefs.putBytes("ti3.days_flag",ti3.days_flag,8);
   menu.update();
 
 }
@@ -2432,6 +2450,10 @@ void deactivate_day()
     break;
     
   }
+  prefs.putBytes("ti1.days_flag",ti1.days_flag,8);
+  prefs.putBytes("ti2.days_flag",ti2.days_flag,8);
+  prefs.putBytes("ti3.days_flag",ti3.days_flag,8);
+
   menu.update();
 }
 
@@ -2908,17 +2930,20 @@ void setup() {
   ch7_hours=prefs.getUChar("ch7_hours",1);
   ch8_hours=prefs.getUChar("ch8_hours",1);
   auto_light=prefs.getUChar("auto_light", 0);
-  ti1.ti_hour=prefs.getUChar("ti1.ti_hour",0);
+  ti1.ti_hour=prefs.getUChar("ti1.ti_hour",0); 
   ti1.ti_min=prefs.getUChar("ti1.ti_min",0);
+  prefs.getBytes("ti1.days_flag",ti1.days_flag,8);
   ti1.start_time=prefs.getUChar("ti1.start_time",0);
-  ti2.ti_hour=prefs.getUChar("ti2.ti_hour",0);
+  ti2.ti_hour=prefs.getUChar("ti2.ti_hour",0); 
   ti2.ti_min=prefs.getUChar("ti2.ti_min",0);
   ti2.start_time=prefs.getUChar("ti2.start_time",0);
+  prefs.getBytes("ti2.days_flag",ti2.days_flag,8);
   ti3.ti_hour=prefs.getUChar("ti3.ti_hour",0);
   ti3.ti_min=prefs.getUChar("ti3.ti_min",0);
   ti3.start_time=prefs.getUChar("ti3.start_time",0);
+  prefs.getBytes("ti3.days_flag",ti3.days_flag,8);
   //prefs.getBytes("stop_times",stop_times,8);
-  prefs.end();
+  //prefs.end();
   for (uint8_t i=0; i==7; i++)
   {
     switch (i)
