@@ -70,8 +70,8 @@ TwoWire I2CPower = TwoWire(0);
 TwoWire I2Cbuttons = TwoWire(1);
 // Your GPRS credentials
 // Leave empty, if missing user or pass
-TimeChangeRule EEST = {"EEST", Fourth, Sun, Mar, 3, 180};  //UTC + 3 hours
-TimeChangeRule EET = {"EET", Fourth, Sun, Oct, 3, 120};  //UTC + 2 hours
+TimeChangeRule EEST = {"EEST", Last, Sun, Mar, 3, 180};  //UTC + 3 hours
+TimeChangeRule EET = {"EET", Last, Sun, Oct, 3, 120};  //UTC + 2 hours
 Timezone GR(EEST, EET);
 int daylight_offset;
 
@@ -409,8 +409,9 @@ void restore_stop(){
   te.Day=day();
   te.Hour=ti1.ti_hour;
   te.Minute=ti1.ti_min;
+  te.Second=0;
   //te.Second=0;
-  unixTime=makeTime(te);
+  unixTime=makeTime(te)-daylight_offset;
   Serial.printf("Start Min1=%d\n",te.Minute);
   Serial.printf("Start Hour1=%d\n",te.Hour);
   Serial.printf("Day=%d\n",day());
@@ -433,7 +434,7 @@ void restore_stop(){
     Serial.printf("it's day.2 selected=%d\n",weekday());
     te.Hour=ti2.ti_hour;
     te.Minute=ti2.ti_min;
-    unixTime=makeTime(te);
+    unixTime=makeTime(te)-daylight_offset;
     Serial.printf("unixTime2=%ld\n",unixTime);
     if(unixTime<=now()) 
     {
@@ -446,7 +447,7 @@ void restore_stop(){
     Serial.printf("it's day.2 selected=%d\n",weekday());
     te.Hour=ti3.ti_hour;
     te.Minute=ti3.ti_min;
-    unixTime=makeTime(te);
+    unixTime=makeTime(te)-daylight_offset;
     Serial.printf("unixTime3=%ld\n",unixTime);
     if(unixTime<=now()) 
     {
@@ -3296,13 +3297,12 @@ void setup() {
   //@@@@@@@@@@@@@@@@@@@@@@@@@
  //%%%%%%%%%%%%%%%%%%%%
   refresh_time();
-  restore_stop();
   //setTime(hour_brd, *minute_brd, *second_brd, *day_brd, *month_brd, *year_brd);
   //date_time = String(day()) + '-' + String(month()) + '-' +String(year()) + " T"+String(hour()) + ':' + String(minute());
   if(GR.utcIsDST(now())) daylight_offset=10800; //check if current time is inside daylight summer time
   else daylight_offset=7200;
  Serial.printf("Daylight=%d\n",daylight_offset);
-
+  restore_stop();
   time_syncTimer.setInterval(6000, refresh_time);
   connectionHandlerTimer.setInterval(100, ConnectionHandler);
   refreshmenuTimer.setInterval(200,refresh_menu);
