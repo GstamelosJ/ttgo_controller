@@ -1961,8 +1961,8 @@ void time_input_decr()
       case 6:
           follow_timeinput[5]--;
             if (follow_timeinput[5]==0)follow_timeinput[5]=3;
-            prefs.putUChar("ch6_time_input",follow_timeinput[6]);
-            Blynk.virtualWrite(55,follow_timeinput[6]);
+            prefs.putUChar("ch6_time_input",follow_timeinput[5]);
+            Blynk.virtualWrite(55,follow_timeinput[5]);
       break;
       case 7:
           follow_timeinput[6]--;
@@ -2930,6 +2930,14 @@ void setup() {
   ch6_hours=prefs.getUChar("ch6_hours",1);
   ch7_hours=prefs.getUChar("ch7_hours",1);
   ch8_hours=prefs.getUChar("ch8_hours",1);
+  follow_timeinput[0]= prefs.getUChar("ch1_time_input",1);
+  follow_timeinput[1]= prefs.getUChar("ch2_time_input",1);
+  follow_timeinput[2]= prefs.getUChar("ch3_time_input",1);
+  follow_timeinput[3]= prefs.getUChar("ch4_time_input",1);
+  follow_timeinput[4]= prefs.getUChar("ch5_time_input",1);
+  follow_timeinput[5]= prefs.getUChar("ch6_time_input",1);
+  follow_timeinput[6]= prefs.getUChar("ch7_time_input",1);
+  follow_timeinput[7]= prefs.getUChar("ch8_time_input",1);
   auto_light=prefs.getUChar("auto_light", 0);
   ti1.ti_hour=prefs.getUChar("ti1.ti_hour",0); 
   ti1.ti_min=prefs.getUChar("ti1.ti_min",0);
