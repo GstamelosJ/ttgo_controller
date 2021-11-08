@@ -407,11 +407,11 @@ void restore_stop(){
   te.Year=CalendarYrToTm(year());
   te.Month=month();
   te.Day=day();
-  te.Hour=ti1.ti_hour;
-  te.Minute=ti1.ti_min;
-  te.Second=0;
+  te.Hour=0;
+  te.Minute=0;
+  te.Second=ti1.start_time;
   //te.Second=0;
-  unixTime=makeTime(te)-daylight_offset;
+  unixTime=makeTime(te);
   Serial.printf("Start Min1=%d\n",te.Minute);
   Serial.printf("Start Hour1=%d\n",te.Hour);
   Serial.printf("Day=%d\n",day());
@@ -425,8 +425,8 @@ void restore_stop(){
     Serial.printf("it's day.1 selected=%d\n",weekday());
     if(unixTime<=now()) 
     {
-      for(i=0;i<=8;i++)
-      if(follow_timeinput[i]==1) stop_times[i] = now()+ch_hours[i]*3600 - ti1.start_time;
+      for(i=0;i<=7;i++)
+      if(follow_timeinput[i]==1) stop_times[i] = unixTime+ch_hours[i]*3600;
     }
   }
   if(ti2.days_flag[weekday()+dayadjustment])
@@ -434,12 +434,12 @@ void restore_stop(){
     Serial.printf("it's day.2 selected=%d\n",weekday());
     te.Hour=ti2.ti_hour;
     te.Minute=ti2.ti_min;
-    unixTime=makeTime(te)-daylight_offset;
+    unixTime=makeTime(te);
     Serial.printf("unixTime2=%ld\n",unixTime);
     if(unixTime<=now()) 
     {
-      for(i=0;i<=8;i++)
-      if(follow_timeinput[i]==1) stop_times[i] = now()+ch_hours[i]*3600 - ti2.start_time;
+      for(i=0;i<=7;i++)
+      if(follow_timeinput[i]==1) stop_times[i] = unixTime+ch_hours[i]*3600;
     }
   }
   if(ti3.days_flag[weekday()+dayadjustment])
@@ -447,12 +447,12 @@ void restore_stop(){
     Serial.printf("it's day.2 selected=%d\n",weekday());
     te.Hour=ti3.ti_hour;
     te.Minute=ti3.ti_min;
-    unixTime=makeTime(te)-daylight_offset;
+    unixTime=makeTime(te);
     Serial.printf("unixTime3=%ld\n",unixTime);
     if(unixTime<=now()) 
     {
-      for(i=0;i<=8;i++)
-      if(follow_timeinput[i]==1) stop_times[i] = now()+ch_hours[i]*3600 - ti3.start_time;
+      for(i=0;i<=7;i++)
+      if(follow_timeinput[i]==1) stop_times[i] = unixTime+ch_hours[i]*3600;
     }
   }
  Serial.printf("ch1 stop=%d\n",stop_times[1]);
@@ -1033,41 +1033,49 @@ BLYNK_WRITE(V34)  // Manual selection
 BLYNK_WRITE(V10)
 {
 ch1_hours=param.asInt();
+prefs.putUChar("ch1_time",ch1_hours);
 ch_hours[0] =ch1_hours;
 }
 BLYNK_WRITE(V11)
 {
 ch2_hours=param.asInt();
+prefs.putUChar("ch2_time",ch2_hours);
 ch_hours[1]=ch2_hours;
 }
 BLYNK_WRITE(V12)
 {
 ch3_hours=param.asInt();
+prefs.putUChar("ch3_time",ch3_hours);
 ch_hours[2]=ch3_hours;
 }
 BLYNK_WRITE(V13)
 {
 ch4_hours=param.asInt();
+prefs.putUChar("ch4_time",ch4_hours);
 ch_hours[3]=ch4_hours;
 }
 BLYNK_WRITE(V14)
 {
 ch5_hours=param.asInt();
+prefs.putUChar("ch5_time",ch5_hours);
 ch_hours[4]=ch5_hours;
 }
 BLYNK_WRITE(V15)
 {
 ch6_hours=param.asInt();
+prefs.putUChar("ch6_time",ch6_hours);
 ch_hours[5]=ch6_hours;
 }
 BLYNK_WRITE(V16)
 {
 ch7_hours=param.asInt();
+prefs.putUChar("ch7_time",ch7_hours);
 ch_hours[6]= ch7_hours;
 }
 BLYNK_WRITE(V17)
 {
 ch8_hours=param.asInt();
+prefs.putUChar("ch8_time",ch8_hours);
 ch_hours[7]=ch8_hours;
 }
 
@@ -2704,10 +2712,11 @@ void automation_handler()
 //*************check time and update *****************
 void refresh_time()
 {
-  modem.NTPServerSync("pool.ntp.org",180);
+  modem.NTPServerSync("pool.ntp.org",(daylight_offset/3600)*4);
  //try{
    modem.getNetworkTime(&year_brd,&month_brd,&day_brd,&hour_brd,&minute_brd,&second_brd,&tz);
    setTime(hour_brd, minute_brd, second_brd, day_brd, month_brd, year_brd);
+   //adjustTime(tz*3600);
   // date_time = String(day()) + '/'+ String(month()) + '/' + String(year())+ 'T'+ String(hour()) + ':' + String(minute());
   // date_time =day() + '/' + month() + '/' + year();
   sprintf(date_timebuf, "%02d/%02d/%04d %02d:%02d\0", day(),month(),year(), hour(),minute() );
