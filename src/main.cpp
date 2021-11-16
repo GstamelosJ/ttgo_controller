@@ -98,6 +98,7 @@ SimpleTimer connectionHandlerTimer;
 SimpleTimer refreshmenuTimer;
 SimpleTimer time_syncTimer;
 SimpleTimer automation_hundler_timer;
+SimpleTimer timer_buttonsCheck;
 Bounce bouncer_Enter = Bounce();
 Bounce bouncer_Up = Bounce();
 Bounce bouncer_Down = Bounce();
@@ -274,12 +275,13 @@ typedef enum {
   CONNECT_TO_BLYNK,
   AWAIT_BLYNK_CONNECTION,
   MAINTAIN_CONNECTIONS,
-  AWAIT_DISCONNECT
+  AWAIT_DISCONNECT,
+  BLOCKED
 } CONNECTION_STATE;
 
 CONNECTION_STATE connectionState;
 uint8_t connectionCounter;
-
+uint8_t retryConCounter;
 void ConnectionHandler(void) {
   switch (connectionState) {
   case CONNECT_TO_GSM:
@@ -362,7 +364,13 @@ void ConnectionHandler(void) {
     if (++connectionCounter == 10) {
       connectionState = CONNECT_TO_GSM;
       healthy=false;
+      if(++retryConCounter == 3)
+      connectionState = BLOCKED;
     }
+    break;
+
+  case BLOCKED:
+    retryConCounter=0;
     break;
   }
 }
@@ -407,9 +415,10 @@ void restore_stop(){
   te.Year=CalendarYrToTm(year());
   te.Month=month();
   te.Day=day();
-  te.Hour=0;
-  te.Minute=0;
-  te.Second=ti1.start_time;
+  te.Hour=ti1.ti_hour;
+  te.Minute=ti1.ti_min;
+  te.Second=0;
+  
   //te.Second=0;
   unixTime=makeTime(te);
   Serial.printf("Start Min1=%d\n",te.Minute);
@@ -1416,10 +1425,12 @@ void buttonsCheck() {
     menu.update(); 
 	}
   bouncer_Esc.update();
-  if (bouncer_Esc.fell()) {
-    //menu.call_function(4);
+  if (bouncer_Esc.fell() && bouncer_Enter.read() == LOW) {
+      connectionState = CONNECT_TO_GSM;
+    }//menu.call_function(4);
     //LCDwrite("Button ESC", "Pressed" );
-    menu.previous_screen();
+  else {
+    menu.previous_screen(); 
     menu.update();
   } 
   /*if (up.check() == LOW) {
@@ -3320,8 +3331,10 @@ void setup() {
   else daylight_offset=7200;
  Serial.printf("Daylight=%d\n",daylight_offset);
   restore_stop();
+  
+  timer_buttonsCheck.setInterval(10,buttonsCheck);
   time_syncTimer.setInterval(6000, refresh_time);
-  connectionHandlerTimer.setInterval(100, ConnectionHandler);
+  connectionHandlerTimer.setInterval(1000, ConnectionHandler);
   refreshmenuTimer.setInterval(200,refresh_menu);
   automation_hundler_timer.setInterval(1000,automation_handler);
   connectionState = AWAIT_GSM_CONNECTION;
@@ -3330,12 +3343,12 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  
-  
+   
   //uncomment the next row if using 7 segnment display
   //disp.write(pg_hours);
-  buttonsCheck();
+  //buttonsCheck();
   scan_buttons(&button_msg);
+  timer_buttonsCheck.run();
   time_syncTimer.run();
   connectionHandlerTimer.run();
   refreshmenuTimer.run();
