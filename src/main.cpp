@@ -361,10 +361,10 @@ void ConnectionHandler(void) {
     break;
 
   case AWAIT_DISCONNECT:
-    if (++connectionCounter == 10) {
+    if (++connectionCounter == 4) {
       connectionState = CONNECT_TO_GSM;
       healthy=false;
-      if(++retryConCounter == 3)
+      if(++retryConCounter == 2)
       connectionState = BLOCKED;
     }
     break;
@@ -1429,7 +1429,7 @@ void buttonsCheck() {
       connectionState = CONNECT_TO_GSM;
     }//menu.call_function(4);
     //LCDwrite("Button ESC", "Pressed" );
-  else {
+  else if (bouncer_Esc.fell()){
     menu.previous_screen(); 
     menu.update();
   } 
@@ -2730,7 +2730,10 @@ void refresh_time()
    //adjustTime(tz*3600);
   // date_time = String(day()) + '/'+ String(month()) + '/' + String(year())+ 'T'+ String(hour()) + ':' + String(minute());
   // date_time =day() + '/' + month() + '/' + year();
-  sprintf(date_timebuf, "%02d/%02d/%04d %02d:%02d\0", day(),month(),year(), hour(),minute() );
+  if(connectionState==BLOCKED)
+  sprintf(date_timebuf, "X %02d/%02d/%04d %02d:%02d", day(),month(),year(), hour(),minute() );
+  else 
+  sprintf(date_timebuf, "= %02d/%02d/%04d %02d:%02d", day(),month(),year(), hour(),minute() );
  //} catch(std::exception e) {
   // Serial.println(e.what());
  //}
@@ -3334,7 +3337,7 @@ void setup() {
   
   timer_buttonsCheck.setInterval(10,buttonsCheck);
   time_syncTimer.setInterval(6000, refresh_time);
-  connectionHandlerTimer.setInterval(1000, ConnectionHandler);
+  connectionHandlerTimer.setInterval(200, ConnectionHandler);
   refreshmenuTimer.setInterval(200,refresh_menu);
   automation_hundler_timer.setInterval(1000,automation_handler);
   connectionState = AWAIT_GSM_CONNECTION;
