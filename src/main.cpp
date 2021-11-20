@@ -401,6 +401,8 @@ if (isFirstConnect) {
 
  // Blynk.notify("TIMER STARTING!!!!");
   isFirstConnect = false;
+  delay(2000);
+   restore_stop();
 }
 }
 
@@ -432,11 +434,11 @@ void restore_stop(){
   if(ti1.days_flag[weekday()+dayadjustment])
   {
     Serial.printf("it's day.1 selected=%d\n",weekday());
-    if(unixTime<=now()) 
-    {
+    //if(unixTime<=now()) 
+   // {
       for(i=0;i<=7;i++)
       if(follow_timeinput[i]==1) stop_times[i] = unixTime+ch_hours[i]*3600;
-    }
+    //}
   }
   if(ti2.days_flag[weekday()+dayadjustment])
   {
@@ -445,11 +447,11 @@ void restore_stop(){
     te.Minute=ti2.ti_min;
     unixTime=makeTime(te);
     Serial.printf("unixTime2=%ld\n",unixTime);
-    if(unixTime<=now()) 
-    {
+    //if(unixTime<=now()) 
+   // {
       for(i=0;i<=7;i++)
       if(follow_timeinput[i]==1) stop_times[i] = unixTime+ch_hours[i]*3600;
-    }
+   // }
   }
   if(ti3.days_flag[weekday()+dayadjustment])
   {
@@ -458,11 +460,11 @@ void restore_stop(){
     te.Minute=ti3.ti_min;
     unixTime=makeTime(te);
     Serial.printf("unixTime3=%ld\n",unixTime);
-    if(unixTime<=now()) 
-    {
+    //if(unixTime<=now()) 
+    //{
       for(i=0;i<=7;i++)
       if(follow_timeinput[i]==1) stop_times[i] = unixTime+ch_hours[i]*3600;
-    }
+    //}
   }
  Serial.printf("ch1 stop=%d\n",stop_times[1]);
  Serial.printf("ch2 stop=%d\n",stop_times[2]);
@@ -2721,12 +2723,22 @@ void automation_handler()
 }
 
 //*************check time and update *****************
-void refresh_time()
+time_t refresh_time()
 {
+  time_t current_time;
+  tmElements_t current_time_elements;
   modem.NTPServerSync("pool.ntp.org",(daylight_offset/3600)*4);
  //try{
    modem.getNetworkTime(&year_brd,&month_brd,&day_brd,&hour_brd,&minute_brd,&second_brd,&tz);
-   setTime(hour_brd, minute_brd, second_brd, day_brd, month_brd, year_brd);
+  // setTime(hour_brd, minute_brd, second_brd, day_brd, month_brd, year_brd);
+  current_time=modem.getNetworkTime(&year_brd,&month_brd,&day_brd,&hour_brd,&minute_brd,&second_brd,&tz);
+   current_time_elements.Year= CalendarYrToTm(year_brd);
+   current_time_elements.Month=month_brd;
+   current_time_elements.Day=day_brd;
+   current_time_elements.Hour=hour_brd;
+   current_time_elements.Minute=minute_brd;
+   current_time_elements.Second=second_brd;
+   current_time=makeTime( current_time_elements);
    //adjustTime(tz*3600);
   // date_time = String(day()) + '/'+ String(month()) + '/' + String(year())+ 'T'+ String(hour()) + ':' + String(minute());
   // date_time =day() + '/' + month() + '/' + year();
@@ -2739,7 +2751,7 @@ void refresh_time()
  //}
   //Serial.println(date_time);
   menu.update();
-  
+  return current_time;
 }
  
 
@@ -3327,16 +3339,16 @@ void setup() {
   screen8.set_displayLineCount(4);
   //@@@@@@@@@@@@@@@@@@@@@@@@@
  //%%%%%%%%%%%%%%%%%%%%
-  refresh_time();
+  setSyncProvider(refresh_time);
+  setSyncInterval(6);
   //setTime(hour_brd, *minute_brd, *second_brd, *day_brd, *month_brd, *year_brd);
   //date_time = String(day()) + '-' + String(month()) + '-' +String(year()) + " T"+String(hour()) + ':' + String(minute());
   if(GR.utcIsDST(now())) daylight_offset=10800; //check if current time is inside daylight summer time
   else daylight_offset=7200;
  Serial.printf("Daylight=%d\n",daylight_offset);
-  restore_stop();
   
   timer_buttonsCheck.setInterval(10,buttonsCheck);
-  time_syncTimer.setInterval(6000, refresh_time);
+  //time_syncTimer.setInterval(6000, refresh_time);
   connectionHandlerTimer.setInterval(200, ConnectionHandler);
   refreshmenuTimer.setInterval(200,refresh_menu);
   automation_hundler_timer.setInterval(1000,automation_handler);
