@@ -187,7 +187,7 @@ LiquidCrystal_I2C lcd(0x27,20,4);
 
 //################Menu settings#####
 //LiquidLine welcome_line0(0, 0, "Date: ", day_brd,"/", month_brd);
-LiquidLine welcome_line0(0, 0, "D:", date_timebuf);
+LiquidLine welcome_line0(0, 0, date_timebuf);
 LiquidLine welcome_line1(1, 1, "Main Menu ", hour_brd,":", minute_brd);
 LiquidLine welcome_line2(0, 2, "Lights:", light_disp);
 LiquidLine welcome_line3(0, 3, "Ligh_auto:", auto_light_disp);
@@ -2731,9 +2731,9 @@ void refresh_time()
   // date_time = String(day()) + '/'+ String(month()) + '/' + String(year())+ 'T'+ String(hour()) + ':' + String(minute());
   // date_time =day() + '/' + month() + '/' + year();
   if(connectionState==BLOCKED)
-  sprintf(date_timebuf, "X %02d/%02d/%04d %02d:%02d", day(),month(),year(), hour(),minute() );
+  sprintf(date_timebuf, "X=D:%02d/%02d/%04d %02d:%02d", day(),month(),year(), hour(),minute() );
   else 
-  sprintf(date_timebuf, "= %02d/%02d/%04d %02d:%02d", day(),month(),year(), hour(),minute() );
+  sprintf(date_timebuf, "==D:%02d/%02d/%04d %02d:%02d", day(),month(),year(), hour(),minute() );
  //} catch(std::exception e) {
   // Serial.println(e.what());
  //}
