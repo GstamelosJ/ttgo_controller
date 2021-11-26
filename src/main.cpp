@@ -3336,11 +3336,11 @@ void setup() {
   restore_stop();
   
   timer_buttonsCheck.setInterval(10,buttonsCheck);
-  time_syncTimer.setInterval(6000, refresh_time);
+  time_syncTimer.setInterval(600000L, refresh_time);
   connectionHandlerTimer.setInterval(200, ConnectionHandler);
   refreshmenuTimer.setInterval(200,refresh_menu);
   automation_hundler_timer.setInterval(1000,automation_handler);
-  connectionState = AWAIT_GSM_CONNECTION;
+  //connectionState = AWAIT_GSM_CONNECTION;
   menu.update();
 }
 
