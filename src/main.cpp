@@ -2717,13 +2717,18 @@ void automation_handler()
           Blynk.virtualWrite(i+20,(((lights>>i)&1)?1:0));
         }
   }
-
+ 
 }
 
 //*************check time and update *****************
 void refresh_time()
 {
+  static uint8_t ntp_counter=0;
+  if (ntp_counter++ == 600)
+  {
   modem.NTPServerSync("pool.ntp.org",(daylight_offset/3600)*4);
+  ntp_counter=0;
+  }
  //try{
    modem.getNetworkTime(&year_brd,&month_brd,&day_brd,&hour_brd,&minute_brd,&second_brd,&tz);
    setTime(hour_brd, minute_brd, second_brd, day_brd, month_brd, year_brd);
@@ -3336,7 +3341,7 @@ void setup() {
   restore_stop();
   
   timer_buttonsCheck.setInterval(10,buttonsCheck);
-  time_syncTimer.setInterval(600000L, refresh_time);
+  time_syncTimer.setInterval(1000, refresh_time);
   connectionHandlerTimer.setInterval(200, ConnectionHandler);
   refreshmenuTimer.setInterval(200,refresh_menu);
   automation_hundler_timer.setInterval(1000,automation_handler);
