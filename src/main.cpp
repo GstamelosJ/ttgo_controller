@@ -7,7 +7,7 @@
 #define BLYNK_TEMPLATE_ID "TMPLcobjXTat"
 #define BLYNK_DEVICE_NAME "TTGOlights"
 char auth[]= "QlAhqepp7Trb57enFlHT5LreNeXNTNkS";
-//#define DUMP_AT_COMMANDS
+#define DUMP_AT_COMMANDS
 // Select your modem:
 #define TINY_GSM_MODEM_SIM800
 //#include <SevenSeg.h>
@@ -175,7 +175,6 @@ LiquidCrystal_I2C lcd(0x27,20,4);
 // You can specify the time server pool and the offset, (in seconds)
 // additionally you can specify the update interval (in milliseconds).
 // NTPClient timeClient(ntpUDP, "europe.pool.ntp.org", 3600, 60000);
-
 
 #ifdef DUMP_AT_COMMANDS
   #include <StreamDebugger.h>
@@ -1387,7 +1386,7 @@ void reconnectBlynk() {
 
 
 //Buttons_menu function
-void buttonsCheck() {
+void IRAM_ATTR buttonsCheck() {
 	bouncer_Up.update();
   if (bouncer_Up.fell())
 	 {
@@ -1399,7 +1398,7 @@ void buttonsCheck() {
     else
 		  menu.call_function(1);
     //menu.next_screen();
-    menu.update();
+    menu.softUpdate();
 	}
   bouncer_Down.update();
   if (bouncer_Down.fell())
@@ -1410,7 +1409,7 @@ void buttonsCheck() {
     else
 		  menu.call_function(2);
     //menu.previous_screen();
-    menu.update();
+    menu.softUpdate();
 	}
   bouncer_Enter.update();
 	if (bouncer_Enter.fell()) {
@@ -1422,7 +1421,7 @@ void buttonsCheck() {
     }
     else 
     menu.switch_focus();
-    menu.update(); 
+    menu.softUpdate(); 
 	}
   bouncer_Esc.update();
   if (bouncer_Esc.fell() && bouncer_Enter.read() == LOW) {
@@ -1431,7 +1430,7 @@ void buttonsCheck() {
     //LCDwrite("Button ESC", "Pressed" );
   else if (bouncer_Esc.fell()){
     menu.previous_screen(); 
-    menu.update();
+    menu.softUpdate();
   } 
   /*if (up.check() == LOW) {
 		menu.next_screen();
@@ -1635,7 +1634,7 @@ void time_increment()
   prefs.end();
   }
   //}
-  menu.update();
+  menu.softUpdate();
 }
 
 void time_decr()
@@ -1703,7 +1702,7 @@ void time_decr()
   prefs.end();
     }
   //}
-  menu.update();
+  menu.softUpdate();
 }
 
 void time_input_incr()
@@ -1770,7 +1769,7 @@ void time_input_incr()
     prefs.end();
     }
     //}
-    menu.update();
+    menu.softUpdate();
 
   }
   else if((menu.get_currentScreen()==&screen8))
@@ -1999,7 +1998,7 @@ void time_input_decr()
 
       }
       //}
-      menu.update();
+      menu.softUpdate();
 
   }
   else if((menu.get_currentScreen()==&screen8))
@@ -2199,7 +2198,7 @@ void select_active_days()
    menu.set_focusPosition(Position::RIGHT);
    menu.switch_focus();
   }
-  menu.update();
+  menu.softUpdate();
 }
 
 void activate_day()
@@ -2336,7 +2335,7 @@ void activate_day()
   prefs.putBytes("ti1.days_flag",ti1.days_flag,8);
   prefs.putBytes("ti2.days_flag",ti2.days_flag,8);
   prefs.putBytes("ti3.days_flag",ti3.days_flag,8);
-  menu.update();
+  menu.softUpdate();
 
 }
 
@@ -2474,7 +2473,7 @@ void deactivate_day()
   prefs.putBytes("ti2.days_flag",ti2.days_flag,8);
   prefs.putBytes("ti3.days_flag",ti3.days_flag,8);
 
-  menu.update();
+  menu.softUpdate();
 }
 
 void time_sr_ss()
@@ -2593,7 +2592,7 @@ void assign_channel()
   }*/
   
   }
-  menu.update();
+  menu.softUpdate();
 }
 
 void assign_channel_()
@@ -2636,7 +2635,7 @@ void assign_channel_()
   }*/
   
   }
-  menu.update();
+  menu.softUpdate();
 }
 
 //Event handler ################################
@@ -2743,8 +2742,7 @@ void refresh_time()
   // Serial.println(e.what());
  //}
   //Serial.println(date_time);
-  menu.update();
-  
+  menu.softUpdate();
 }
  
 
@@ -2932,7 +2930,10 @@ void setup() {
   bouncer_Down.interval(2);
   bouncer_Esc.attach(ESC);
   bouncer_Esc.interval(2);
-  
+  attachInterrupt(ENTER, buttonsCheck, FALLING);
+  attachInterrupt(UP, buttonsCheck, FALLING);
+  attachInterrupt(DOWN, buttonsCheck, FALLING);
+  attachInterrupt(ESC, buttonsCheck, FALLING);
  
   Serial.begin(115200);
   I2CPower.begin(I2C_SDA, I2C_SCL, 400000);
@@ -3343,7 +3344,7 @@ void setup() {
   timer_buttonsCheck.setInterval(10,buttonsCheck);
   time_syncTimer.setInterval(1000, refresh_time);
   connectionHandlerTimer.setInterval(200, ConnectionHandler);
-  refreshmenuTimer.setInterval(200,refresh_menu);
+  //refreshmenuTimer.setInterval(200,refresh_menu);
   automation_hundler_timer.setInterval(1000,automation_handler);
   //connectionState = AWAIT_GSM_CONNECTION;
   menu.update();
@@ -3359,7 +3360,7 @@ void loop() {
   timer_buttonsCheck.run();
   time_syncTimer.run();
   connectionHandlerTimer.run();
-  refreshmenuTimer.run();
+  //refreshmenuTimer.run();
   automation_hundler_timer.run();
   if(healthy) Blynk.run();
  delay(20);
