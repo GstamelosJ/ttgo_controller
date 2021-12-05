@@ -1394,30 +1394,49 @@ void  buttonsCheck() {
 	 {
 		// Calls the function identified with
 		// increase or 1 for the focused line.
+    bouncer_Down.update();
     if (bouncer_Down.read()==LOW)
       menu.call_function(4);
     else
 		  {
       menu.call_function(1);
-      while(bouncer_Up.read()==LOW && --push_cnt <3) delay(1000);
+      while(bouncer_Up.read()==LOW && ++push_cnt <3) 
+      {
+      delay(1000);
+      bouncer_Up.update();
+      }
       push_cnt=0;
-      while(bouncer_Up.read()==LOW) menu.call_function(2); 
+      while(bouncer_Up.read()==LOW) 
+      {
+      menu.call_function(1); 
       delay(500);
+      bouncer_Up.update();
+      }
+      
     //menu.next_screen();
       }
     menu.softUpdate();
 	}
+  bouncer_Down.update();
   if (bouncer_Down.fell())
   {
+    bouncer_Up.update();
     if (bouncer_Up.read()==LOW)
       menu.call_function(4);
     else
     {
 		  menu.call_function(2);
-      while(bouncer_Down.read()==LOW && --push_cnt <3) delay(1000);
+      while(bouncer_Down.read()==LOW && ++push_cnt <3) 
+      {delay(1000);
+      bouncer_Down.update();
+      }
       push_cnt=0;
-      while(bouncer_Down.read()==LOW) menu.call_function(2); 
+      while(bouncer_Down.read()==LOW) 
+      {
+      menu.call_function(2); 
       delay(500);
+      bouncer_Down.update();
+      }
 
     }
     //menu.previous_screen();
