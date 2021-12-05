@@ -1387,28 +1387,39 @@ void reconnectBlynk() {
 
 //Buttons_menu function
 void  buttonsCheck() {
+  uint8_t push_cnt;
 	bouncer_Up.update();
   try{
   if (bouncer_Up.fell())
 	 {
 		// Calls the function identified with
 		// increase or 1 for the focused line.
-    bouncer_Down.update();
     if (bouncer_Down.read()==LOW)
       menu.call_function(4);
     else
-		  menu.call_function(1);
+		  {
+      menu.call_function(1);
+      while(bouncer_Up.read()==LOW && --push_cnt <3) delay(1000);
+      push_cnt=0;
+      while(bouncer_Up.read()==LOW) menu.call_function(2); 
+      delay(500);
     //menu.next_screen();
+      }
     menu.softUpdate();
 	}
-  bouncer_Down.update();
   if (bouncer_Down.fell())
   {
-    bouncer_Up.update();
     if (bouncer_Up.read()==LOW)
       menu.call_function(4);
     else
+    {
 		  menu.call_function(2);
+      while(bouncer_Down.read()==LOW && --push_cnt <3) delay(1000);
+      push_cnt=0;
+      while(bouncer_Down.read()==LOW) menu.call_function(2); 
+      delay(500);
+
+    }
     //menu.previous_screen();
     menu.softUpdate();
 	}
@@ -1815,11 +1826,21 @@ void time_input_incr()
        {
           Blynk.virtualWrite(30,"sr",0,"Europe/Athens",ti1.days_blynk,daylight_offset);
           sprintf(ti1.timeDisp,"sunrise");
+          Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
+          ti1.start_time  = 60*((greece.sunrise(year(), month(), day(), false))+25);
+          prefs.putUChar("ti1.ti_hour",(int)ti1.start_time/3600);
+          prefs.putUChar("ti1.ti_min",(ti1.start_time%3600)/60);
+          prefs.putInt("ti1.start_time",ti1.start_time);
        }
         else if (ti1.ss)
         {
           Blynk.virtualWrite(30,"ss",0,"Europe/Athens",ti1.days_blynk,daylight_offset);
           sprintf(ti1.timeDisp,"sunset");
+          Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
+          ti1.start_time  = 60*((greece.sunset(year(), month(), day(), false))+25);
+          prefs.putUChar("ti1.ti_hour",(int)ti1.start_time/3600);
+          prefs.putUChar("ti1.ti_min",(ti1.start_time%3600)/60);
+          prefs.putInt("ti1.start_time",ti1.start_time);
         }
         else if (ti1.ldr)
         {
@@ -1865,11 +1886,21 @@ void time_input_incr()
        {
           Blynk.virtualWrite(31,"sr",0,"Europe/Athens",ti2.days_blynk,daylight_offset);
           sprintf(ti2.timeDisp,"sunrise");
+          Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
+          ti2.start_time  = 60*((greece.sunrise(year(), month(), day(), false))+25);
+          prefs.putUChar("ti2.ti_hour",(int)ti2.start_time/3600);
+          prefs.putUChar("ti2.ti_min",(ti2.start_time%3600)/60);
+          prefs.putInt("ti2.start_time",ti2.start_time);
        }
         else if (ti2.ss)
         {
           Blynk.virtualWrite(31,"ss",0,"Europe/Athens",ti2.days_blynk,daylight_offset);
           sprintf(ti2.timeDisp,"sunset");
+          Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
+          ti2.start_time  = 60*((greece.sunset(year(), month(), day(), false))+25);
+          prefs.putUChar("ti2.ti_hour",(int)ti2.start_time/3600);
+          prefs.putUChar("ti2.ti_min",(ti2.start_time%3600)/60);
+          prefs.putInt("ti2.start_time",ti2.start_time);
         }
         else if (ti2.ldr)
         {
@@ -1915,11 +1946,21 @@ void time_input_incr()
        {
           Blynk.virtualWrite(32,"sr",0,"Europe/Athens",ti3.days_blynk,daylight_offset);
           sprintf(ti3.timeDisp,"sunrise");
+          Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
+          ti3.start_time  = 60*((greece.sunrise(year(), month(), day(), false))+25);
+          prefs.putUChar("ti3.ti_hour",(int)ti3.start_time/3600);
+          prefs.putUChar("ti3.ti_min",(ti3.start_time%3600)/60);
+          prefs.putInt("ti3.start_time",ti3.start_time);
        }
         else if (ti3.ss)
         {
           Blynk.virtualWrite(32,"ss",0,"Europe/Athens",ti3.days_blynk,daylight_offset);
           sprintf(ti3.timeDisp,"sunset");
+          Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
+          ti3.start_time  = 60*((greece.sunset(year(), month(), day(), false))+25);
+          prefs.putUChar("ti3.ti_hour",(int)ti3.start_time/3600);
+          prefs.putUChar("ti3.ti_min",(ti3.start_time%3600)/60);
+          prefs.putInt("ti3.start_time",ti3.start_time);
         }
         else if (ti3.ldr)
         {
@@ -2043,11 +2084,21 @@ void time_input_decr()
        {
           Blynk.virtualWrite(30,"sr",0,"Europe/Athens",ti1.days_blynk,daylight_offset);
           sprintf(ti1.timeDisp,"sunrise");
+          Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
+          ti1.start_time  = 60*((greece.sunrise(year(), month(), day(), false))+25);
+          prefs.putUChar("ti1.ti_hour",(int)ti1.start_time/3600);
+          prefs.putUChar("ti1.ti_min",(ti1.start_time%3600)/60);
+          prefs.putInt("ti1.start_time",ti1.start_time);
        }
         else if (ti1.ss)
         {
           Blynk.virtualWrite(30,"ss",0,"Europe/Athens",ti1.days_blynk,daylight_offset);
           sprintf(ti1.timeDisp,"sunset");
+          Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
+          ti1.start_time  = 60*((greece.sunset(year(), month(), day(), false))+25);
+          prefs.putUChar("ti1.ti_hour",(int)ti1.start_time/3600);
+          prefs.putUChar("ti1.ti_min",(ti1.start_time%3600)/60);
+          prefs.putInt("ti1.start_time",ti1.start_time);
         }
         else if (ti1.ldr)
         {
@@ -2093,11 +2144,21 @@ void time_input_decr()
        {
           Blynk.virtualWrite(31,"sr",0,"Europe/Athens",ti2.days_blynk,daylight_offset);
           sprintf(ti2.timeDisp,"sunrise");
+          Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
+          ti2.start_time  = 60*((greece.sunrise(year(), month(), day(), false))+25);
+          prefs.putUChar("ti2.ti_hour",(int)ti2.start_time/3600);
+          prefs.putUChar("ti2.ti_min",(ti2.start_time%3600)/60);
+          prefs.putInt("ti2.start_time",ti2.start_time);
        }
         else if (ti2.ss)
         {
           Blynk.virtualWrite(31,"ss",0,"Europe/Athens",ti2.days_blynk,daylight_offset);
           sprintf(ti2.timeDisp,"sunset");
+          Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
+          ti2.start_time  = 60*((greece.sunset(year(), month(), day(), false))+25);
+          prefs.putUChar("ti2.ti_hour",(int)ti2.start_time/3600);
+          prefs.putUChar("ti2.ti_min",(ti2.start_time%3600)/60);
+          prefs.putInt("ti2.start_time",ti2.start_time);
         }
          else if (ti2.ldr)
         {
@@ -2144,11 +2205,21 @@ void time_input_decr()
        {
           Blynk.virtualWrite(32,"sr",0,"Europe/Athens",ti3.days_blynk,daylight_offset);
           sprintf(ti3.timeDisp,"sunrise");
+          Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
+          ti3.start_time  = 60*((greece.sunrise(year(), month(), day(), false))+25);
+          prefs.putUChar("ti3.ti_hour",(int)ti3.start_time/3600);
+          prefs.putUChar("ti3.ti_min",(ti3.start_time%3600)/60);
+          prefs.putInt("ti3.start_time",ti3.start_time);
        }
         else if (ti3.ss)
         {
           Blynk.virtualWrite(32,"ss",0,"Europe/Athens",ti3.days_blynk,daylight_offset);
           sprintf(ti3.timeDisp,"sunset");
+          Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
+          ti3.start_time  = 60*((greece.sunset(year(), month(), day(), false))+25);
+          prefs.putUChar("ti3.ti_hour",(int)ti3.start_time/3600);
+          prefs.putUChar("ti3.ti_min",(ti3.start_time%3600)/60);
+          prefs.putInt("ti3.start_time",ti3.start_time);
         }
         else if (ti3.ldr)
         {
@@ -3343,8 +3414,8 @@ void setup() {
   //date_time = String(day()) + '-' + String(month()) + '-' +String(year()) + " T"+String(hour()) + ':' + String(minute());
   if(GR.utcIsDST(now())) daylight_offset=10800; //check if current time is inside daylight summer time
   else daylight_offset=7200;
- Serial.printf("Daylight=%d\n",daylight_offset);
- delay(2000);
+  Serial.printf("Daylight=%d\n",daylight_offset);
+  delay(2000);
   restore_stop();
   
   timer_buttonsCheck.setInterval(100,buttonsCheck);
