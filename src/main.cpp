@@ -7,7 +7,7 @@
 #define BLYNK_TEMPLATE_ID "TMPLcobjXTat"
 #define BLYNK_DEVICE_NAME "TTGOlights"
 char auth[]= "QlAhqepp7Trb57enFlHT5LreNeXNTNkS";
-#define DUMP_AT_COMMANDS
+//#define DUMP_AT_COMMANDS
 // Select your modem:
 #define TINY_GSM_MODEM_SIM800
 //#include <SevenSeg.h>
@@ -414,12 +414,13 @@ void restore_stop(){
   te.Year=CalendarYrToTm(year());
   te.Month=month();
   te.Day=day();
-  te.Hour=ti1.ti_hour;
-  te.Minute=ti1.ti_min;
+  te.Hour=(int)ti1.start_time/3600;
+  te.Minute=(int)(ti1.start_time%3600)/60;
   te.Second=0;
   
   //te.Second=0;
   unixTime=makeTime(te);
+  Serial.printf("Start time=%ld\n",ti1.start_time);
   Serial.printf("Start Min1=%d\n",te.Minute);
   Serial.printf("Start Hour1=%d\n",te.Hour);
   Serial.printf("Day=%d\n",day());
@@ -431,40 +432,39 @@ void restore_stop(){
   if(ti1.days_flag[weekday()+dayadjustment])
   {
     Serial.printf("it's day.1 selected=%d\n",weekday());
-    if(unixTime<=now()) 
-    {
-      for(i=0;i<=7;i++)
-      if(follow_timeinput[i]==1) stop_times[i] = unixTime+ch_hours[i]*3600;
-    }
+    for(i=0;i<=7;i++)
+    if(follow_timeinput[i]==1) stop_times[i] = unixTime+ch_hours[i]*3600;
   }
   if(ti2.days_flag[weekday()+dayadjustment])
   {
     Serial.printf("it's day.2 selected=%d\n",weekday());
-    te.Hour=ti2.ti_hour;
-    te.Minute=ti2.ti_min;
+    te.Year=CalendarYrToTm(year());
+    te.Month=month();
+    te.Day=day();
+    te.Hour=ti2.start_time/3600;
+  te.Minute=(ti2.start_time%3600)/60;
+    te.Second=0;
     unixTime=makeTime(te);
     Serial.printf("unixTime2=%ld\n",unixTime);
-    if(unixTime<=now()) 
-    {
       for(i=0;i<=7;i++)
-      if(follow_timeinput[i]==1) stop_times[i] = unixTime+ch_hours[i]*3600;
-    }
+      if(follow_timeinput[i]==2) stop_times[i] = unixTime+ch_hours[i]*3600;
   }
   if(ti3.days_flag[weekday()+dayadjustment])
   {
     Serial.printf("it's day.2 selected=%d\n",weekday());
-    te.Hour=ti3.ti_hour;
-    te.Minute=ti3.ti_min;
+    te.Year=CalendarYrToTm(year());
+    te.Month=month();
+    te.Day=day();
+    te.Hour=ti3.start_time/3600;
+    te.Minute=(ti3.start_time%3600)/60;
+    te.Second=0;
     unixTime=makeTime(te);
     Serial.printf("unixTime3=%ld\n",unixTime);
-    if(unixTime<=now()) 
-    {
       for(i=0;i<=7;i++)
-      if(follow_timeinput[i]==1) stop_times[i] = unixTime+ch_hours[i]*3600;
-    }
+      if(follow_timeinput[i]==3) stop_times[i] = unixTime+ch_hours[i]*3600;
   }
- Serial.printf("ch1 stop=%d\n",stop_times[1]);
- Serial.printf("ch2 stop=%d\n",stop_times[2]);
+ Serial.printf("ch1 stop=%d\n",stop_times[0]);
+ Serial.printf("ch2 stop=%d\n",stop_times[1]);
 }
 
 //BLYNK routines
@@ -1192,7 +1192,7 @@ BLYNK_WRITE(V30)// lights sceduler
     ti1.daysDisp[7]='\0';
   prefs.putUChar("ti1.ti_hour",ti1.ti_hour);
   prefs.putUChar("ti1.ti_min",ti1.ti_min);
-  prefs.putUChar("ti1.start_time",ti1.start_time);
+  prefs.putInt("ti1.start_time",ti1.start_time);
   prefs.putBytes("ti1.days_flag",ti1.days_flag,8);
 }
 
@@ -1268,7 +1268,7 @@ BLYNK_WRITE(V31)// lights sceduler
     ti2.daysDisp[7]='\0'; 
   prefs.putUChar("ti2.ti_hour",ti2.ti_hour);
   prefs.putUChar("ti2.ti_min",ti2.ti_min);
-  prefs.putUChar("ti2.start_time",ti2.start_time);
+  prefs.putInt("ti2.start_time",ti2.start_time);
   prefs.putBytes("ti2.days_flag",ti2.days_flag,8);
 
 }
@@ -1345,7 +1345,7 @@ BLYNK_WRITE(V32)// lights sceduler
     ti3.daysDisp[7]='\0';
   prefs.putUChar("ti3.ti_hour",ti3.ti_hour);
   prefs.putUChar("ti3.ti_min",ti3.ti_min);
-  prefs.putUChar("ti3.start_time",ti3.start_time);
+  prefs.putInt("ti3.start_time",ti3.start_time);
   prefs.putBytes("ti3.days_flag",ti3.days_flag,8);
 }
 
@@ -1386,8 +1386,9 @@ void reconnectBlynk() {
 
 
 //Buttons_menu function
-void IRAM_ATTR buttonsCheck() {
+void  buttonsCheck() {
 	bouncer_Up.update();
+  try{
   if (bouncer_Up.fell())
 	 {
 		// Calls the function identified with
@@ -1442,6 +1443,10 @@ void IRAM_ATTR buttonsCheck() {
 		// Switches focus to the next line.
 		menu.switch_focus();
 	}*/
+  }
+  catch(std::exception e) {
+  Serial.println(e.what());
+ }
 }
 
 
@@ -1787,7 +1792,7 @@ void time_input_incr()
         ti1.start_time=(ti1.ti_hour*3600)+(ti1.ti_min*60);
         prefs.putUChar("ti1.ti_hour",ti1.ti_hour);
         prefs.putUChar("ti1.ti_min",ti1.ti_min);
-        prefs.putUChar("ti1.start_time",ti1.start_time);
+        prefs.putInt("ti1.start_time",ti1.start_time);
        // sprintf(str_buf, "%02d:%02d", ti1.ti_hour,ti1.ti_min );
        for(uint8_t d=0; d<7; d++)
        {
@@ -1838,7 +1843,7 @@ void time_input_incr()
         ti2.start_time=(ti2.ti_hour*3600)+(ti2.ti_min*60);
         prefs.putUChar("ti2.ti_hour",ti2.ti_hour);
         prefs.putUChar("ti2.ti_min",ti2.ti_min);
-        prefs.putUChar("ti2.start_time",ti2.start_time);
+        prefs.putInt("ti2.start_time",ti2.start_time);
         for(uint8_t d=0; d<7; d++)
        {
        if(ti2.days_flag[d]&&d==0)
@@ -1888,7 +1893,7 @@ void time_input_incr()
         ti3.start_time=(ti3.ti_hour*3600)+(ti3.ti_min*60);
         prefs.putUChar("ti3.ti_hour",ti3.ti_hour);
         prefs.putUChar("ti3.ti_min",ti3.ti_min);
-        prefs.putUChar("ti3.start_time",ti3.start_time);
+        prefs.putInt("ti3.start_time",ti3.start_time);
         for(uint8_t d=0; d<7; d++)
        {
        if(ti3.days_flag[d]&&d==0)
@@ -2016,7 +2021,7 @@ void time_input_decr()
         ti1.start_time=(ti1.ti_hour*3600)+(ti1.ti_min*60);
         prefs.putUChar("ti1.ti_hour",ti1.ti_hour);
         prefs.putUChar("ti1.ti_min",ti1.ti_min);
-        prefs.putUChar("ti1.start_time",ti1.start_time);
+        prefs.putInt("ti1.start_time",ti1.start_time);
         for(uint8_t d=0; d<7; d++)
        {
        if(ti1.days_flag[d]&&d==0)
@@ -2066,7 +2071,7 @@ void time_input_decr()
         ti2.start_time=(ti2.ti_hour*3600)+(ti2.ti_min*60);
         prefs.putUChar("ti2.ti_hour",ti2.ti_hour);
         prefs.putUChar("ti2.ti_min",ti2.ti_min);
-        prefs.putUChar("ti2.start_time",ti2.start_time);
+        prefs.putInt("ti2.start_time",ti2.start_time);
         for(uint8_t d=0; d<7; d++)
        {
        if(ti2.days_flag[d]&&d==0)
@@ -2116,7 +2121,7 @@ void time_input_decr()
         ti3.start_time=(ti3.ti_hour*3600)+(ti3.ti_min*60);
         prefs.putUChar("ti3.ti_hour",ti3.ti_hour);
         prefs.putUChar("ti3.ti_min",ti3.ti_min);
-        prefs.putUChar("ti3.start_time",ti3.start_time);
+        prefs.putInt("ti3.start_time",ti3.start_time);
         prefs.end();
         for(uint8_t d=0; d<7; d++)
        {
@@ -2722,12 +2727,12 @@ void automation_handler()
 //*************check time and update *****************
 void refresh_time()
 {
-  static uint8_t ntp_counter=0;
-  if (ntp_counter++ == 600)
-  {
-  modem.NTPServerSync("pool.ntp.org",(daylight_offset/3600)*4);
-  ntp_counter=0;
-  }
+  //static uint8_t ntp_counter=0;
+  //if (ntp_counter++ == 600)
+ // {
+ // modem.NTPServerSync("pool.ntp.org",(daylight_offset/3600)*4);
+ // ntp_counter=0;
+  //}
  //try{
    modem.getNetworkTime(&year_brd,&month_brd,&day_brd,&hour_brd,&minute_brd,&second_brd,&tz);
    setTime(hour_brd, minute_brd, second_brd, day_brd, month_brd, year_brd);
@@ -2930,10 +2935,10 @@ void setup() {
   bouncer_Down.interval(2);
   bouncer_Esc.attach(ESC);
   bouncer_Esc.interval(2);
-  attachInterrupt(ENTER, buttonsCheck, FALLING);
-  attachInterrupt(UP, buttonsCheck, FALLING);
-  attachInterrupt(DOWN, buttonsCheck, FALLING);
-  attachInterrupt(ESC, buttonsCheck, FALLING);
+  //attachInterrupt(ENTER, buttonsCheck, FALLING);
+ // attachInterrupt(UP, buttonsCheck, FALLING);
+ // attachInterrupt(DOWN, buttonsCheck, FALLING);
+ // attachInterrupt(ESC, buttonsCheck, FALLING);
  
   Serial.begin(115200);
   I2CPower.begin(I2C_SDA, I2C_SCL, 400000);
@@ -2971,14 +2976,14 @@ void setup() {
   ti1.ti_hour=prefs.getUChar("ti1.ti_hour",0); 
   ti1.ti_min=prefs.getUChar("ti1.ti_min",0);
   prefs.getBytes("ti1.days_flag",ti1.days_flag,8);
-  ti1.start_time=prefs.getUChar("ti1.start_time",0);
+  ti1.start_time=prefs.getInt("ti1.start_time",0); 
   ti2.ti_hour=prefs.getUChar("ti2.ti_hour",0); 
   ti2.ti_min=prefs.getUChar("ti2.ti_min",0);
-  ti2.start_time=prefs.getUChar("ti2.start_time",0);
+  ti2.start_time=prefs.getInt("ti2.start_time",0);
   prefs.getBytes("ti2.days_flag",ti2.days_flag,8);
   ti3.ti_hour=prefs.getUChar("ti3.ti_hour",0);
   ti3.ti_min=prefs.getUChar("ti3.ti_min",0);
-  ti3.start_time=prefs.getUChar("ti3.start_time",0);
+  ti3.start_time=prefs.getInt("ti3.start_time",0);
   prefs.getBytes("ti3.days_flag",ti3.days_flag,8);
   //prefs.getBytes("stop_times",stop_times,8);
   //prefs.end();
@@ -3339,9 +3344,10 @@ void setup() {
   if(GR.utcIsDST(now())) daylight_offset=10800; //check if current time is inside daylight summer time
   else daylight_offset=7200;
  Serial.printf("Daylight=%d\n",daylight_offset);
+ delay(2000);
   restore_stop();
   
-  timer_buttonsCheck.setInterval(10,buttonsCheck);
+  timer_buttonsCheck.setInterval(100,buttonsCheck);
   time_syncTimer.setInterval(1000, refresh_time);
   connectionHandlerTimer.setInterval(200, ConnectionHandler);
   //refreshmenuTimer.setInterval(200,refresh_menu);
