@@ -176,7 +176,6 @@ LiquidCrystal_I2C lcd(0x27,20,4);
 // additionally you can specify the update interval (in milliseconds).
 // NTPClient timeClient(ntpUDP, "europe.pool.ntp.org", 3600, 60000);
 
-
 #ifdef DUMP_AT_COMMANDS
   #include <StreamDebugger.h>
   StreamDebugger debugger(SerialAT, Serial);
@@ -187,7 +186,7 @@ LiquidCrystal_I2C lcd(0x27,20,4);
 
 //################Menu settings#####
 //LiquidLine welcome_line0(0, 0, "Date: ", day_brd,"/", month_brd);
-LiquidLine welcome_line0(0, 0, "D:", date_timebuf);
+LiquidLine welcome_line0(0, 0, date_timebuf);
 LiquidLine welcome_line1(1, 1, "Main Menu ", hour_brd,":", minute_brd);
 LiquidLine welcome_line2(0, 2, "Lights:", light_disp);
 LiquidLine welcome_line3(0, 3, "Ligh_auto:", auto_light_disp);
@@ -417,12 +416,13 @@ void restore_stop(){
   te.Year=CalendarYrToTm(year());
   te.Month=month();
   te.Day=day();
-  te.Hour=ti1.ti_hour;
-  te.Minute=ti1.ti_min;
+  te.Hour=(int)ti1.start_time/3600;
+  te.Minute=(int)(ti1.start_time%3600)/60;
   te.Second=0;
   
   //te.Second=0;
   unixTime=makeTime(te);
+  Serial.printf("Start time=%ld\n",ti1.start_time);
   Serial.printf("Start Min1=%d\n",te.Minute);
   Serial.printf("Start Hour1=%d\n",te.Hour);
   Serial.printf("Day=%d\n",day());
@@ -434,40 +434,63 @@ void restore_stop(){
   if(ti1.days_flag[weekday()+dayadjustment])
   {
     Serial.printf("it's day.1 selected=%d\n",weekday());
+<<<<<<< HEAD
     //if(unixTime<=now()) 
    // {
       for(i=0;i<=7;i++)
       if(follow_timeinput[i]==1) stop_times[i] = unixTime+ch_hours[i]*3600;
     //}
+=======
+    for(i=0;i<=7;i++)
+    if(follow_timeinput[i]==1) stop_times[i] = unixTime+ch_hours[i]*3600;
+>>>>>>> 945e720da67efdd1ceeade022e420fd95eea93ed
   }
   if(ti2.days_flag[weekday()+dayadjustment])
   {
     Serial.printf("it's day.2 selected=%d\n",weekday());
-    te.Hour=ti2.ti_hour;
-    te.Minute=ti2.ti_min;
+    te.Year=CalendarYrToTm(year());
+    te.Month=month();
+    te.Day=day();
+    te.Hour=ti2.start_time/3600;
+  te.Minute=(ti2.start_time%3600)/60;
+    te.Second=0;
     unixTime=makeTime(te);
     Serial.printf("unixTime2=%ld\n",unixTime);
+<<<<<<< HEAD
     //if(unixTime<=now()) 
    // {
       for(i=0;i<=7;i++)
       if(follow_timeinput[i]==1) stop_times[i] = unixTime+ch_hours[i]*3600;
    // }
+=======
+      for(i=0;i<=7;i++)
+      if(follow_timeinput[i]==2) stop_times[i] = unixTime+ch_hours[i]*3600;
+>>>>>>> 945e720da67efdd1ceeade022e420fd95eea93ed
   }
   if(ti3.days_flag[weekday()+dayadjustment])
   {
     Serial.printf("it's day.2 selected=%d\n",weekday());
-    te.Hour=ti3.ti_hour;
-    te.Minute=ti3.ti_min;
+    te.Year=CalendarYrToTm(year());
+    te.Month=month();
+    te.Day=day();
+    te.Hour=ti3.start_time/3600;
+    te.Minute=(ti3.start_time%3600)/60;
+    te.Second=0;
     unixTime=makeTime(te);
     Serial.printf("unixTime3=%ld\n",unixTime);
+<<<<<<< HEAD
     //if(unixTime<=now()) 
     //{
       for(i=0;i<=7;i++)
       if(follow_timeinput[i]==1) stop_times[i] = unixTime+ch_hours[i]*3600;
     //}
+=======
+      for(i=0;i<=7;i++)
+      if(follow_timeinput[i]==3) stop_times[i] = unixTime+ch_hours[i]*3600;
+>>>>>>> 945e720da67efdd1ceeade022e420fd95eea93ed
   }
- Serial.printf("ch1 stop=%d\n",stop_times[1]);
- Serial.printf("ch2 stop=%d\n",stop_times[2]);
+ Serial.printf("ch1 stop=%d\n",stop_times[0]);
+ Serial.printf("ch2 stop=%d\n",stop_times[1]);
 }
 
 //BLYNK routines
@@ -1195,7 +1218,7 @@ BLYNK_WRITE(V30)// lights sceduler
     ti1.daysDisp[7]='\0';
   prefs.putUChar("ti1.ti_hour",ti1.ti_hour);
   prefs.putUChar("ti1.ti_min",ti1.ti_min);
-  prefs.putUChar("ti1.start_time",ti1.start_time);
+  prefs.putInt("ti1.start_time",ti1.start_time);
   prefs.putBytes("ti1.days_flag",ti1.days_flag,8);
 }
 
@@ -1271,7 +1294,7 @@ BLYNK_WRITE(V31)// lights sceduler
     ti2.daysDisp[7]='\0'; 
   prefs.putUChar("ti2.ti_hour",ti2.ti_hour);
   prefs.putUChar("ti2.ti_min",ti2.ti_min);
-  prefs.putUChar("ti2.start_time",ti2.start_time);
+  prefs.putInt("ti2.start_time",ti2.start_time);
   prefs.putBytes("ti2.days_flag",ti2.days_flag,8);
 
 }
@@ -1348,7 +1371,7 @@ BLYNK_WRITE(V32)// lights sceduler
     ti3.daysDisp[7]='\0';
   prefs.putUChar("ti3.ti_hour",ti3.ti_hour);
   prefs.putUChar("ti3.ti_min",ti3.ti_min);
-  prefs.putUChar("ti3.start_time",ti3.start_time);
+  prefs.putInt("ti3.start_time",ti3.start_time);
   prefs.putBytes("ti3.days_flag",ti3.days_flag,8);
 }
 
@@ -1389,8 +1412,10 @@ void reconnectBlynk() {
 
 
 //Buttons_menu function
-void buttonsCheck() {
+void  buttonsCheck() {
+  uint8_t push_cnt;
 	bouncer_Up.update();
+  try{
   if (bouncer_Up.fell())
 	 {
 		// Calls the function identified with
@@ -1399,9 +1424,24 @@ void buttonsCheck() {
     if (bouncer_Down.read()==LOW)
       menu.call_function(4);
     else
-		  menu.call_function(1);
+		  {
+      menu.call_function(1);
+      while(bouncer_Up.read()==LOW && ++push_cnt <3) 
+      {
+      delay(1000);
+      bouncer_Up.update();
+      }
+      push_cnt=0;
+      while(bouncer_Up.read()==LOW) 
+      {
+      menu.call_function(1); 
+      delay(500);
+      bouncer_Up.update();
+      }
+      
     //menu.next_screen();
-    menu.update();
+      }
+    menu.softUpdate();
 	}
   bouncer_Down.update();
   if (bouncer_Down.fell())
@@ -1410,9 +1450,23 @@ void buttonsCheck() {
     if (bouncer_Up.read()==LOW)
       menu.call_function(4);
     else
+    {
 		  menu.call_function(2);
+      while(bouncer_Down.read()==LOW && ++push_cnt <3) 
+      {delay(1000);
+      bouncer_Down.update();
+      }
+      push_cnt=0;
+      while(bouncer_Down.read()==LOW) 
+      {
+      menu.call_function(2); 
+      delay(500);
+      bouncer_Down.update();
+      }
+
+    }
     //menu.previous_screen();
-    menu.update();
+    menu.softUpdate();
 	}
   bouncer_Enter.update();
 	if (bouncer_Enter.fell()) {
@@ -1424,7 +1478,7 @@ void buttonsCheck() {
     }
     else 
     menu.switch_focus();
-    menu.update(); 
+    menu.softUpdate(); 
 	}
   bouncer_Esc.update();
   if (bouncer_Esc.fell() && bouncer_Enter.read() == LOW) {
@@ -1433,7 +1487,7 @@ void buttonsCheck() {
     //LCDwrite("Button ESC", "Pressed" );
   else if (bouncer_Esc.fell()){
     menu.previous_screen(); 
-    menu.update();
+    menu.softUpdate();
   } 
   /*if (up.check() == LOW) {
 		menu.next_screen();
@@ -1445,6 +1499,10 @@ void buttonsCheck() {
 		// Switches focus to the next line.
 		menu.switch_focus();
 	}*/
+  }
+  catch(std::exception e) {
+  Serial.println(e.what());
+ }
 }
 
 
@@ -1637,7 +1695,7 @@ void time_increment()
   prefs.end();
   }
   //}
-  menu.update();
+  menu.softUpdate();
 }
 
 void time_decr()
@@ -1705,7 +1763,7 @@ void time_decr()
   prefs.end();
     }
   //}
-  menu.update();
+  menu.softUpdate();
 }
 
 void time_input_incr()
@@ -1772,7 +1830,7 @@ void time_input_incr()
     prefs.end();
     }
     //}
-    menu.update();
+    menu.softUpdate();
 
   }
   else if((menu.get_currentScreen()==&screen8))
@@ -1790,7 +1848,7 @@ void time_input_incr()
         ti1.start_time=(ti1.ti_hour*3600)+(ti1.ti_min*60);
         prefs.putUChar("ti1.ti_hour",ti1.ti_hour);
         prefs.putUChar("ti1.ti_min",ti1.ti_min);
-        prefs.putUChar("ti1.start_time",ti1.start_time);
+        prefs.putInt("ti1.start_time",ti1.start_time);
        // sprintf(str_buf, "%02d:%02d", ti1.ti_hour,ti1.ti_min );
        for(uint8_t d=0; d<7; d++)
        {
@@ -1813,11 +1871,21 @@ void time_input_incr()
        {
           Blynk.virtualWrite(30,"sr",0,"Europe/Athens",ti1.days_blynk,daylight_offset);
           sprintf(ti1.timeDisp,"sunrise");
+          Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
+          ti1.start_time  = 60*((greece.sunrise(year(), month(), day(), false))+25);
+          prefs.putUChar("ti1.ti_hour",(int)ti1.start_time/3600);
+          prefs.putUChar("ti1.ti_min",(ti1.start_time%3600)/60);
+          prefs.putInt("ti1.start_time",ti1.start_time);
        }
         else if (ti1.ss)
         {
           Blynk.virtualWrite(30,"ss",0,"Europe/Athens",ti1.days_blynk,daylight_offset);
           sprintf(ti1.timeDisp,"sunset");
+          Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
+          ti1.start_time  = 60*((greece.sunset(year(), month(), day(), false))+25);
+          prefs.putUChar("ti1.ti_hour",(int)ti1.start_time/3600);
+          prefs.putUChar("ti1.ti_min",(ti1.start_time%3600)/60);
+          prefs.putInt("ti1.start_time",ti1.start_time);
         }
         else if (ti1.ldr)
         {
@@ -1841,7 +1909,7 @@ void time_input_incr()
         ti2.start_time=(ti2.ti_hour*3600)+(ti2.ti_min*60);
         prefs.putUChar("ti2.ti_hour",ti2.ti_hour);
         prefs.putUChar("ti2.ti_min",ti2.ti_min);
-        prefs.putUChar("ti2.start_time",ti2.start_time);
+        prefs.putInt("ti2.start_time",ti2.start_time);
         for(uint8_t d=0; d<7; d++)
        {
        if(ti2.days_flag[d]&&d==0)
@@ -1863,11 +1931,21 @@ void time_input_incr()
        {
           Blynk.virtualWrite(31,"sr",0,"Europe/Athens",ti2.days_blynk,daylight_offset);
           sprintf(ti2.timeDisp,"sunrise");
+          Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
+          ti2.start_time  = 60*((greece.sunrise(year(), month(), day(), false))+25);
+          prefs.putUChar("ti2.ti_hour",(int)ti2.start_time/3600);
+          prefs.putUChar("ti2.ti_min",(ti2.start_time%3600)/60);
+          prefs.putInt("ti2.start_time",ti2.start_time);
        }
         else if (ti2.ss)
         {
           Blynk.virtualWrite(31,"ss",0,"Europe/Athens",ti2.days_blynk,daylight_offset);
           sprintf(ti2.timeDisp,"sunset");
+          Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
+          ti2.start_time  = 60*((greece.sunset(year(), month(), day(), false))+25);
+          prefs.putUChar("ti2.ti_hour",(int)ti2.start_time/3600);
+          prefs.putUChar("ti2.ti_min",(ti2.start_time%3600)/60);
+          prefs.putInt("ti2.start_time",ti2.start_time);
         }
         else if (ti2.ldr)
         {
@@ -1891,7 +1969,7 @@ void time_input_incr()
         ti3.start_time=(ti3.ti_hour*3600)+(ti3.ti_min*60);
         prefs.putUChar("ti3.ti_hour",ti3.ti_hour);
         prefs.putUChar("ti3.ti_min",ti3.ti_min);
-        prefs.putUChar("ti3.start_time",ti3.start_time);
+        prefs.putInt("ti3.start_time",ti3.start_time);
         for(uint8_t d=0; d<7; d++)
        {
        if(ti3.days_flag[d]&&d==0)
@@ -1913,11 +1991,21 @@ void time_input_incr()
        {
           Blynk.virtualWrite(32,"sr",0,"Europe/Athens",ti3.days_blynk,daylight_offset);
           sprintf(ti3.timeDisp,"sunrise");
+          Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
+          ti3.start_time  = 60*((greece.sunrise(year(), month(), day(), false))+25);
+          prefs.putUChar("ti3.ti_hour",(int)ti3.start_time/3600);
+          prefs.putUChar("ti3.ti_min",(ti3.start_time%3600)/60);
+          prefs.putInt("ti3.start_time",ti3.start_time);
        }
         else if (ti3.ss)
         {
           Blynk.virtualWrite(32,"ss",0,"Europe/Athens",ti3.days_blynk,daylight_offset);
           sprintf(ti3.timeDisp,"sunset");
+          Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
+          ti3.start_time  = 60*((greece.sunset(year(), month(), day(), false))+25);
+          prefs.putUChar("ti3.ti_hour",(int)ti3.start_time/3600);
+          prefs.putUChar("ti3.ti_min",(ti3.start_time%3600)/60);
+          prefs.putInt("ti3.start_time",ti3.start_time);
         }
         else if (ti3.ldr)
         {
@@ -2001,7 +2089,7 @@ void time_input_decr()
 
       }
       //}
-      menu.update();
+      menu.softUpdate();
 
   }
   else if((menu.get_currentScreen()==&screen8))
@@ -2019,7 +2107,7 @@ void time_input_decr()
         ti1.start_time=(ti1.ti_hour*3600)+(ti1.ti_min*60);
         prefs.putUChar("ti1.ti_hour",ti1.ti_hour);
         prefs.putUChar("ti1.ti_min",ti1.ti_min);
-        prefs.putUChar("ti1.start_time",ti1.start_time);
+        prefs.putInt("ti1.start_time",ti1.start_time);
         for(uint8_t d=0; d<7; d++)
        {
        if(ti1.days_flag[d]&&d==0)
@@ -2041,11 +2129,21 @@ void time_input_decr()
        {
           Blynk.virtualWrite(30,"sr",0,"Europe/Athens",ti1.days_blynk,daylight_offset);
           sprintf(ti1.timeDisp,"sunrise");
+          Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
+          ti1.start_time  = 60*((greece.sunrise(year(), month(), day(), false))+25);
+          prefs.putUChar("ti1.ti_hour",(int)ti1.start_time/3600);
+          prefs.putUChar("ti1.ti_min",(ti1.start_time%3600)/60);
+          prefs.putInt("ti1.start_time",ti1.start_time);
        }
         else if (ti1.ss)
         {
           Blynk.virtualWrite(30,"ss",0,"Europe/Athens",ti1.days_blynk,daylight_offset);
           sprintf(ti1.timeDisp,"sunset");
+          Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
+          ti1.start_time  = 60*((greece.sunset(year(), month(), day(), false))+25);
+          prefs.putUChar("ti1.ti_hour",(int)ti1.start_time/3600);
+          prefs.putUChar("ti1.ti_min",(ti1.start_time%3600)/60);
+          prefs.putInt("ti1.start_time",ti1.start_time);
         }
         else if (ti1.ldr)
         {
@@ -2069,7 +2167,7 @@ void time_input_decr()
         ti2.start_time=(ti2.ti_hour*3600)+(ti2.ti_min*60);
         prefs.putUChar("ti2.ti_hour",ti2.ti_hour);
         prefs.putUChar("ti2.ti_min",ti2.ti_min);
-        prefs.putUChar("ti2.start_time",ti2.start_time);
+        prefs.putInt("ti2.start_time",ti2.start_time);
         for(uint8_t d=0; d<7; d++)
        {
        if(ti2.days_flag[d]&&d==0)
@@ -2091,11 +2189,21 @@ void time_input_decr()
        {
           Blynk.virtualWrite(31,"sr",0,"Europe/Athens",ti2.days_blynk,daylight_offset);
           sprintf(ti2.timeDisp,"sunrise");
+          Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
+          ti2.start_time  = 60*((greece.sunrise(year(), month(), day(), false))+25);
+          prefs.putUChar("ti2.ti_hour",(int)ti2.start_time/3600);
+          prefs.putUChar("ti2.ti_min",(ti2.start_time%3600)/60);
+          prefs.putInt("ti2.start_time",ti2.start_time);
        }
         else if (ti2.ss)
         {
           Blynk.virtualWrite(31,"ss",0,"Europe/Athens",ti2.days_blynk,daylight_offset);
           sprintf(ti2.timeDisp,"sunset");
+          Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
+          ti2.start_time  = 60*((greece.sunset(year(), month(), day(), false))+25);
+          prefs.putUChar("ti2.ti_hour",(int)ti2.start_time/3600);
+          prefs.putUChar("ti2.ti_min",(ti2.start_time%3600)/60);
+          prefs.putInt("ti2.start_time",ti2.start_time);
         }
          else if (ti2.ldr)
         {
@@ -2119,7 +2227,7 @@ void time_input_decr()
         ti3.start_time=(ti3.ti_hour*3600)+(ti3.ti_min*60);
         prefs.putUChar("ti3.ti_hour",ti3.ti_hour);
         prefs.putUChar("ti3.ti_min",ti3.ti_min);
-        prefs.putUChar("ti3.start_time",ti3.start_time);
+        prefs.putInt("ti3.start_time",ti3.start_time);
         prefs.end();
         for(uint8_t d=0; d<7; d++)
        {
@@ -2142,11 +2250,21 @@ void time_input_decr()
        {
           Blynk.virtualWrite(32,"sr",0,"Europe/Athens",ti3.days_blynk,daylight_offset);
           sprintf(ti3.timeDisp,"sunrise");
+          Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
+          ti3.start_time  = 60*((greece.sunrise(year(), month(), day(), false))+25);
+          prefs.putUChar("ti3.ti_hour",(int)ti3.start_time/3600);
+          prefs.putUChar("ti3.ti_min",(ti3.start_time%3600)/60);
+          prefs.putInt("ti3.start_time",ti3.start_time);
        }
         else if (ti3.ss)
         {
           Blynk.virtualWrite(32,"ss",0,"Europe/Athens",ti3.days_blynk,daylight_offset);
           sprintf(ti3.timeDisp,"sunset");
+          Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
+          ti3.start_time  = 60*((greece.sunset(year(), month(), day(), false))+25);
+          prefs.putUChar("ti3.ti_hour",(int)ti3.start_time/3600);
+          prefs.putUChar("ti3.ti_min",(ti3.start_time%3600)/60);
+          prefs.putInt("ti3.start_time",ti3.start_time);
         }
         else if (ti3.ldr)
         {
@@ -2201,7 +2319,7 @@ void select_active_days()
    menu.set_focusPosition(Position::RIGHT);
    menu.switch_focus();
   }
-  menu.update();
+  menu.softUpdate();
 }
 
 void activate_day()
@@ -2338,7 +2456,7 @@ void activate_day()
   prefs.putBytes("ti1.days_flag",ti1.days_flag,8);
   prefs.putBytes("ti2.days_flag",ti2.days_flag,8);
   prefs.putBytes("ti3.days_flag",ti3.days_flag,8);
-  menu.update();
+  menu.softUpdate();
 
 }
 
@@ -2476,7 +2594,7 @@ void deactivate_day()
   prefs.putBytes("ti2.days_flag",ti2.days_flag,8);
   prefs.putBytes("ti3.days_flag",ti3.days_flag,8);
 
-  menu.update();
+  menu.softUpdate();
 }
 
 void time_sr_ss()
@@ -2595,7 +2713,7 @@ void assign_channel()
   }*/
   
   }
-  menu.update();
+  menu.softUpdate();
 }
 
 void assign_channel_()
@@ -2638,7 +2756,7 @@ void assign_channel_()
   }*/
   
   }
-  menu.update();
+  menu.softUpdate();
 }
 
 //Event handler ################################
@@ -2719,15 +2837,24 @@ void automation_handler()
           Blynk.virtualWrite(i+20,(((lights>>i)&1)?1:0));
         }
   }
-
+ 
 }
 
 //*************check time and update *****************
 time_t refresh_time()
 {
+<<<<<<< HEAD
   time_t current_time;
   tmElements_t current_time_elements;
   modem.NTPServerSync("pool.ntp.org",(daylight_offset/3600)*4);
+=======
+  //static uint8_t ntp_counter=0;
+  //if (ntp_counter++ == 600)
+ // {
+ // modem.NTPServerSync("pool.ntp.org",(daylight_offset/3600)*4);
+ // ntp_counter=0;
+  //}
+>>>>>>> 945e720da67efdd1ceeade022e420fd95eea93ed
  //try{
    modem.getNetworkTime(&year_brd,&month_brd,&day_brd,&hour_brd,&minute_brd,&second_brd,&tz);
   // setTime(hour_brd, minute_brd, second_brd, day_brd, month_brd, year_brd);
@@ -2743,15 +2870,19 @@ time_t refresh_time()
   // date_time = String(day()) + '/'+ String(month()) + '/' + String(year())+ 'T'+ String(hour()) + ':' + String(minute());
   // date_time =day() + '/' + month() + '/' + year();
   if(connectionState==BLOCKED)
-  sprintf(date_timebuf, "X %02d/%02d/%04d %02d:%02d", day(),month(),year(), hour(),minute() );
+  sprintf(date_timebuf, "X=D:%02d/%02d/%04d %02d:%02d", day(),month(),year(), hour(),minute() );
   else 
-  sprintf(date_timebuf, "= %02d/%02d/%04d %02d:%02d", day(),month(),year(), hour(),minute() );
+  sprintf(date_timebuf, "==D:%02d/%02d/%04d %02d:%02d", day(),month(),year(), hour(),minute() );
  //} catch(std::exception e) {
   // Serial.println(e.what());
  //}
   //Serial.println(date_time);
+<<<<<<< HEAD
   menu.update();
   return current_time;
+=======
+  menu.softUpdate();
+>>>>>>> 945e720da67efdd1ceeade022e420fd95eea93ed
 }
  
 
@@ -2939,7 +3070,10 @@ void setup() {
   bouncer_Down.interval(2);
   bouncer_Esc.attach(ESC);
   bouncer_Esc.interval(2);
-  
+  //attachInterrupt(ENTER, buttonsCheck, FALLING);
+ // attachInterrupt(UP, buttonsCheck, FALLING);
+ // attachInterrupt(DOWN, buttonsCheck, FALLING);
+ // attachInterrupt(ESC, buttonsCheck, FALLING);
  
   Serial.begin(115200);
   I2CPower.begin(I2C_SDA, I2C_SCL, 400000);
@@ -2977,14 +3111,14 @@ void setup() {
   ti1.ti_hour=prefs.getUChar("ti1.ti_hour",0); 
   ti1.ti_min=prefs.getUChar("ti1.ti_min",0);
   prefs.getBytes("ti1.days_flag",ti1.days_flag,8);
-  ti1.start_time=prefs.getUChar("ti1.start_time",0);
+  ti1.start_time=prefs.getInt("ti1.start_time",0); 
   ti2.ti_hour=prefs.getUChar("ti2.ti_hour",0); 
   ti2.ti_min=prefs.getUChar("ti2.ti_min",0);
-  ti2.start_time=prefs.getUChar("ti2.start_time",0);
+  ti2.start_time=prefs.getInt("ti2.start_time",0);
   prefs.getBytes("ti2.days_flag",ti2.days_flag,8);
   ti3.ti_hour=prefs.getUChar("ti3.ti_hour",0);
   ti3.ti_min=prefs.getUChar("ti3.ti_min",0);
-  ti3.start_time=prefs.getUChar("ti3.start_time",0);
+  ti3.start_time=prefs.getInt("ti3.start_time",0);
   prefs.getBytes("ti3.days_flag",ti3.days_flag,8);
   //prefs.getBytes("stop_times",stop_times,8);
   //prefs.end();
@@ -3345,14 +3479,23 @@ void setup() {
   //date_time = String(day()) + '-' + String(month()) + '-' +String(year()) + " T"+String(hour()) + ':' + String(minute());
   if(GR.utcIsDST(now())) daylight_offset=10800; //check if current time is inside daylight summer time
   else daylight_offset=7200;
+<<<<<<< HEAD
  Serial.printf("Daylight=%d\n",daylight_offset);
   
   timer_buttonsCheck.setInterval(10,buttonsCheck);
   //time_syncTimer.setInterval(6000, refresh_time);
+=======
+  Serial.printf("Daylight=%d\n",daylight_offset);
+  delay(2000);
+  restore_stop();
+  
+  timer_buttonsCheck.setInterval(100,buttonsCheck);
+  time_syncTimer.setInterval(1000, refresh_time);
+>>>>>>> 945e720da67efdd1ceeade022e420fd95eea93ed
   connectionHandlerTimer.setInterval(200, ConnectionHandler);
-  refreshmenuTimer.setInterval(200,refresh_menu);
+  //refreshmenuTimer.setInterval(200,refresh_menu);
   automation_hundler_timer.setInterval(1000,automation_handler);
-  connectionState = AWAIT_GSM_CONNECTION;
+  //connectionState = AWAIT_GSM_CONNECTION;
   menu.update();
 }
 
@@ -3366,7 +3509,7 @@ void loop() {
   timer_buttonsCheck.run();
   time_syncTimer.run();
   connectionHandlerTimer.run();
-  refreshmenuTimer.run();
+  //refreshmenuTimer.run();
   automation_hundler_timer.run();
   if(healthy) Blynk.run();
  delay(20);
