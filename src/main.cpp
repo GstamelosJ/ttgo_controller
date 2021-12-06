@@ -434,16 +434,8 @@ void restore_stop(){
   if(ti1.days_flag[weekday()+dayadjustment])
   {
     Serial.printf("it's day.1 selected=%d\n",weekday());
-<<<<<<< HEAD
-    //if(unixTime<=now()) 
-   // {
-      for(i=0;i<=7;i++)
-      if(follow_timeinput[i]==1) stop_times[i] = unixTime+ch_hours[i]*3600;
-    //}
-=======
     for(i=0;i<=7;i++)
     if(follow_timeinput[i]==1) stop_times[i] = unixTime+ch_hours[i]*3600;
->>>>>>> 945e720da67efdd1ceeade022e420fd95eea93ed
   }
   if(ti2.days_flag[weekday()+dayadjustment])
   {
@@ -456,16 +448,8 @@ void restore_stop(){
     te.Second=0;
     unixTime=makeTime(te);
     Serial.printf("unixTime2=%ld\n",unixTime);
-<<<<<<< HEAD
-    //if(unixTime<=now()) 
-   // {
-      for(i=0;i<=7;i++)
-      if(follow_timeinput[i]==1) stop_times[i] = unixTime+ch_hours[i]*3600;
-   // }
-=======
       for(i=0;i<=7;i++)
       if(follow_timeinput[i]==2) stop_times[i] = unixTime+ch_hours[i]*3600;
->>>>>>> 945e720da67efdd1ceeade022e420fd95eea93ed
   }
   if(ti3.days_flag[weekday()+dayadjustment])
   {
@@ -478,16 +462,8 @@ void restore_stop(){
     te.Second=0;
     unixTime=makeTime(te);
     Serial.printf("unixTime3=%ld\n",unixTime);
-<<<<<<< HEAD
-    //if(unixTime<=now()) 
-    //{
-      for(i=0;i<=7;i++)
-      if(follow_timeinput[i]==1) stop_times[i] = unixTime+ch_hours[i]*3600;
-    //}
-=======
       for(i=0;i<=7;i++)
       if(follow_timeinput[i]==3) stop_times[i] = unixTime+ch_hours[i]*3600;
->>>>>>> 945e720da67efdd1ceeade022e420fd95eea93ed
   }
  Serial.printf("ch1 stop=%d\n",stop_times[0]);
  Serial.printf("ch2 stop=%d\n",stop_times[1]);
@@ -2843,18 +2819,12 @@ void automation_handler()
 //*************check time and update *****************
 time_t refresh_time()
 {
-<<<<<<< HEAD
-  time_t current_time;
-  tmElements_t current_time_elements;
-  modem.NTPServerSync("pool.ntp.org",(daylight_offset/3600)*4);
-=======
   //static uint8_t ntp_counter=0;
   //if (ntp_counter++ == 600)
  // {
  // modem.NTPServerSync("pool.ntp.org",(daylight_offset/3600)*4);
  // ntp_counter=0;
   //}
->>>>>>> 945e720da67efdd1ceeade022e420fd95eea93ed
  //try{
    modem.getNetworkTime(&year_brd,&month_brd,&day_brd,&hour_brd,&minute_brd,&second_brd,&tz);
   // setTime(hour_brd, minute_brd, second_brd, day_brd, month_brd, year_brd);
@@ -2877,12 +2847,7 @@ time_t refresh_time()
   // Serial.println(e.what());
  //}
   //Serial.println(date_time);
-<<<<<<< HEAD
-  menu.update();
-  return current_time;
-=======
   menu.softUpdate();
->>>>>>> 945e720da67efdd1ceeade022e420fd95eea93ed
 }
  
 
@@ -3479,19 +3444,12 @@ void setup() {
   //date_time = String(day()) + '-' + String(month()) + '-' +String(year()) + " T"+String(hour()) + ':' + String(minute());
   if(GR.utcIsDST(now())) daylight_offset=10800; //check if current time is inside daylight summer time
   else daylight_offset=7200;
-<<<<<<< HEAD
- Serial.printf("Daylight=%d\n",daylight_offset);
-  
-  timer_buttonsCheck.setInterval(10,buttonsCheck);
-  //time_syncTimer.setInterval(6000, refresh_time);
-=======
   Serial.printf("Daylight=%d\n",daylight_offset);
   delay(2000);
   restore_stop();
   
   timer_buttonsCheck.setInterval(100,buttonsCheck);
   time_syncTimer.setInterval(1000, refresh_time);
->>>>>>> 945e720da67efdd1ceeade022e420fd95eea93ed
   connectionHandlerTimer.setInterval(200, ConnectionHandler);
   //refreshmenuTimer.setInterval(200,refresh_menu);
   automation_hundler_timer.setInterval(1000,automation_handler);
