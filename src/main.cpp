@@ -1411,7 +1411,7 @@ void  buttonsCheck() {
       while(bouncer_Up.read()==LOW) 
       {
       menu.call_function(1); 
-      delay(500);
+      delay(50);
       bouncer_Up.update();
       }
       
@@ -1436,7 +1436,7 @@ void  buttonsCheck() {
       while(bouncer_Down.read()==LOW) 
       {
       menu.call_function(2); 
-      delay(500);
+      delay(50);
       bouncer_Down.update();
       }
 
@@ -2074,11 +2074,11 @@ void time_input_decr()
     {
       case 2:
         ti1.ti_min--;
-        if (ti1.ti_min<0)
+        if (ti1.ti_min==254)
         {
           ti1.ti_min=59;
           ti1.ti_hour--;
-          if(ti1.ti_hour<0) ti1.ti_hour=23; 
+          if(ti1.ti_hour==254) ti1.ti_hour=23; 
         }
         ti1.start_time=(ti1.ti_hour*3600)+(ti1.ti_min*60);
         prefs.putUChar("ti1.ti_hour",ti1.ti_hour);
