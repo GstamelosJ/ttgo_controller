@@ -2817,7 +2817,7 @@ void automation_handler()
 }
 
 //*************check time and update *****************
-time_t refresh_time()
+void refresh_time()
 {
   //static uint8_t ntp_counter=0;
   //if (ntp_counter++ == 600)
@@ -2828,14 +2828,6 @@ time_t refresh_time()
  //try{
    modem.getNetworkTime(&year_brd,&month_brd,&day_brd,&hour_brd,&minute_brd,&second_brd,&tz);
   // setTime(hour_brd, minute_brd, second_brd, day_brd, month_brd, year_brd);
-  current_time=modem.getNetworkTime(&year_brd,&month_brd,&day_brd,&hour_brd,&minute_brd,&second_brd,&tz);
-   current_time_elements.Year= CalendarYrToTm(year_brd);
-   current_time_elements.Month=month_brd;
-   current_time_elements.Day=day_brd;
-   current_time_elements.Hour=hour_brd;
-   current_time_elements.Minute=minute_brd;
-   current_time_elements.Second=second_brd;
-   current_time=makeTime( current_time_elements);
    //adjustTime(tz*3600);
   // date_time = String(day()) + '/'+ String(month()) + '/' + String(year())+ 'T'+ String(hour()) + ':' + String(minute());
   // date_time =day() + '/' + month() + '/' + year();
@@ -3438,9 +3430,7 @@ void setup() {
   screen8.set_displayLineCount(4);
   //@@@@@@@@@@@@@@@@@@@@@@@@@
  //%%%%%%%%%%%%%%%%%%%%
-  setSyncProvider(refresh_time);
-  setSyncInterval(6);
-  //setTime(hour_brd, *minute_brd, *second_brd, *day_brd, *month_brd, *year_brd);
+   //setTime(hour_brd, *minute_brd, *second_brd, *day_brd, *month_brd, *year_brd);
   //date_time = String(day()) + '-' + String(month()) + '-' +String(year()) + " T"+String(hour()) + ':' + String(minute());
   if(GR.utcIsDST(now())) daylight_offset=10800; //check if current time is inside daylight summer time
   else daylight_offset=7200;
