@@ -1847,21 +1847,16 @@ void time_input_incr()
        {
           Blynk.virtualWrite(30,"sr",0,"Europe/Athens",ti1.days_blynk,daylight_offset);
           sprintf(ti1.timeDisp,"sunrise");
-          Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
-          ti1.start_time  = 60*((greece.sunrise(year(), month(), day(), false))+25);
-          prefs.putUChar("ti1.ti_hour",(int)ti1.start_time/3600);
-          prefs.putUChar("ti1.ti_min",(ti1.start_time%3600)/60);
-          prefs.putInt("ti1.start_time",ti1.start_time);
+          //Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
+          //ti1.start_time  = 60*((greece.sunrise(year(), month(), day(), false))+25);
        }
         else if (ti1.ss)
         {
           Blynk.virtualWrite(30,"ss",0,"Europe/Athens",ti1.days_blynk,daylight_offset);
           sprintf(ti1.timeDisp,"sunset");
-          Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
-          ti1.start_time  = 60*((greece.sunset(year(), month(), day(), false))+25);
-          prefs.putUChar("ti1.ti_hour",(int)ti1.start_time/3600);
-          prefs.putUChar("ti1.ti_min",(ti1.start_time%3600)/60);
-          prefs.putInt("ti1.start_time",ti1.start_time);
+          //Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
+          //ti1.start_time  = 60*((greece.sunset(year(), month(), day(), false))+25);
+  
         }
         else if (ti1.ldr)
         {
@@ -1907,21 +1902,16 @@ void time_input_incr()
        {
           Blynk.virtualWrite(31,"sr",0,"Europe/Athens",ti2.days_blynk,daylight_offset);
           sprintf(ti2.timeDisp,"sunrise");
-          Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
-          ti2.start_time  = 60*((greece.sunrise(year(), month(), day(), false))+25);
-          prefs.putUChar("ti2.ti_hour",(int)ti2.start_time/3600);
-          prefs.putUChar("ti2.ti_min",(ti2.start_time%3600)/60);
-          prefs.putInt("ti2.start_time",ti2.start_time);
+         // Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
+         // ti2.start_time  = 60*((greece.sunrise(year(), month(), day(), false))+25);
+
        }
         else if (ti2.ss)
         {
           Blynk.virtualWrite(31,"ss",0,"Europe/Athens",ti2.days_blynk,daylight_offset);
           sprintf(ti2.timeDisp,"sunset");
-          Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
-          ti2.start_time  = 60*((greece.sunset(year(), month(), day(), false))+25);
-          prefs.putUChar("ti2.ti_hour",(int)ti2.start_time/3600);
-          prefs.putUChar("ti2.ti_min",(ti2.start_time%3600)/60);
-          prefs.putInt("ti2.start_time",ti2.start_time);
+         // Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
+         // ti2.start_time  = 60*((greece.sunset(year(), month(), day(), false))+25);
         }
         else if (ti2.ldr)
         {
@@ -1967,21 +1957,15 @@ void time_input_incr()
        {
           Blynk.virtualWrite(32,"sr",0,"Europe/Athens",ti3.days_blynk,daylight_offset);
           sprintf(ti3.timeDisp,"sunrise");
-          Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
-          ti3.start_time  = 60*((greece.sunrise(year(), month(), day(), false))+25);
-          prefs.putUChar("ti3.ti_hour",(int)ti3.start_time/3600);
-          prefs.putUChar("ti3.ti_min",(ti3.start_time%3600)/60);
-          prefs.putInt("ti3.start_time",ti3.start_time);
+         // Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
+         // ti3.start_time  = 60*((greece.sunrise(year(), month(), day(), false))+25);
        }
         else if (ti3.ss)
         {
           Blynk.virtualWrite(32,"ss",0,"Europe/Athens",ti3.days_blynk,daylight_offset);
           sprintf(ti3.timeDisp,"sunset");
-          Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
-          ti3.start_time  = 60*((greece.sunset(year(), month(), day(), false))+25);
-          prefs.putUChar("ti3.ti_hour",(int)ti3.start_time/3600);
-          prefs.putUChar("ti3.ti_min",(ti3.start_time%3600)/60);
-          prefs.putInt("ti3.start_time",ti3.start_time);
+         // Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
+         // ti3.start_time  = 60*((greece.sunset(year(), month(), day(), false))+25);
         }
         else if (ti3.ldr)
         {
@@ -2105,21 +2089,17 @@ void time_input_decr()
        {
           Blynk.virtualWrite(30,"sr",0,"Europe/Athens",ti1.days_blynk,daylight_offset);
           sprintf(ti1.timeDisp,"sunrise");
-          Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
-          ti1.start_time  = 60*((greece.sunrise(year(), month(), day(), false))+25);
-          prefs.putUChar("ti1.ti_hour",(int)ti1.start_time/3600);
-          prefs.putUChar("ti1.ti_min",(ti1.start_time%3600)/60);
-          prefs.putInt("ti1.start_time",ti1.start_time);
+          //Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
+          //ti1.start_time  = 60*((greece.sunrise(year(), month(), day(), false))+25);
+          
        }
         else if (ti1.ss)
         {
           Blynk.virtualWrite(30,"ss",0,"Europe/Athens",ti1.days_blynk,daylight_offset);
           sprintf(ti1.timeDisp,"sunset");
-          Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
-          ti1.start_time  = 60*((greece.sunset(year(), month(), day(), false))+25);
-          prefs.putUChar("ti1.ti_hour",(int)ti1.start_time/3600);
-          prefs.putUChar("ti1.ti_min",(ti1.start_time%3600)/60);
-          prefs.putInt("ti1.start_time",ti1.start_time);
+          //Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
+          //ti1.start_time  = 60*((greece.sunset(year(), month(), day(), false))+25);
+          
         }
         else if (ti1.ldr)
         {
@@ -2165,21 +2145,15 @@ void time_input_decr()
        {
           Blynk.virtualWrite(31,"sr",0,"Europe/Athens",ti2.days_blynk,daylight_offset);
           sprintf(ti2.timeDisp,"sunrise");
-          Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
-          ti2.start_time  = 60*((greece.sunrise(year(), month(), day(), false))+25);
-          prefs.putUChar("ti2.ti_hour",(int)ti2.start_time/3600);
-          prefs.putUChar("ti2.ti_min",(ti2.start_time%3600)/60);
-          prefs.putInt("ti2.start_time",ti2.start_time);
+          //Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
+          //ti2.start_time  = 60*((greece.sunrise(year(), month(), day(), false))+25);
        }
         else if (ti2.ss)
         {
           Blynk.virtualWrite(31,"ss",0,"Europe/Athens",ti2.days_blynk,daylight_offset);
           sprintf(ti2.timeDisp,"sunset");
-          Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
-          ti2.start_time  = 60*((greece.sunset(year(), month(), day(), false))+25);
-          prefs.putUChar("ti2.ti_hour",(int)ti2.start_time/3600);
-          prefs.putUChar("ti2.ti_min",(ti2.start_time%3600)/60);
-          prefs.putInt("ti2.start_time",ti2.start_time);
+          //Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
+          //ti2.start_time  = 60*((greece.sunset(year(), month(), day(), false))+25);
         }
          else if (ti2.ldr)
         {
@@ -2226,21 +2200,16 @@ void time_input_decr()
        {
           Blynk.virtualWrite(32,"sr",0,"Europe/Athens",ti3.days_blynk,daylight_offset);
           sprintf(ti3.timeDisp,"sunrise");
-          Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
-          ti3.start_time  = 60*((greece.sunrise(year(), month(), day(), false))+25);
-          prefs.putUChar("ti3.ti_hour",(int)ti3.start_time/3600);
-          prefs.putUChar("ti3.ti_min",(ti3.start_time%3600)/60);
-          prefs.putInt("ti3.start_time",ti3.start_time);
+          //Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
+          //ti3.start_time  = 60*((greece.sunrise(year(), month(), day(), false))+25);
+          
        }
         else if (ti3.ss)
         {
           Blynk.virtualWrite(32,"ss",0,"Europe/Athens",ti3.days_blynk,daylight_offset);
           sprintf(ti3.timeDisp,"sunset");
-          Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
-          ti3.start_time  = 60*((greece.sunset(year(), month(), day(), false))+25);
-          prefs.putUChar("ti3.ti_hour",(int)ti3.start_time/3600);
-          prefs.putUChar("ti3.ti_min",(ti3.start_time%3600)/60);
-          prefs.putInt("ti3.start_time",ti3.start_time);
+          //Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
+          //ti3.start_time  = 60*((greece.sunset(year(), month(), day(), false))+25);
         }
         else if (ti3.ldr)
         {
@@ -2827,7 +2796,7 @@ void refresh_time()
   //}
  //try{
    modem.getNetworkTime(&year_brd,&month_brd,&day_brd,&hour_brd,&minute_brd,&second_brd,&tz);
-  // setTime(hour_brd, minute_brd, second_brd, day_brd, month_brd, year_brd);
+   setTime(hour_brd, minute_brd, second_brd, day_brd, month_brd, year_brd);
    //adjustTime(tz*3600);
   // date_time = String(day()) + '/'+ String(month()) + '/' + String(year())+ 'T'+ String(hour()) + ':' + String(minute());
   // date_time =day() + '/' + month() + '/' + year();
@@ -3435,6 +3404,7 @@ void setup() {
   if(GR.utcIsDST(now())) daylight_offset=10800; //check if current time is inside daylight summer time
   else daylight_offset=7200;
   Serial.printf("Daylight=%d\n",daylight_offset);
+  refresh_time();
   delay(2000);
   restore_stop();
   
