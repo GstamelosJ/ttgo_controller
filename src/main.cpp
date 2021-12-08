@@ -2058,11 +2058,11 @@ void time_input_decr()
     {
       case 2:
         ti1.ti_min--;
-        if (ti1.ti_min==254)
+        if (ti1.ti_min==255)
         {
           ti1.ti_min=59;
           ti1.ti_hour--;
-          if(ti1.ti_hour==254) ti1.ti_hour=23; 
+          if(ti1.ti_hour==255) ti1.ti_hour=23; 
         }
         ti1.start_time=(ti1.ti_hour*3600)+(ti1.ti_min*60);
         prefs.putUChar("ti1.ti_hour",ti1.ti_hour);
@@ -2114,11 +2114,11 @@ void time_input_decr()
       break;
       case 4:
         ti2.ti_min--;
-        if (ti2.ti_min<0)
+        if (ti2.ti_min==255)
         {
           ti2.ti_min=59;
           ti2.ti_hour--;
-          if(ti2.ti_hour<0) ti2.ti_hour=23; 
+          if(ti2.ti_hour==255) ti2.ti_hour=23; 
         }
         ti2.start_time=(ti2.ti_hour*3600)+(ti2.ti_min*60);
         prefs.putUChar("ti2.ti_hour",ti2.ti_hour);
@@ -2168,11 +2168,11 @@ void time_input_decr()
       break;
       case 6:
         ti3.ti_min--;
-        if (ti3.ti_min<0)
+        if (ti3.ti_min==255)
         {
           ti3.ti_min=59;
           ti3.ti_hour--;
-          if(ti3.ti_hour<0) ti3.ti_hour=23; 
+          if(ti3.ti_hour==255) ti3.ti_hour=23; 
         }
         ti3.start_time=(ti3.ti_hour*3600)+(ti3.ti_min*60);
         prefs.putUChar("ti3.ti_hour",ti3.ti_hour);
