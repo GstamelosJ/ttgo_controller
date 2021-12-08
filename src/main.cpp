@@ -113,8 +113,8 @@ Button down(DOWN,pullup);
 String msg1;
 String msg2;
 String date_time;
-int ch1_hours, ch2_hours, ch3_hours, ch4_hours, ch5_hours, ch6_hours, ch7_hours, ch8_hours, pg_hours, csq;
-int ch_hours[8];
+uint8_t ch1_hours, ch2_hours, ch3_hours, ch4_hours, ch5_hours, ch6_hours, ch7_hours, ch8_hours, pg_hours, csq;
+uint8_t ch_hours[8];
 char days[7] = {'M','T','W','T','F','S','S'};
 
 static uint8_t days_id=1;
