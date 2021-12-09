@@ -1389,9 +1389,9 @@ void reconnectBlynk() {
 
 //Buttons_menu function
 void  buttonsCheck() {
-  uint8_t push_cnt;
-	bouncer_Up.update();
+  uint8_t push_cnt=0;
   try{
+    bouncer_Up.update();
   if (bouncer_Up.fell())
 	 {
 		// Calls the function identified with
@@ -1530,7 +1530,7 @@ void toggle_lights()
   Serial.printf("lights=%d \n", lights);
   //if(menu.get_currentScreen()==&screen3)
   //{
-     if(((auto_light>>channel)&1)&& !((lights>>channel)&1)) event_hanler(MANUAL,channel);
+  if(((auto_light>>channel)&1)&& !((lights>>channel)&1)) event_hanler(MANUAL,channel);
   else
   {
     lights^=(1<<channel);
@@ -1538,6 +1538,7 @@ void toggle_lights()
     Blynk.virtualWrite(channel,(0x01&(lights>>channel)));
     Blynk.virtualWrite(channel+20,(0x01&(lights>>channel)));
    // Blynk.virtualWrite(channel+9,(0x01&(lights>>channel))?255:0);
+
   }
   light_stat[channel]=(char*)(((lights>>channel)&0x01)?"On ":"Off");
   for (uint8_t i = 0; i<8; i++)
@@ -1616,56 +1617,56 @@ void time_increment()
   ch1_hours++;
   if (ch1_hours==12)ch1_hours=0;
   ch_hours[0]=ch1_hours;
-  prefs.putUChar("ch1_time",ch1_hours);
+  prefs.putUChar("ch1_hours",ch1_hours);
   Blynk.virtualWrite(10,ch1_hours);
   break;
   case 2:
   ch2_hours++;
   if (ch2_hours==12)ch2_hours=0;
   ch_hours[1]=ch2_hours;
-  prefs.putUChar("ch2_time",ch2_hours);
+  prefs.putUChar("ch2_hours",ch2_hours);
   Blynk.virtualWrite(11,ch2_hours);
   break;
   case 3:
   ch3_hours++;
   if (ch3_hours==12)ch3_hours=0;
   ch_hours[2]=ch3_hours;
-  prefs.putUChar("ch3_time",ch3_hours);
+  prefs.putUChar("ch3_hours",ch3_hours);
   Blynk.virtualWrite(12,ch3_hours);
   break;
   case 4:
   ch4_hours++;
   if (ch4_hours==12)ch4_hours=0;
   ch_hours[3]=ch4_hours;
-  prefs.putUChar("ch4_time",ch4_hours);
+  prefs.putUChar("ch4_hours",ch4_hours);
   Blynk.virtualWrite(13,ch4_hours);
   break;
   case 5:
   ch5_hours++;
   if (ch5_hours==12)ch5_hours=0;
   ch_hours[4]=ch5_hours;
-  prefs.putUChar("ch5_time",ch5_hours);
+  prefs.putUChar("ch5_hours",ch5_hours);
   Blynk.virtualWrite(14,ch5_hours);
   break;
   case 6:
   ch6_hours++;
   if (ch6_hours==12)ch6_hours=0;
   ch_hours[5]=ch6_hours;
-  prefs.putUChar("ch6_time",ch6_hours);
+  prefs.putUChar("ch6_hours",ch6_hours);
   Blynk.virtualWrite(15,ch6_hours);
   break; 
   case 7:
   ch7_hours++;
   if (ch7_hours==12)ch7_hours=0;
   ch_hours[6]=ch7_hours;
-  prefs.putUChar("ch7_time",ch7_hours);
+  prefs.putUChar("ch7_hours",ch7_hours);
   Blynk.virtualWrite(16,ch7_hours);
   break;
   case 8:
   ch8_hours++;
   if (ch8_hours==12)ch8_hours=0;
   ch_hours[7]=ch8_hours;
-  prefs.putUChar("ch8_time",ch8_hours);
+  prefs.putUChar("ch8_hours",ch8_hours);
   Blynk.virtualWrite(17,ch8_hours);
   break;
   prefs.end();
@@ -1685,55 +1686,55 @@ void time_decr()
   ch1_hours--;
   if (ch1_hours==0)ch1_hours=12;
   ch_hours[0]=ch1_hours;
-  prefs.putUChar("ch1_time",ch1_hours);
+  prefs.putUChar("ch1_hours",ch1_hours);
   Blynk.virtualWrite(10,ch1_hours);
   break;
   case 2:
   ch2_hours--;
   if (ch2_hours==0)ch2_hours=12;
   ch_hours[1]=ch2_hours;
-  prefs.putUChar("ch2_time",ch2_hours);
+  prefs.putUChar("ch2_hours",ch2_hours);
   Blynk.virtualWrite(11,ch2_hours);
   break;
   case 3:
   ch3_hours--;
   if (ch3_hours==0)ch3_hours=12;
   ch_hours[2]=ch3_hours;
-  prefs.putUChar("ch3_time",ch3_hours);
+  prefs.putUChar("ch3_hours",ch3_hours);
   Blynk.virtualWrite(12,ch2_hours);
   case 4:
   ch4_hours--;
   if (ch4_hours==0)ch4_hours=12;
   ch_hours[3]=ch4_hours;
-  prefs.putUChar("ch4_time",ch4_hours);
+  prefs.putUChar("ch4_hours",ch4_hours);
   Blynk.virtualWrite(13,ch2_hours);
   break;
   case 5:
   ch5_hours--;
   if (ch5_hours==0)ch5_hours=12;
   ch_hours[4]=ch5_hours;
-  prefs.putUChar("ch5_time",ch5_hours);
+  prefs.putUChar("ch5_hours",ch5_hours);
   Blynk.virtualWrite(14,ch2_hours);
   break;
   case 6:
   ch6_hours--;
   if (ch6_hours==0)ch6_hours=12;
   ch_hours[5]=ch6_hours;
-  prefs.putUChar("ch6_time",ch6_hours);
+  prefs.putUChar("ch6_hours",ch6_hours);
   Blynk.virtualWrite(15,ch2_hours);
   break; 
   case 7:
-  ch5_hours--;
+  ch7_hours--;
   if (ch7_hours==0)ch7_hours=12;
   ch_hours[6]=ch7_hours;
-  prefs.putUChar("ch7_time",ch7_hours);
+  prefs.putUChar("ch7_hours",ch7_hours);
   Blynk.virtualWrite(16,ch2_hours);
   break;
   case 8:
-  ch5_hours--;
+  ch8_hours--;
   if (ch8_hours==0)ch8_hours=12;
   ch_hours[7]=ch8_hours;
-  prefs.putUChar("ch8_time",ch8_hours);
+  prefs.putUChar("ch8_hours",ch8_hours);
   Blynk.virtualWrite(17,ch2_hours);
   break;
   prefs.end();
@@ -2773,7 +2774,7 @@ void automation_handler()
   for (i=0;i<=7;i++)
   {
     if((auto_light>>i)&0x01)
-      if((stop_times[i]<=now())&&(stop_times[i]+30>=now()))
+      if((now()>=stop_times[i])&&(now()<=stop_times[i]+30))
         { 
           Serial.printf("Stop time expired at %ld \n", now());
           lights&=~(1<<i);
@@ -2782,7 +2783,7 @@ void automation_handler()
           Blynk.virtualWrite(i+20,(((lights>>i)&1)?1:0));
         }
   }
- 
+ refresh_menu();
 }
 
 //*************check time and update *****************
@@ -3411,7 +3412,7 @@ void setup() {
   timer_buttonsCheck.setInterval(100,buttonsCheck);
   time_syncTimer.setInterval(1000, refresh_time);
   connectionHandlerTimer.setInterval(200, ConnectionHandler);
-  //refreshmenuTimer.setInterval(200,refresh_menu);
+  refreshmenuTimer.setInterval(200,refresh_menu);
   automation_hundler_timer.setInterval(1000,automation_handler);
   //connectionState = AWAIT_GSM_CONNECTION;
   menu.update();
@@ -3427,7 +3428,7 @@ void loop() {
   timer_buttonsCheck.run();
   time_syncTimer.run();
   connectionHandlerTimer.run();
-  //refreshmenuTimer.run();
+  refreshmenuTimer.run();
   automation_hundler_timer.run();
   if(healthy) Blynk.run();
  delay(20);
