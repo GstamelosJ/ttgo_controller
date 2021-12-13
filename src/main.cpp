@@ -1192,10 +1192,10 @@ BLYNK_WRITE(V30)// lights sceduler
        ti1.daysDisp[d]=ti1.days_flag[d] ? days[d] : 'X';
     }
     ti1.daysDisp[7]='\0';
-  prefs.putUChar("ti1.ti_hour",ti1.ti_hour);
-  prefs.putUChar("ti1.ti_min",ti1.ti_min);
-  prefs.putInt("ti1.start_time",ti1.start_time);
-  prefs.putBytes("ti1.days_flag",ti1.days_flag,8);
+  prefs.putUChar("ti1_ti_hour",ti1.ti_hour);
+  prefs.putUChar("ti1_ti_min",ti1.ti_min);
+  prefs.putInt("ti1_start_time",ti1.start_time);
+  prefs.putBytes("ti1_days_flag",ti1.days_flag,8);
 }
 
 BLYNK_WRITE(V31)// lights sceduler  
@@ -1268,10 +1268,10 @@ BLYNK_WRITE(V31)// lights sceduler
        ti2.daysDisp[d]=ti2.days_flag[d] ? days[d] : 'X';
     }
     ti2.daysDisp[7]='\0'; 
-  prefs.putUChar("ti2.ti_hour",ti2.ti_hour);
-  prefs.putUChar("ti2.ti_min",ti2.ti_min);
-  prefs.putInt("ti2.start_time",ti2.start_time);
-  prefs.putBytes("ti2.days_flag",ti2.days_flag,8);
+  prefs.putUChar("ti2_ti_hour",ti2.ti_hour);
+  prefs.putUChar("ti2_ti_min",ti2.ti_min);
+  prefs.putInt("ti2_start_time",ti2.start_time);
+  prefs.putBytes("ti2_days_flag",ti2.days_flag,8);
 
 }
 
@@ -1345,10 +1345,10 @@ BLYNK_WRITE(V32)// lights sceduler
        ti3.daysDisp[d]=ti3.days_flag[d] ? days[d] : 'X';
     }
     ti3.daysDisp[7]='\0';
-  prefs.putUChar("ti3.ti_hour",ti3.ti_hour);
-  prefs.putUChar("ti3.ti_min",ti3.ti_min);
-  prefs.putInt("ti3.start_time",ti3.start_time);
-  prefs.putBytes("ti3.days_flag",ti3.days_flag,8);
+  prefs.putUChar("ti3_ti_hour",ti3.ti_hour);
+  prefs.putUChar("ti3_ti_min",ti3.ti_min);
+  prefs.putInt("ti3_start_time",ti3.start_time);
+  prefs.putBytes("ti3_days_flag",ti3.days_flag,8);
 }
 
 void reconnectBlynk() {
@@ -1823,9 +1823,9 @@ void time_input_incr()
           if(ti1.ti_hour==24) ti1.ti_hour=0; 
         }
         ti1.start_time=(ti1.ti_hour*3600)+(ti1.ti_min*60);
-        prefs.putUChar("ti1.ti_hour",ti1.ti_hour);
-        prefs.putUChar("ti1.ti_min",ti1.ti_min);
-        prefs.putInt("ti1.start_time",ti1.start_time);
+        prefs.putUChar("ti1_ti_hour",ti1.ti_hour);
+        prefs.putUChar("ti1_ti_min",ti1.ti_min);
+        prefs.putInt("ti1_start_time",ti1.start_time);
        // sprintf(str_buf, "%02d:%02d", ti1.ti_hour,ti1.ti_min );
        for(uint8_t d=0; d<7; d++)
        {
@@ -1879,9 +1879,9 @@ void time_input_incr()
           if(ti2.ti_hour==24) ti2.ti_hour=0; 
         }
         ti2.start_time=(ti2.ti_hour*3600)+(ti2.ti_min*60);
-        prefs.putUChar("ti2.ti_hour",ti2.ti_hour);
-        prefs.putUChar("ti2.ti_min",ti2.ti_min);
-        prefs.putInt("ti2.start_time",ti2.start_time);
+        prefs.putUChar("ti2_ti_hour",ti2.ti_hour);
+        prefs.putUChar("ti2_ti_min",ti2.ti_min);
+        prefs.putInt("ti2_start_time",ti2.start_time);
         for(uint8_t d=0; d<7; d++)
        {
        if(ti2.days_flag[d]&&d==0)
@@ -1934,9 +1934,9 @@ void time_input_incr()
           if(ti3.ti_hour==24) ti3.ti_hour=0; 
         }
         ti3.start_time=(ti3.ti_hour*3600)+(ti3.ti_min*60);
-        prefs.putUChar("ti3.ti_hour",ti3.ti_hour);
-        prefs.putUChar("ti3.ti_min",ti3.ti_min);
-        prefs.putInt("ti3.start_time",ti3.start_time);
+        prefs.putUChar("ti3_ti_hour",ti3.ti_hour);
+        prefs.putUChar("ti3_ti_min",ti3.ti_min);
+        prefs.putInt("ti3_start_time",ti3.start_time);
         for(uint8_t d=0; d<7; d++)
        {
        if(ti3.days_flag[d]&&d==0)
@@ -2066,9 +2066,9 @@ void time_input_decr()
           if(ti1.ti_hour==255) ti1.ti_hour=23; 
         }
         ti1.start_time=(ti1.ti_hour*3600)+(ti1.ti_min*60);
-        prefs.putUChar("ti1.ti_hour",ti1.ti_hour);
-        prefs.putUChar("ti1.ti_min",ti1.ti_min);
-        prefs.putInt("ti1.start_time",ti1.start_time);
+        prefs.putUChar("ti1_ti_hour",ti1.ti_hour);
+        prefs.putUChar("ti1_ti_min",ti1.ti_min);
+        prefs.putInt("ti1_start_time",ti1.start_time);
         for(uint8_t d=0; d<7; d++)
        {
        if(ti1.days_flag[d]&&d==0)
@@ -2122,9 +2122,9 @@ void time_input_decr()
           if(ti2.ti_hour==255) ti2.ti_hour=23; 
         }
         ti2.start_time=(ti2.ti_hour*3600)+(ti2.ti_min*60);
-        prefs.putUChar("ti2.ti_hour",ti2.ti_hour);
-        prefs.putUChar("ti2.ti_min",ti2.ti_min);
-        prefs.putInt("ti2.start_time",ti2.start_time);
+        prefs.putUChar("ti2_ti_hour",ti2.ti_hour);
+        prefs.putUChar("ti2_ti_min",ti2.ti_min);
+        prefs.putInt("ti2_start_time",ti2.start_time);
         for(uint8_t d=0; d<7; d++)
        {
        if(ti2.days_flag[d]&&d==0)
@@ -2176,9 +2176,9 @@ void time_input_decr()
           if(ti3.ti_hour==255) ti3.ti_hour=23; 
         }
         ti3.start_time=(ti3.ti_hour*3600)+(ti3.ti_min*60);
-        prefs.putUChar("ti3.ti_hour",ti3.ti_hour);
-        prefs.putUChar("ti3.ti_min",ti3.ti_min);
-        prefs.putInt("ti3.start_time",ti3.start_time);
+        prefs.putUChar("ti3_ti_hour",ti3.ti_hour);
+        prefs.putUChar("ti3_ti_min",ti3.ti_min);
+        prefs.putInt("ti3_start_time",ti3.start_time);
         prefs.end();
         for(uint8_t d=0; d<7; d++)
        {
@@ -2399,9 +2399,9 @@ void activate_day()
     break;
     
   }
-  prefs.putBytes("ti1.days_flag",ti1.days_flag,8);
-  prefs.putBytes("ti2.days_flag",ti2.days_flag,8);
-  prefs.putBytes("ti3.days_flag",ti3.days_flag,8);
+  prefs.putBytes("ti1_days_flag",ti1.days_flag,8);
+  prefs.putBytes("ti2_days_flag",ti2.days_flag,8);
+  prefs.putBytes("ti3_days_flag",ti3.days_flag,8);
   menu.softUpdate();
 
 }
@@ -2536,9 +2536,9 @@ void deactivate_day()
     break;
     
   }
-  prefs.putBytes("ti1.days_flag",ti1.days_flag,8);
-  prefs.putBytes("ti2.days_flag",ti2.days_flag,8);
-  prefs.putBytes("ti3.days_flag",ti3.days_flag,8);
+  prefs.putBytes("ti1_days_flag",ti1.days_flag,8);
+  prefs.putBytes("ti2_days_flag",ti2.days_flag,8);
+  prefs.putBytes("ti3_days_flag",ti3.days_flag,8);
 
   menu.softUpdate();
 }
@@ -3018,7 +3018,7 @@ void setup() {
   prev_millis=millis();
   Serial.setDebugOutput(true);
   //EEPROM.get(0, pg_hours);
-  prefs.begin("values_store",false);
+  prefs.begin("values",false);
   //prefs.clear();
   ch1_hours=prefs.getUChar("ch1_hours",1);
   ch2_hours=prefs.getUChar("ch2_hours",1);
@@ -3037,18 +3037,18 @@ void setup() {
   follow_timeinput[6]= prefs.getUChar("ch7_time_input",1);
   follow_timeinput[7]= prefs.getUChar("ch8_time_input",1);
   auto_light=prefs.getUChar("auto_light", 0);
-  ti1.ti_hour=prefs.getUChar("ti1.ti_hour",0); 
-  ti1.ti_min=prefs.getUChar("ti1.ti_min",0);
-  prefs.getBytes("ti1.days_flag",ti1.days_flag,8);
-  ti1.start_time=prefs.getInt("ti1.start_time",0); 
-  ti2.ti_hour=prefs.getUChar("ti2.ti_hour",0); 
-  ti2.ti_min=prefs.getUChar("ti2.ti_min",0);
-  ti2.start_time=prefs.getInt("ti2.start_time",0);
-  prefs.getBytes("ti2.days_flag",ti2.days_flag,8);
-  ti3.ti_hour=prefs.getUChar("ti3.ti_hour",0);
-  ti3.ti_min=prefs.getUChar("ti3.ti_min",0);
-  ti3.start_time=prefs.getInt("ti3.start_time",0);
-  prefs.getBytes("ti3.days_flag",ti3.days_flag,8);
+  ti1.ti_hour=prefs.getUChar("ti1_ti_hour",0); 
+  ti1.ti_min=prefs.getUChar("ti1_ti_min",0);
+  prefs.getBytes("ti1_days_flag",ti1.days_flag,8);
+  ti1.start_time=prefs.getInt("ti1_start_time",0); 
+  ti2.ti_hour=prefs.getUChar("ti2_ti_hour",0); 
+  ti2.ti_min=prefs.getUChar("ti2_ti_min",0);
+  ti2.start_time=prefs.getInt("ti2_start_time",0);
+  prefs.getBytes("ti2_days_flag",ti2.days_flag,8);
+  ti3.ti_hour=prefs.getUChar("ti3_ti_hour",0);
+  ti3.ti_min=prefs.getUChar("ti3_ti_min",0);
+  ti3.start_time=prefs.getInt("ti3_start_time",0);
+  prefs.getBytes("ti3_days_flag",ti3.days_flag,8);
   //prefs.getBytes("stop_times",stop_times,8);
   //prefs.end();
   delay(2000);
