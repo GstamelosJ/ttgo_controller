@@ -3016,8 +3016,10 @@ void setup() {
   /////////
   ConnectionHandler();
   prev_millis=millis();
+  Serial.setDebugOutput(true);
   //EEPROM.get(0, pg_hours);
   prefs.begin("values_store",false);
+  //prefs.clear();
   ch1_hours=prefs.getUChar("ch1_hours",1);
   ch2_hours=prefs.getUChar("ch2_hours",1);
   ch3_hours=prefs.getUChar("ch3_hours",1);
@@ -3049,6 +3051,7 @@ void setup() {
   prefs.getBytes("ti3.days_flag",ti3.days_flag,8);
   //prefs.getBytes("stop_times",stop_times,8);
   //prefs.end();
+  delay(2000);
   for (uint8_t i=0; i==7; i++)
   {
     switch (i)
@@ -3409,7 +3412,7 @@ void setup() {
   delay(2000);
   restore_stop();
   
-  timer_buttonsCheck.setInterval(100,buttonsCheck);
+  timer_buttonsCheck.setInterval(10,buttonsCheck);
   time_syncTimer.setInterval(1000, refresh_time);
   connectionHandlerTimer.setInterval(200, ConnectionHandler);
   refreshmenuTimer.setInterval(200,refresh_menu);
