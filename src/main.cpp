@@ -1669,7 +1669,7 @@ void time_increment()
   prefs.putUChar("ch8_hours",ch8_hours);
   Blynk.virtualWrite(17,ch8_hours);
   break;
-  prefs.end();
+  //prefs.end();
   }
   //}
   menu.softUpdate();
@@ -1737,7 +1737,7 @@ void time_decr()
   prefs.putUChar("ch8_hours",ch8_hours);
   Blynk.virtualWrite(17,ch2_hours);
   break;
-  prefs.end();
+  //prefs.end();
     }
   //}
   menu.softUpdate();
@@ -1804,7 +1804,7 @@ void time_input_incr()
           prefs.putUChar("ch8_time_input",follow_timeinput[7]);
           Blynk.virtualWrite(57,follow_timeinput[7]);
     break;
-    prefs.end();
+    //prefs.end();
     }
     //}
     menu.softUpdate();
@@ -1983,7 +1983,7 @@ void time_input_incr()
     }
 
   }
-  prefs.end();
+  //prefs.end();
 }
 
 void time_input_decr()
@@ -2046,7 +2046,7 @@ void time_input_decr()
             prefs.putUChar("ch8_time_input",follow_timeinput[7]);
             Blynk.virtualWrite(57,follow_timeinput[7]);
       break;
-      prefs.end();
+      //prefs.end();
 
       }
       //}
@@ -2179,7 +2179,7 @@ void time_input_decr()
         prefs.putUChar("ti3_ti_hour",ti3.ti_hour);
         prefs.putUChar("ti3_ti_min",ti3.ti_min);
         prefs.putInt("ti3_start_time",ti3.start_time);
-        prefs.end();
+       // prefs.end();
         for(uint8_t d=0; d<7; d++)
        {
        if(ti3.days_flag[d]&&d==0)
@@ -2227,7 +2227,7 @@ void time_input_decr()
     }
 
   }
-  prefs.end();
+  //prefs.end();
 }
 
 void select_active_days()
@@ -2314,6 +2314,7 @@ void activate_day()
           Blynk.virtualWrite(30,(ti1.ti_hour*60+ti1.ti_min)*60,0,"Europe/Athens",ti1.days_blynk,daylight_offset);
           sprintf(ti1.timeDisp,"%2d:%2d",ti1.ti_hour,ti1.ti_min);
         }
+        prefs.putBytes("ti1_days_flag",ti1.days_flag,8);
     break;
     case 3:
     ti2.days_flag[days_id]=1;
@@ -2354,7 +2355,8 @@ void activate_day()
         {
           Blynk.virtualWrite(31,((ti2.ti_hour*60+ti2.ti_min)*60),0,"Europe/Athens",ti2.days_blynk,daylight_offset);
           sprintf(ti2.timeDisp,"%2d:%2d",ti2.ti_hour,ti2.ti_min);
-        }
+        }            
+          prefs.putBytes("ti2_days_flag",ti2.days_flag,8);
     break;
     case 5:
     ti3.days_flag[days_id]=1;
@@ -2396,12 +2398,11 @@ void activate_day()
         Blynk.virtualWrite(32,(ti3.ti_hour*60+ti3.ti_min)*60,0,"Europe/Athens",ti3.days_blynk,daylight_offset);
         sprintf(ti3.timeDisp,"%2d:%2d",ti3.ti_hour,ti3.ti_min);
         }
+
+        prefs.putBytes("ti3_days_flag",ti3.days_flag,8);
     break;
     
   }
-  prefs.putBytes("ti1_days_flag",ti1.days_flag,8);
-  prefs.putBytes("ti2_days_flag",ti2.days_flag,8);
-  prefs.putBytes("ti3_days_flag",ti3.days_flag,8);
   menu.softUpdate();
 
 }
@@ -2451,6 +2452,7 @@ void deactivate_day()
           Blynk.virtualWrite(30,(ti1.ti_hour*60+ti1.ti_min)*60,0,"Europe/Athens",ti1.days_blynk,daylight_offset);
           sprintf(ti1.timeDisp,"%2d:%2d",ti1.ti_hour,ti1.ti_min);
         }
+        prefs.putBytes("ti1_days_flag",ti1.days_flag,8);
     break;
     case 3:
     ti2.days_flag[days_id]=0;
@@ -2492,6 +2494,7 @@ void deactivate_day()
           Blynk.virtualWrite(31,((ti2.ti_hour*60+ti2.ti_min)*60),0,"Europe/Athens",ti2.days_blynk,daylight_offset);
           sprintf(ti2.timeDisp,"%2d:%2d",ti2.ti_hour,ti2.ti_min);
         }
+          prefs.putBytes("ti2_days_flag",ti2.days_flag,8);
     break;
     case 5:
     ti3.days_flag[days_id]=0;
@@ -2533,12 +2536,11 @@ void deactivate_day()
         Blynk.virtualWrite(32,(ti3.ti_hour*60+ti3.ti_min)*60,0,"Europe/Athens",ti3.days_blynk,daylight_offset);
         sprintf(ti3.timeDisp,"%2d:%2d",ti3.ti_hour,ti3.ti_min);
         }
+         prefs.putBytes("ti3_days_flag",ti3.days_flag,8);
     break;
     
   }
-  prefs.putBytes("ti1_days_flag",ti1.days_flag,8);
-  prefs.putBytes("ti2_days_flag",ti2.days_flag,8);
-  prefs.putBytes("ti3_days_flag",ti3.days_flag,8);
+  
 
   menu.softUpdate();
 }
@@ -3051,10 +3053,21 @@ void setup() {
   prefs.getBytes("ti3_days_flag",ti3.days_flag,8);
   //prefs.getBytes("stop_times",stop_times,8);
   //prefs.end();
-  delay(2000);
-  for (uint8_t i=0; i==7; i++)
+  //debugging
+  Serial.printf("ti1.ti_hour =%d \n",ti1.ti_hour);
+  Serial.printf("ti2.ti_hour =%d \n",ti2.ti_hour);
+  Serial.printf("ti3.ti_hour =%d \n",ti3.ti_hour);
+  Serial.printf("ti1.start_time =%d \n",ti1.start_time);
+  Serial.printf("ti2.start_time =%d \n",ti2.start_time);
+  Serial.printf("ti3.start_time =%d \n",ti3.start_time);
+  Serial.printf("ti1.days_flag =%s \n",ti1.days_flag);
+  Serial.printf("ti2.days_flag =%s \n",ti2.days_flag);
+  Serial.printf("ti3.days_flag =%s \n",ti3.days_flag);
+
+  //delay(2000);
+  for (uint8_t i=0; i<=7; i++)
   {
-    switch (i)
+    switch(i)
     {
     case 0:
       ch_hours[i]=ch1_hours;
@@ -3081,7 +3094,7 @@ void setup() {
       ch_hours[i]=ch8_hours;
     break;
     }
-
+  Serial.printf("ch_hours%d =%d \n",i,ch_hours[i]);
   }
  /* free(light_disp);
   free(auto_light_disp);
