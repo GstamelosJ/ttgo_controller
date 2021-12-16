@@ -2250,9 +2250,9 @@ void select_active_days()
       //lcd.blink();
       line86.set_focusPosition(Position::CUSTOM,8+days_id,3);
     break;
-    default:
-      lcd.setCursor(8+days_id,3);
-      lcd.blink();
+   // default:
+     // lcd.setCursor(8+days_id,3);
+      //lcd.blink();
 
   }
   days_id++;
