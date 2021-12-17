@@ -264,6 +264,7 @@ LiquidLine line84(0,3, "Days2: ",  ti2.daysDisp);
 LiquidLine line85(0,3, "TimeInput2: ",  ti2.timeDisp  );
 LiquidLine line86(0,3, "Days3: ",  ti3.daysDisp);
 LiquidLine line87(0,3, "TimeInput3: ",  ti3.timeDisp);
+LiquidLine line88(0,3, "Store2flash",  ti3.timeDisp);
 LiquidScreen screen8(line81,line82,line83,line84);
 
 LiquidMenu menu(lcd,welcome_screen);
@@ -2621,6 +2622,23 @@ void time_sr_ss()
 
 }
 
+void store_time_input()
+
+{
+  prefs.putUChar("ti1_ti_hour",ti1.ti_hour);
+  prefs.putUChar("ti1_ti_min",ti1.ti_min);
+  prefs.putInt("ti1_start_time",ti1.start_time);
+  prefs.putUChar("ti2_ti_hour",ti2.ti_hour);
+  prefs.putUChar("ti2_ti_min",ti2.ti_min);
+  prefs.putInt("ti2_start_time",ti2.start_time);
+  prefs.putUChar("ti3_ti_hour",ti3.ti_hour);
+  prefs.putUChar("ti3_ti_min",ti3.ti_min);
+  prefs.putInt("ti3_start_time",ti3.start_time);
+  prefs.putBytes("ti1_days_flag",ti1.days_flag,8);
+  prefs.putBytes("ti2_days_flag",ti2.days_flag,8);
+  prefs.putBytes("ti3_days_flag",ti3.days_flag,8);
+}
+
 void assign_channel()
 {
    static uint8_t temp=0;
@@ -3364,6 +3382,7 @@ void setup() {
   line87.attach_function(1,time_input_incr);
   line87.attach_function(2,time_input_decr);
   line87.attach_function(4,time_sr_ss);
+  line88.attach_function(4,store_time_input);
 
    menu.init();
 	menu.add_screen(screen2);
@@ -3405,6 +3424,7 @@ void setup() {
   screen8.add_line(line85);
   screen8.add_line(line86);
   screen8.add_line(line87);
+  screen8.add_line(line88);
 
   welcome_screen.set_displayLineCount(4);
   screen2.set_displayLineCount(4);
