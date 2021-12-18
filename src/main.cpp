@@ -1823,9 +1823,9 @@ void time_input_incr()
           if(ti1.ti_hour==24) ti1.ti_hour=0; 
         }
         ti1.start_time=(ti1.ti_hour*3600)+(ti1.ti_min*60);
-        prefs.putUChar("ti1_ti_hour",ti1.ti_hour);
-        prefs.putUChar("ti1_ti_min",ti1.ti_min);
-        prefs.putInt("ti1_start_time",ti1.start_time);
+       // prefs.putUChar("ti1_ti_hour",ti1.ti_hour);
+        //prefs.putUChar("ti1_ti_min",ti1.ti_min);
+       // prefs.putInt("ti1_start_time",ti1.start_time);
        // sprintf(str_buf, "%02d:%02d", ti1.ti_hour,ti1.ti_min );
        for(uint8_t d=0; d<7; d++)
        {
@@ -1879,9 +1879,9 @@ void time_input_incr()
           if(ti2.ti_hour==24) ti2.ti_hour=0; 
         }
         ti2.start_time=(ti2.ti_hour*3600)+(ti2.ti_min*60);
-        prefs.putUChar("ti2_ti_hour",ti2.ti_hour);
-        prefs.putUChar("ti2_ti_min",ti2.ti_min);
-        prefs.putInt("ti2_start_time",ti2.start_time);
+        //prefs.putUChar("ti2_ti_hour",ti2.ti_hour);
+       // prefs.putUChar("ti2_ti_min",ti2.ti_min);
+       // prefs.putInt("ti2_start_time",ti2.start_time);
         for(uint8_t d=0; d<7; d++)
        {
        if(ti2.days_flag[d]&&d==0)
@@ -1934,9 +1934,9 @@ void time_input_incr()
           if(ti3.ti_hour==24) ti3.ti_hour=0; 
         }
         ti3.start_time=(ti3.ti_hour*3600)+(ti3.ti_min*60);
-        prefs.putUChar("ti3_ti_hour",ti3.ti_hour);
-        prefs.putUChar("ti3_ti_min",ti3.ti_min);
-        prefs.putInt("ti3_start_time",ti3.start_time);
+       // prefs.putUChar("ti3_ti_hour",ti3.ti_hour);
+        //prefs.putUChar("ti3_ti_min",ti3.ti_min);
+       // prefs.putInt("ti3_start_time",ti3.start_time);
         for(uint8_t d=0; d<7; d++)
        {
        if(ti3.days_flag[d]&&d==0)
@@ -2066,9 +2066,9 @@ void time_input_decr()
           if(ti1.ti_hour==255) ti1.ti_hour=23; 
         }
         ti1.start_time=(ti1.ti_hour*3600)+(ti1.ti_min*60);
-        prefs.putUChar("ti1_ti_hour",ti1.ti_hour);
-        prefs.putUChar("ti1_ti_min",ti1.ti_min);
-        prefs.putInt("ti1_start_time",ti1.start_time);
+       // prefs.putUChar("ti1_ti_hour",ti1.ti_hour);
+        //prefs.putUChar("ti1_ti_min",ti1.ti_min);
+        //prefs.putInt("ti1_start_time",ti1.start_time);
         for(uint8_t d=0; d<7; d++)
        {
        if(ti1.days_flag[d]&&d==0)
@@ -2122,9 +2122,9 @@ void time_input_decr()
           if(ti2.ti_hour==255) ti2.ti_hour=23; 
         }
         ti2.start_time=(ti2.ti_hour*3600)+(ti2.ti_min*60);
-        prefs.putUChar("ti2_ti_hour",ti2.ti_hour);
-        prefs.putUChar("ti2_ti_min",ti2.ti_min);
-        prefs.putInt("ti2_start_time",ti2.start_time);
+        //prefs.putUChar("ti2_ti_hour",ti2.ti_hour);
+        //prefs.putUChar("ti2_ti_min",ti2.ti_min);
+       // prefs.putInt("ti2_start_time",ti2.start_time);
         for(uint8_t d=0; d<7; d++)
        {
        if(ti2.days_flag[d]&&d==0)
@@ -2176,9 +2176,9 @@ void time_input_decr()
           if(ti3.ti_hour==255) ti3.ti_hour=23; 
         }
         ti3.start_time=(ti3.ti_hour*3600)+(ti3.ti_min*60);
-        prefs.putUChar("ti3_ti_hour",ti3.ti_hour);
-        prefs.putUChar("ti3_ti_min",ti3.ti_min);
-        prefs.putInt("ti3_start_time",ti3.start_time);
+       // prefs.putUChar("ti3_ti_hour",ti3.ti_hour);
+       // prefs.putUChar("ti3_ti_min",ti3.ti_min);
+        //prefs.putInt("ti3_start_time",ti3.start_time);
        // prefs.end();
         for(uint8_t d=0; d<7; d++)
        {
@@ -2314,7 +2314,7 @@ void activate_day()
           Blynk.virtualWrite(30,(ti1.ti_hour*60+ti1.ti_min)*60,0,"Europe/Athens",ti1.days_blynk,daylight_offset);
           sprintf(ti1.timeDisp,"%2d:%2d",ti1.ti_hour,ti1.ti_min);
         }
-        prefs.putBytes("ti1_days_flag",ti1.days_flag,8);
+        //prefs.putBytes("ti1_days_flag",ti1.days_flag,8);
     break;
     case 3:
     ti2.days_flag[days_id]=1;
@@ -2356,7 +2356,7 @@ void activate_day()
           Blynk.virtualWrite(31,((ti2.ti_hour*60+ti2.ti_min)*60),0,"Europe/Athens",ti2.days_blynk,daylight_offset);
           sprintf(ti2.timeDisp,"%2d:%2d",ti2.ti_hour,ti2.ti_min);
         }            
-          prefs.putBytes("ti2_days_flag",ti2.days_flag,8);
+          //prefs.putBytes("ti2_days_flag",ti2.days_flag,8);
     break;
     case 5:
     ti3.days_flag[days_id]=1;
@@ -2399,7 +2399,7 @@ void activate_day()
         sprintf(ti3.timeDisp,"%2d:%2d",ti3.ti_hour,ti3.ti_min);
         }
 
-        prefs.putBytes("ti3_days_flag",ti3.days_flag,8);
+       // prefs.putBytes("ti3_days_flag",ti3.days_flag,8);
     break;
     
   }
@@ -2452,7 +2452,7 @@ void deactivate_day()
           Blynk.virtualWrite(30,(ti1.ti_hour*60+ti1.ti_min)*60,0,"Europe/Athens",ti1.days_blynk,daylight_offset);
           sprintf(ti1.timeDisp,"%2d:%2d",ti1.ti_hour,ti1.ti_min);
         }
-        prefs.putBytes("ti1_days_flag",ti1.days_flag,8);
+        //prefs.putBytes("ti1_days_flag",ti1.days_flag,8);
     break;
     case 3:
     ti2.days_flag[days_id]=0;
@@ -2494,7 +2494,7 @@ void deactivate_day()
           Blynk.virtualWrite(31,((ti2.ti_hour*60+ti2.ti_min)*60),0,"Europe/Athens",ti2.days_blynk,daylight_offset);
           sprintf(ti2.timeDisp,"%2d:%2d",ti2.ti_hour,ti2.ti_min);
         }
-          prefs.putBytes("ti2_days_flag",ti2.days_flag,8);
+          //prefs.putBytes("ti2_days_flag",ti2.days_flag,8);
     break;
     case 5:
     ti3.days_flag[days_id]=0;
@@ -2536,7 +2536,7 @@ void deactivate_day()
         Blynk.virtualWrite(32,(ti3.ti_hour*60+ti3.ti_min)*60,0,"Europe/Athens",ti3.days_blynk,daylight_offset);
         sprintf(ti3.timeDisp,"%2d:%2d",ti3.ti_hour,ti3.ti_min);
         }
-         prefs.putBytes("ti3_days_flag",ti3.days_flag,8);
+         //prefs.putBytes("ti3_days_flag",ti3.days_flag,8);
     break;
     
   }
