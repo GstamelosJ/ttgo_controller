@@ -2734,6 +2734,7 @@ void event_hanler(EVENT event, int channel)
   Blynk.virtualWrite(channel,(((lights>>channel)&1)?1:0)); 
   Blynk.virtualWrite(channel+20,(((lights>>channel)&1)?1:0));     
   started_times[channel]=now();
+  if(event==MANUAL) prefs.putBytes("started_times", started_times,8*sizeof(time_t));
   stop_times[channel]=(now()+(ch_hours[channel]*3600));
   //prefs.begin("values_store",false);
   //prefs.putBytes("stop_times",stop_times,8);
@@ -3069,6 +3070,7 @@ void setup() {
   ti3.ti_min=prefs.getUChar("ti3_ti_min",0);
   ti3.start_time=prefs.getInt("ti3_start_time",0);
   prefs.getBytes("ti3_days_flag",ti3.days_flag,8);
+  prefs.getBytes("start_times",started_times,8*sizeof(time_t));
   //prefs.getBytes("stop_times",stop_times,8);
   //prefs.end();
   //debugging
