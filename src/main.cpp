@@ -264,7 +264,7 @@ LiquidLine line84(0,3, "Days2: ",  ti2.daysDisp);
 LiquidLine line85(0,3, "TimeInput2: ",  ti2.timeDisp  );
 LiquidLine line86(0,3, "Days3: ",  ti3.daysDisp);
 LiquidLine line87(0,3, "TimeInput3: ",  ti3.timeDisp);
-LiquidLine line88(0,3, "Store2flash",  ti3.timeDisp);
+LiquidLine line88(0,3, "Store2flash");
 LiquidScreen screen8(line81,line82,line83,line84);
 
 LiquidMenu menu(lcd,welcome_screen);
@@ -1449,7 +1449,7 @@ void  buttonsCheck() {
 	if (bouncer_Enter.fell()) {
 		// Switches focus to the next line.
 		//menu.call_function(3);
-    if(menu.get_currentScreen()==&screen8&&(menu.get_focusedLine()==1||menu.get_focusedLine()==3||menu.get_focusedLine()==5))
+    if(menu.get_currentScreen()==&screen8&&(menu.get_focusedLine()==1||menu.get_focusedLine()==3||menu.get_focusedLine()==5||menu.get_focusedLine()==7))
     {
       menu.call_function(3);
     }
@@ -1463,6 +1463,7 @@ void  buttonsCheck() {
     }//menu.call_function(4);
     //LCDwrite("Button ESC", "Pressed" );
   else if (bouncer_Esc.fell()){
+    menu.set_focusedLine(0);
     menu.previous_screen(); 
     menu.softUpdate();
   } 
@@ -2637,6 +2638,9 @@ void store_time_input()
   prefs.putBytes("ti1_days_flag",ti1.days_flag,8);
   prefs.putBytes("ti2_days_flag",ti2.days_flag,8);
   prefs.putBytes("ti3_days_flag",ti3.days_flag,8);
+  menu.switch_focus();
+  menu.softUpdate();
+  menu.next_screen();
 }
 
 void assign_channel()
@@ -2734,7 +2738,7 @@ void event_hanler(EVENT event, int channel)
   Blynk.virtualWrite(channel,(((lights>>channel)&1)?1:0)); 
   Blynk.virtualWrite(channel+20,(((lights>>channel)&1)?1:0));     
   started_times[channel]=now();
-  if(event==MANUAL) prefs.putBytes("started_times", started_times,8*sizeof(time_t));
+ // if(event==MANUAL) prefs.putBytes("started_times", started_times,8*sizeof(time_t));
   stop_times[channel]=(now()+(ch_hours[channel]*3600));
   //prefs.begin("values_store",false);
   //prefs.putBytes("stop_times",stop_times,8);
@@ -3384,7 +3388,7 @@ void setup() {
   line87.attach_function(1,time_input_incr);
   line87.attach_function(2,time_input_decr);
   line87.attach_function(4,time_sr_ss);
-  line88.attach_function(4,store_time_input);
+  line88.attach_function(3,store_time_input);
 
    menu.init();
 	menu.add_screen(screen2);
@@ -3453,6 +3457,9 @@ void setup() {
   refreshmenuTimer.setInterval(200,refresh_menu);
   automation_hundler_timer.setInterval(1000,automation_handler);
   //connectionState = AWAIT_GSM_CONNECTION;
+  lcd.setCursor(0,0);
+  lcd.clear();
+  delay(2000);
   menu.update();
 }
 
