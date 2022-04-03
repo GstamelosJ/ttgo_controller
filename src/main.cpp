@@ -478,7 +478,7 @@ BLYNK_WRITE(V0)  // Manual selection
   if((auto_light>>0)&1) event_hanler(MANUAL,0);
   else
   { //turn ON the pgm
-    digitalWrite(channels[0], LOW);
+    digitalWrite(channels[0], HIGH);
     lights|=(1<<0);
     Serial.println("The CH1 set on for " + String(ch1_hours)+" hours");
     Blynk.notify("CH1 ON!");
@@ -494,7 +494,7 @@ BLYNK_WRITE(V0)  // Manual selection
   } 
   else if ((param.asInt()==0)) 
   {
-    digitalWrite(channels[0], HIGH);
+    digitalWrite(channels[0], LOW);
     lights&=~(1<<0);
      Serial.println("The CH1 set off");
     Blynk.notify("CH1 OFF!");
@@ -516,7 +516,7 @@ BLYNK_WRITE(V1)  // Manual selection
     if((auto_light>>1)&1) event_hanler(MANUAL,1);
     else
     {
-      digitalWrite(channels[1], LOW);
+      digitalWrite(channels[1], HIGH);
       lights|=(1<<1);
       Serial.println("The CH2 set on for " + String(ch1_hours)+" hours");
       Blynk.notify("CH1 ON!");
@@ -532,7 +532,7 @@ BLYNK_WRITE(V1)  // Manual selection
   } 
   else if ((param.asInt()==0)) 
   {
-    digitalWrite(channels[1], HIGH);
+    digitalWrite(channels[1], LOW);
     lights&=~(1<<1);
      Serial.println("The CH2 set off");
     Blynk.notify("CH2 OFF!");
@@ -554,7 +554,7 @@ BLYNK_WRITE(V2)  // Manual selection
   if((auto_light>>2)&1) event_hanler(MANUAL,2);
   else
   {
-    digitalWrite(channels[2], LOW);
+    digitalWrite(channels[2], HIGH);
     lights|=(1<<2);
     Serial.println("The CH3 set on for " + String(ch1_hours)+" hours");
     Blynk.notify("CH3 ON!");
@@ -571,7 +571,7 @@ BLYNK_WRITE(V2)  // Manual selection
   } 
   else if ((param.asInt()==0)) 
   {
-    digitalWrite(channels[2], HIGH);
+    digitalWrite(channels[2], LOW);
     lights&=~(1<<2);
      Serial.println("The CH3 set off");
     Blynk.notify("CH3 OFF!");
@@ -593,7 +593,7 @@ BLYNK_WRITE(V3)  // Manual selection
   if((auto_light>>3)&1) event_hanler(MANUAL,3);
   else
   {
-    digitalWrite(channels[3], LOW);
+    digitalWrite(channels[3], HIGH);
     lights|=(1<<3);
     Serial.println("The CH4 set on for " + String(ch1_hours)+" hours");
     Blynk.notify("CH4 ON!");
@@ -609,7 +609,7 @@ BLYNK_WRITE(V3)  // Manual selection
   } 
   else if ((param.asInt()==0)) 
   {
-    digitalWrite(channels[1], HIGH);
+    digitalWrite(channels[1], LOW);
     lights&=~(1<<3);
      Serial.println("The CH4 set off");
     Blynk.notify("CH4 OFF!");
@@ -631,7 +631,7 @@ BLYNK_WRITE(V4)  // Manual selection
   if((auto_light>>4)&1) event_hanler(MANUAL,4);
   else
   {
-    digitalWrite(channels[4], LOW);
+    digitalWrite(channels[4], HIGH);
     lights|=(1<<4);
     Serial.println("The CH5 set on for " + String(ch1_hours)+" hours");
     Blynk.notify("CH5 ON!");
@@ -647,7 +647,7 @@ BLYNK_WRITE(V4)  // Manual selection
   } 
   else if ((param.asInt()==0)) 
   {
-    digitalWrite(channels[4], HIGH);
+    digitalWrite(channels[4], LOW);
     lights&=~(1<<4);
      Serial.println("The CH5 set off");
     Blynk.notify("CH5 OFF!");
@@ -669,7 +669,7 @@ BLYNK_WRITE(V5)  // Manual selection
   if((auto_light>>5)&1) event_hanler(MANUAL,5);
   else
   {
-    digitalWrite(channels[5], LOW);
+    digitalWrite(channels[5], HIGH);
     lights|=(1<<5);
     Serial.println("The CH6 set on for " + String(ch1_hours)+" hours");
     Blynk.notify("CH6 ON!");
@@ -685,7 +685,7 @@ BLYNK_WRITE(V5)  // Manual selection
   } 
   else if ((param.asInt()==0)) 
   {
-    digitalWrite(channels[5], HIGH);
+    digitalWrite(channels[5], LOW);
     lights&=~(1<<5);
      Serial.println("The CH6 set off");
     Blynk.notify("CH6 OFF!");
@@ -707,7 +707,7 @@ BLYNK_WRITE(V6)  // Manual selection
   if((auto_light>>6)&1) event_hanler(MANUAL,6);
   else
   {
-    digitalWrite(channels[6], LOW);
+    digitalWrite(channels[6], HIGH);
     lights|=(1<<6);
     Serial.println("The CH7 set on for " + String(ch1_hours)+" hours");
     Blynk.notify("CH7 ON!");
@@ -723,7 +723,7 @@ BLYNK_WRITE(V6)  // Manual selection
   } 
   else if ((param.asInt()==0)) 
   {
-    digitalWrite(channels[6], HIGH);
+    digitalWrite(channels[6], LOW);
     lights&=~(1<<6);
      Serial.println("The CH7 set off");
     Blynk.notify("CH7 OFF!");
@@ -745,7 +745,7 @@ BLYNK_WRITE(V7)  // Manual selection
   if((auto_light>>7)&1) event_hanler(MANUAL,7);
   else
   {
-    digitalWrite(channels[7], LOW);
+    digitalWrite(channels[7], HIGH);
     lights|=(1<<7);
     Serial.println("The CH8 set on for " + String(ch1_hours)+" hours");
     Blynk.notify("CH8 ON!");
@@ -761,7 +761,7 @@ BLYNK_WRITE(V7)  // Manual selection
   } 
   else if ((param.asInt()==0)) 
   {
-    digitalWrite(channels[7], HIGH);
+    digitalWrite(channels[7], LOW);
     lights&=~(1<<7);
      Serial.println("The CH8 set off");
     Blynk.notify("CH8 OFF!");
@@ -1536,7 +1536,7 @@ void toggle_lights()
   else
   {
     lights^=(1<<channel);
-    digitalWrite(channels[channel], ~(0x01&(lights>>channel)));
+    digitalWrite(channels[channel], (0x01&(lights>>channel)));
     Blynk.virtualWrite(channel,(0x01&(lights>>channel)));
     Blynk.virtualWrite(channel+20,(0x01&(lights>>channel)));
    // Blynk.virtualWrite(channel+9,(0x01&(lights>>channel))?255:0);
@@ -2734,7 +2734,7 @@ void assign_channel_()
 void event_hanler(EVENT event, int channel)
 {
   lights|=(1<<channel);
-  digitalWrite(channels[channel], LOW);
+  digitalWrite(channels[channel], HIGH);
   Blynk.virtualWrite(channel,(((lights>>channel)&1)?1:0)); 
   Blynk.virtualWrite(channel+20,(((lights>>channel)&1)?1:0));     
   started_times[channel]=now();
@@ -2803,7 +2803,7 @@ void automation_handler()
         { 
           Serial.printf("Stop time expired at %ld \n", now());
           lights&=~(1<<i);
-          digitalWrite(channels[i], HIGH);
+          digitalWrite(channels[i], LOW);
           Blynk.virtualWrite(i,(((lights>>i)&1)?1:0));
           Blynk.virtualWrite(i+20,(((lights>>i)&1)?1:0));
         }
@@ -2952,17 +2952,17 @@ void serial_input_handler()
         {
            if(ti1.ldr&&follow_timeinput[i]==1)
           {
-          digitalWrite(channels[i], ~(0x01&(lights>>i)));
+          digitalWrite(channels[i], (0x01&(lights>>i)));
           Blynk.virtualWrite(i,(0x01&(lights>>i)));
           }
           if(ti2.ldr&&follow_timeinput[i]==2)
           {
-          digitalWrite(channels[i], ~(0x01&(lights>>i)));
+          digitalWrite(channels[i], (0x01&(lights>>i)));
           Blynk.virtualWrite(i,(0x01&(lights>>i)));
           }
           if(ti3.ldr&&follow_timeinput[i]==3)
           {
-          digitalWrite(channels[i], ~(0x01&(lights>>i)));
+          digitalWrite(channels[i], (0x01&(lights>>i)));
           Blynk.virtualWrite(i,(0x01&(lights>>i)));
           }
           delay(200);
@@ -3004,7 +3004,7 @@ void setup() {
  for (uint8_t i = 0; i<8; i++)
  {
    pinMode(channels[i], OUTPUT);
-   digitalWrite(channels[i], HIGH);
+   digitalWrite(channels[i], LOW);
  }
 
   pg_on=LOW;
@@ -3530,7 +3530,7 @@ void scan_buttons(uint8_t * buttons)
   else
   {
    lights^=(1<<(*buttons-1));
-    digitalWrite(channels[(*buttons-1)], ~(0x01&(lights>>(*buttons-1))));
+    digitalWrite(channels[(*buttons-1)], (0x01&(lights>>(*buttons-1))));
     Blynk.virtualWrite((*buttons-1),(0x01&(lights>>(*buttons-1))));
   }
     delay(200);
