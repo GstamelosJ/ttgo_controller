@@ -609,7 +609,7 @@ BLYNK_WRITE(V3)  // Manual selection
   } 
   else if ((param.asInt()==0)) 
   {
-    digitalWrite(channels[1], LOW);
+    digitalWrite(channels[3], LOW);
     lights&=~(1<<3);
      Serial.println("The CH4 set off");
     Blynk.notify("CH4 OFF!");
