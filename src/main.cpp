@@ -93,7 +93,7 @@ char* date_timebuf=(char*)malloc(24);
 void restore_stop();
 
 Preferences prefs;
-
+SimpleTimer serial_input_handlerTimer;
 SimpleTimer connectionHandlerTimer;
 SimpleTimer refreshmenuTimer;
 SimpleTimer time_syncTimer;
@@ -2912,30 +2912,30 @@ void serial_input_handler()
   uint8_t received_byte;
   if(Serial.available())
   {
-    if(Serial.readBytes(&received_byte,1))
+    if(Serial.readBytesUntil('\n',&received_byte,3))
     {
-      switch (received_byte)
+      switch ((uint8_t)received_byte)
       {
       case 100:
         /* code */
-        lights|=auto_light;
+       // lights|=auto_light;
         for(uint8_t i=0;i<8;i++)
         {
-          if(ti1.ldr&&follow_timeinput[i]==1)
+          if(ti1.ldr&&follow_timeinput[i]==1&&(0x01&(auto_light>>i)))
           {
             event_hanler(LDR,i);
          // digitalWrite(channels[i], (0x01&(lights>>i)));
          // Blynk.virtualWrite(i,(0x01&(lights>>i)));
           delay(200);
           }
-           if(ti2.ldr&&follow_timeinput[i]==2)
+           if(ti2.ldr&&follow_timeinput[i]==2&&(0x01&(auto_light>>i)))
           {
             event_hanler(LDR,i);
          // digitalWrite(channels[i], (0x01&(lights>>i)));
          // Blynk.virtualWrite(i,(0x01&(lights>>i)));
           delay(200);
           }
-           if(ti3.ldr&&follow_timeinput[i]==3)
+           if(ti3.ldr&&follow_timeinput[i]==3&&(0x01&(auto_light>>i)))
           {
             event_hanler(LDR,i);
          // digitalWrite(channels[i], (0x01&(lights>>i)));
@@ -2947,23 +2947,26 @@ void serial_input_handler()
         break;
       case 200:
         /* code */
-        lights&=~auto_light;
+        //lights&=~auto_light;
         for(uint8_t i=0;i<8;i++)
         {
-           if(ti1.ldr&&follow_timeinput[i]==1)
+           if(ti1.ldr&&follow_timeinput[i]==1&&(0x01&(lights>>i))&&(0x01&(auto_light>>i)))
           {
-          digitalWrite(channels[i], (0x01&(lights>>i)));
-          Blynk.virtualWrite(i,(0x01&(lights>>i)));
+          digitalWrite(channels[i], 0);
+          Blynk.virtualWrite(i,0);
+          Blynk.virtualWrite(i+20,0);
           }
-          if(ti2.ldr&&follow_timeinput[i]==2)
+          if(ti2.ldr&&follow_timeinput[i]==2&&(0x01&(lights>>i))&&(0x01&(auto_light>>i)))
           {
-          digitalWrite(channels[i], (0x01&(lights>>i)));
-          Blynk.virtualWrite(i,(0x01&(lights>>i)));
+          digitalWrite(channels[i], 0);
+          Blynk.virtualWrite(i,0);
+          Blynk.virtualWrite(i+20,0);
           }
-          if(ti3.ldr&&follow_timeinput[i]==3)
+          if(ti3.ldr&&follow_timeinput[i]==3&&(0x01&(lights>>i))&&(0x01&(auto_light>>i)))
           {
-          digitalWrite(channels[i], (0x01&(lights>>i)));
-          Blynk.virtualWrite(i,(0x01&(lights>>i)));
+          digitalWrite(channels[i], 0);
+          Blynk.virtualWrite(i,0);
+          Blynk.virtualWrite(i+20,0);
           }
           delay(200);
         }
@@ -2976,11 +2979,11 @@ void serial_input_handler()
         Blynk.virtualWrite(received_byte-1,(channels[received_byte-1]?1:0));
         break;
       }
+      Serial.printf("Received_byte=%u /n",received_byte);
     }
     else 
       Serial.println("Nothing from serial input to parse!");
   }
-  
 }
 
 //############################################
@@ -3211,7 +3214,7 @@ void setup() {
  //sync_auto_light();
  // light_disp[8]='\0';
  // auto_light_disp[8]='\0';
-  pinMode(LED_BUILTIN, OUTPUT);
+  //pinMode(LED_BUILTIN, OUTPUT);
   
  //uncoment following 2 rows if using 7 segment display
   //disp.setDigitPins(digitNum,digits);
@@ -3456,6 +3459,7 @@ void setup() {
   connectionHandlerTimer.setInterval(200, ConnectionHandler);
   refreshmenuTimer.setInterval(200,refresh_menu);
   automation_hundler_timer.setInterval(1000,automation_handler);
+  serial_input_handlerTimer.setInterval(300,serial_input_handler);
   //connectionState = AWAIT_GSM_CONNECTION;
   lcd.setCursor(0,0);
   lcd.clear();
@@ -3475,6 +3479,7 @@ void loop() {
   connectionHandlerTimer.run();
   refreshmenuTimer.run();
   automation_hundler_timer.run();
+  serial_input_handlerTimer.run();
   if(healthy) Blynk.run();
  delay(20);
  
@@ -3526,12 +3531,23 @@ void scan_buttons(uint8_t * buttons)
   I2Cbuttons.readBytes(buttons,1);
   if (((*buttons)!=0xff)&&((*buttons)!=0x00))
   {
-   if(!((auto_light>>(*buttons-1))&1)) event_hanler(I2C_event,(*buttons-1));
+   if(((auto_light>>(*buttons-1))&1)) 
+    if(!(0x01&(lights>>(*buttons-1))))
+      event_hanler(I2C_event,(*buttons-1));
+    else
+      {
+        lights&=~(1<<(*buttons-1));
+        digitalWrite(channels[(*buttons-1)], 0);
+        Blynk.virtualWrite((*buttons-1),0);
+        Blynk.virtualWrite((*buttons+19),0);
+      }
+
   else
   {
    lights^=(1<<(*buttons-1));
     digitalWrite(channels[(*buttons-1)], (0x01&(lights>>(*buttons-1))));
     Blynk.virtualWrite((*buttons-1),(0x01&(lights>>(*buttons-1))));
+    Blynk.virtualWrite((*buttons+19),(0x01&(lights>>(*buttons-1)))); 
   }
     delay(200);
     *buttons=0xff;
