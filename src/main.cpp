@@ -2974,10 +2974,16 @@ void serial_input_handler()
         break;
 
       default:
-        lights^=(1<<(received_byte-1));
-        digitalWrite(channels[received_byte-1], ~(0x01&(lights>>(received_byte-1))));
-        Blynk.virtualWrite(received_byte-1,(channels[received_byte-1]?1:0));
-        break;
+        if(((auto_light>>(received_byte-1))&1)) 
+          if(!(0x01&(lights>>(received_byte-1))))
+          event_hanler(I2C_event,(received_byte-1));
+        else
+        {
+          lights^=(1<<(received_byte-1));
+          digitalWrite(channels[received_byte-1], (0x01&(lights>>(received_byte-1))));
+          Blynk.virtualWrite(received_byte-1,(channels[received_byte-1]?1:0));
+          break;
+        }
       }
       Serial.printf("Received_byte=%u /n",received_byte);
     }
