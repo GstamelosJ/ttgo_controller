@@ -365,12 +365,21 @@ void ConnectionHandler(void) {
       connectionState = CONNECT_TO_GSM;
       healthy=false;
       if(++retryConCounter == 2)
-      connectionState = BLOCKED;
+      {
+        connectionState = BLOCKED;
+        retryConCounter=0;
+      }
+      connectionCounter=0;
     }
     break;
 
   case BLOCKED:
-    retryConCounter=0;
+      if (++connectionCounter == 40)
+      {
+        connectionState = CONNECT_TO_GSM;
+        connectionCounter = 0;
+      }
+
     break;
   }
 }
