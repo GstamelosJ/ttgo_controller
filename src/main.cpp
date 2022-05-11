@@ -25,10 +25,7 @@ char auth[]= "QlAhqepp7Trb57enFlHT5LreNeXNTNkS";
 #include <LiquidCrystal_I2C.h>
 //#include <LiquidCrystal.h>
 #include <LiquidMenu.h>
-//#include <NTPClient.h>
-//#include <WiFiUdp.h>
 #include <Dusk2Dawn.h>
-//#include <time.h>
 #include <TimeLib.h>
 #include <Timezone.h>
 #define ENTER 34
@@ -2921,10 +2918,11 @@ void activetoday(){        // check if schedule should run today
 
 void serial_input_handler()
 {
-  uint8_t received_byte;
+  String received_msg=Serial.readString();
+  uint8_t received_byte=0;
   if(Serial.available())
   {
-    if(Serial.readBytesUntil('\n',&received_byte,3))
+    if(received_byte=received_msg.toInt())
     {
       switch ((uint8_t)received_byte)
       {
