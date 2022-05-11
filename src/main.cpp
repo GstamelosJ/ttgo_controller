@@ -2843,6 +2843,9 @@ void refresh_time()
   // Serial.println(e.what());
  //}
   //Serial.println(date_time);
+  if(GR.utcIsDST(now())) daylight_offset=10800; //check if current time is inside daylight summer time
+  else daylight_offset=7200;
+  Serial.printf("Daylight=%d\n",daylight_offset);
   menu.softUpdate();
 }
  
@@ -3463,9 +3466,7 @@ void setup() {
   refresh_time();
    //setTime(hour_brd, *minute_brd, *second_brd, *day_brd, *month_brd, *year_brd);
   //date_time = String(day()) + '-' + String(month()) + '-' +String(year()) + " T"+String(hour()) + ':' + String(minute());
-  if(GR.utcIsDST(now())) daylight_offset=10800; //check if current time is inside daylight summer time
-  else daylight_offset=7200;
-  Serial.printf("Daylight=%d\n",daylight_offset);
+  
   delay(2000);
   restore_stop();
   
