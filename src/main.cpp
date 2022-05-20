@@ -25,7 +25,10 @@ char auth[]= "QlAhqepp7Trb57enFlHT5LreNeXNTNkS";
 #include <LiquidCrystal_I2C.h>
 //#include <LiquidCrystal.h>
 #include <LiquidMenu.h>
+//#include <NTPClient.h>
+//#include <WiFiUdp.h>
 #include <Dusk2Dawn.h>
+//#include <time.h>
 #include <TimeLib.h>
 #include <Timezone.h>
 #define ENTER 34
@@ -2843,6 +2846,40 @@ void refresh_time()
   if(GR.utcIsDST(now())) daylight_offset=10800; //check if current time is inside daylight summer time
   else daylight_offset=7200;
   Serial.printf("Daylight=%d\n",daylight_offset);
+  if(hour()==1)
+  {
+   if(ti1.sr)
+   {
+      Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
+      ti1.start_time  = 60*(greece.sunrise(year(), month(), day(), false));
+    }
+    else if(ti1.ss)
+    {
+      Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
+      ti1.start_time  = 60*((greece.sunset(year(), month(), day(), false))+25);
+    }
+    if(ti2.sr)
+   {
+      Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
+      ti2.start_time  = 60*(greece.sunrise(year(), month(), day(), false));
+    }
+    else if(ti2.ss)
+    {
+      Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
+      ti2.start_time  = 60*((greece.sunset(year(), month(), day(), false))+25);
+    }
+    if(ti3.sr)
+   {
+      Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
+      ti3.start_time  = 60*(greece.sunrise(year(), month(), day(), false));
+    }
+    else if(ti3.ss)
+    {
+      Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
+      ti3.start_time  = 60*((greece.sunset(year(), month(), day(), false))+25);
+    }
+}
+
   menu.softUpdate();
 }
  
@@ -2918,11 +2955,10 @@ void activetoday(){        // check if schedule should run today
 
 void serial_input_handler()
 {
-  String received_msg=Serial.readString();
-  uint8_t received_byte=0;
+  uint8_t received_byte;
   if(Serial.available())
   {
-    if(received_byte=received_msg.toInt())
+    if(Serial.readBytesUntil('\n',&received_byte,3))
     {
       switch ((uint8_t)received_byte)
       {
