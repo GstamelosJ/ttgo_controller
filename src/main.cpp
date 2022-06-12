@@ -25,10 +25,7 @@ char auth[]= "QlAhqepp7Trb57enFlHT5LreNeXNTNkS";
 #include <LiquidCrystal_I2C.h>
 //#include <LiquidCrystal.h>
 #include <LiquidMenu.h>
-//#include <NTPClient.h>
-//#include <WiFiUdp.h>
 #include <Dusk2Dawn.h>
-//#include <time.h>
 #include <TimeLib.h>
 #include <Timezone.h>
 #define ENTER 34
@@ -2921,10 +2918,11 @@ void activetoday(){        // check if schedule should run today
 
 void serial_input_handler()
 {
-  uint8_t received_byte;
+  String received_msg=Serial.readString();
+  uint8_t received_byte=0;
   if(Serial.available())
   {
-    if(Serial.readBytesUntil('\n',&received_byte,3))
+    if(received_byte=Serial.parseInt())
     {
       switch ((uint8_t)received_byte)
       {
@@ -3049,8 +3047,8 @@ void setup() {
  // attachInterrupt(ESC, buttonsCheck, FALLING);
  
   Serial.begin(115200);
-  I2CPower.begin(I2C_SDA, I2C_SCL, 400000);
-  I2Cbuttons.begin(I2C_SDA_2, I2C_SCL_2, 400000);
+  I2CPower.begin(I2C_SDA, I2C_SCL, 400000U);
+  I2Cbuttons.begin(I2C_SDA_2, I2C_SCL_2, 400000U);
   delay(10);
   // Set GSM module baud rate
   SerialAT.begin(115200, SERIAL_8N1, MODEM_RX, MODEM_TX);
