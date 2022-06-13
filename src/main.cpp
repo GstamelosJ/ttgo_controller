@@ -3090,9 +3090,11 @@ void setup() {
   SerialAT.begin(115200, SERIAL_8N1, MODEM_RX, MODEM_TX);
   //lcd.begin(20, 4);
    // initialize LCD
+   delay(10);
   lcd.init(I2C_SDA_2,I2C_SCL_2);                      // initialize the lcd 
   //lcd.begin(20,4);
   lcd.backlight();
+  lcd.clear();
   /////////
   ConnectionHandler();
   prev_millis=millis();
