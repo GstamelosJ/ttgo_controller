@@ -60,6 +60,7 @@ uint8_t channels[] = {channel1, channel2, channel3, channel4, channel5, channel6
 
 int ldr_value;
 
+
 //char auth[] = "a8b998e3db1e42e888bed8797b87f108"; // (My Secret TOKEN)
 //char auth1[] = "rzSKdZ2cMvECBlQN9C9PSccdpqOzpBmH";
 
@@ -3043,6 +3044,8 @@ void setup() {
  // pinMode(UP, INPUT_PULLUP);
   //pinMode(DOWN, INPUT_PULLUP);
   //power configuration
+  I2CPower.begin(I2C_SDA, I2C_SCL, 400000U);
+  I2Cbuttons.begin(I2C_SDA_2, I2C_SCL_2, 400000U);
   bool isOk = setPowerBoostKeepOn(1);
   pinMode(MODEM_PWKEY, OUTPUT);
   pinMode(MODEM_RST, OUTPUT);
@@ -3081,15 +3084,14 @@ void setup() {
  // attachInterrupt(ESC, buttonsCheck, FALLING);
  
   Serial.begin(115200);
-  I2CPower.begin(I2C_SDA, I2C_SCL, 400000U);
-  I2Cbuttons.begin(I2C_SDA_2, I2C_SCL_2, 400000U);
+
   delay(10);
   // Set GSM module baud rate
   SerialAT.begin(115200, SERIAL_8N1, MODEM_RX, MODEM_TX);
   //lcd.begin(20, 4);
    // initialize LCD
   lcd.init(I2C_SDA_2,I2C_SCL_2);                      // initialize the lcd 
- //lcd.begin(20,4);
+  //lcd.begin(20,4);
   lcd.backlight();
   /////////
   ConnectionHandler();
