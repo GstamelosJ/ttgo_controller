@@ -64,8 +64,8 @@ int ldr_value;
 //char auth[] = "a8b998e3db1e42e888bed8797b87f108"; // (My Secret TOKEN)
 //char auth1[] = "rzSKdZ2cMvECBlQN9C9PSccdpqOzpBmH";
 
-TwoWire I2CPower = TwoWire(0);
-TwoWire I2Cbuttons = TwoWire(1);
+TwoWire I2CPower = TwoWire(1);
+TwoWire I2Cbuttons = TwoWire(0);
 // Your GPRS credentials
 // Leave empty, if missing user or pass
 TimeChangeRule EEST = {"EEST", Last, Sun, Mar, 3, 180};  //UTC + 3 hours
@@ -89,14 +89,17 @@ void scan_buttons(uint8_t * buttons);
 void day_night_check(int ldr_value);
 char* date_timebuf=(char*)malloc(24);
 void restore_stop();
+void calculation_sr_ss();
 
 Preferences prefs;
-SimpleTimer serial_input_handlerTimer;
-SimpleTimer connectionHandlerTimer;
-SimpleTimer refreshmenuTimer;
-SimpleTimer time_syncTimer;
-SimpleTimer automation_hundler_timer;
-SimpleTimer timer_buttonsCheck;
+SimpleTimer timer;
+//SimpleTimer serial_input_handlerTimer;
+//SimpleTimer connectionHandlerTimer;
+//SimpleTimer refreshmenuTimer;
+//SimpleTimer time_syncTimer;
+//SimpleTimer automation_hundler_timer;
+//SimpleTimer timer_buttonsCheck;
+//SimpleTimer calculation_sr_ss_timer;
 Bounce bouncer_Enter = Bounce();
 Bounce bouncer_Up = Bounce();
 Bounce bouncer_Down = Bounce();
@@ -2841,42 +2844,7 @@ void refresh_time()
   // Serial.println(e.what());
  //}
   //Serial.println(date_time);
-  if(GR.utcIsDST(now())) daylight_offset=10800; //check if current time is inside daylight summer time
-  else daylight_offset=7200;
-  Serial.printf("Daylight=%d\n",daylight_offset);
-  if(hour()==1)
-  {
-   if(ti1.sr)
-   {
-      Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
-      ti1.start_time  = 60*(greece.sunrise(year(), month(), day(), false));
-    }
-    else if(ti1.ss)
-    {
-      Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
-      ti1.start_time  = 60*((greece.sunset(year(), month(), day(), false))+25);
-    }
-    if(ti2.sr)
-   {
-      Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
-      ti2.start_time  = 60*(greece.sunrise(year(), month(), day(), false));
-    }
-    else if(ti2.ss)
-    {
-      Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
-      ti2.start_time  = 60*((greece.sunset(year(), month(), day(), false))+25);
-    }
-    if(ti3.sr)
-   {
-      Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
-      ti3.start_time  = 60*(greece.sunrise(year(), month(), day(), false));
-    }
-    else if(ti3.ss)
-    {
-      Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
-      ti3.start_time  = 60*((greece.sunset(year(), month(), day(), false))+25);
-    }
-}
+  
 
   menu.softUpdate();
 }
@@ -2953,7 +2921,7 @@ void activetoday(){        // check if schedule should run today
 
 void serial_input_handler()
 {
-  String received_msg=Serial.readString();
+  //String received_msg=Serial.readString();
   uint8_t received_byte=0;
   if(Serial.available())
   {
@@ -3506,12 +3474,19 @@ void setup() {
   delay(2000);
   restore_stop();
   
-  timer_buttonsCheck.setInterval(10,buttonsCheck);
-  time_syncTimer.setInterval(1000, refresh_time);
-  connectionHandlerTimer.setInterval(200, ConnectionHandler);
-  refreshmenuTimer.setInterval(200,refresh_menu);
-  automation_hundler_timer.setInterval(1000,automation_handler);
-  serial_input_handlerTimer.setInterval(300,serial_input_handler);
+  timer.setInterval(5,buttonsCheck);
+  delay(10);
+  timer.setInterval(1000L, refresh_time);
+  delay(10);
+  timer.setInterval(200L, ConnectionHandler);
+  delay(100);
+  timer.setInterval(200L,refresh_menu);
+  delay(20);
+  timer.setInterval(1000L,automation_handler);
+  delay(100);
+  timer.setInterval(300L,serial_input_handler);
+  delay(500);
+  timer.setInterval(7200000L,calculation_sr_ss);
   //connectionState = AWAIT_GSM_CONNECTION;
   lcd.setCursor(0,0);
   lcd.clear();
@@ -3525,13 +3500,15 @@ void loop() {
   //uncomment the next row if using 7 segnment display
   //disp.write(pg_hours);
   //buttonsCheck();
-  scan_buttons(&button_msg);
-  timer_buttonsCheck.run();
-  time_syncTimer.run();
-  connectionHandlerTimer.run();
-  refreshmenuTimer.run();
-  automation_hundler_timer.run();
-  serial_input_handlerTimer.run();
+  //scan_buttons(&button_msg);
+  //timer_buttonsCheck.run();
+  //time_syncTimer.run();
+  //connectionHandlerTimer.run();
+  //refreshmenuTimer.run();
+  //automation_hundler_timer.run();
+  //serial_input_handlerTimer.run();
+  //calculation_sr_ss_timer.run();
+  timer.run();
   if(healthy) Blynk.run();
  delay(20);
  
@@ -3618,4 +3595,42 @@ void day_night_check(int ldr_value)
 
 
 
-
+void calculation_sr_ss()
+{
+if(GR.utcIsDST(now())) daylight_offset=10800; //check if current time is inside daylight summer time
+  else daylight_offset=7200;
+  Serial.printf("Daylight=%d\n",daylight_offset);
+  if(hour()==1)
+  {
+   if(ti1.sr)
+   {
+      Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
+      ti1.start_time  = 60*(greece.sunrise(year(), month(), day(), false));
+    }
+    else if(ti1.ss)
+    {
+      Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
+      ti1.start_time  = 60*((greece.sunset(year(), month(), day(), false))+25);
+    }
+    if(ti2.sr)
+   {
+      Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
+      ti2.start_time  = 60*(greece.sunrise(year(), month(), day(), false));
+    }
+    else if(ti2.ss)
+    {
+      Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
+      ti2.start_time  = 60*((greece.sunset(year(), month(), day(), false))+25);
+    }
+    if(ti3.sr)
+   {
+      Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
+      ti3.start_time  = 60*(greece.sunrise(year(), month(), day(), false));
+    }
+    else if(ti3.ss)
+    {
+      Dusk2Dawn greece(38.0529, 23.6943, (daylight_offset/3600));
+      ti3.start_time  = 60*((greece.sunset(year(), month(), day(), false))+25);
+    }
+}
+}
