@@ -64,8 +64,8 @@ int ldr_value;
 //char auth[] = "a8b998e3db1e42e888bed8797b87f108"; // (My Secret TOKEN)
 //char auth1[] = "rzSKdZ2cMvECBlQN9C9PSccdpqOzpBmH";
 
-TwoWire I2CPower = TwoWire(0);
-TwoWire I2Cbuttons = TwoWire(1);
+TwoWire I2CPower = TwoWire(1);
+TwoWire I2Cbuttons = TwoWire(0);
 // Your GPRS credentials
 // Leave empty, if missing user or pass
 TimeChangeRule EEST = {"EEST", Last, Sun, Mar, 3, 180};  //UTC + 3 hours
