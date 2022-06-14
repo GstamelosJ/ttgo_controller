@@ -3500,7 +3500,7 @@ void loop() {
   //uncomment the next row if using 7 segnment display
   //disp.write(pg_hours);
   //buttonsCheck();
-  //scan_buttons(&button_msg);
+  scan_buttons(&button_msg);
   //timer_buttonsCheck.run();
   //time_syncTimer.run();
   //connectionHandlerTimer.run();
