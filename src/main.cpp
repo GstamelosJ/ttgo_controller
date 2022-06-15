@@ -2584,6 +2584,22 @@ void time_sr_ss()
       }
       else 
         ti1.sr=true;
+        if (ti1.sr)
+       {
+          sprintf(ti1.timeDisp,"sunrise");
+       }
+        else if (ti1.ss)
+        {
+          sprintf(ti1.timeDisp,"sunset");
+        }
+        else if (ti1.ldr)
+        {
+          sprintf(ti1.timeDisp,"LDR");
+        }
+        else 
+        {
+          sprintf(ti1.timeDisp,"%2d:%2d",ti1.ti_hour,ti1.ti_min);
+        }
       break;
       case 4:
       if(ti2.sr)
@@ -2606,6 +2622,22 @@ void time_sr_ss()
       }
       else 
         ti2.sr=true;
+        if (ti2.sr)
+       {
+          sprintf(ti2.timeDisp,"sunrise");
+       }
+        else if (ti2.ss)
+        {
+          sprintf(ti2.timeDisp,"sunset");
+        }
+        else if (ti2.ldr)
+        {
+          sprintf(ti2.timeDisp,"LDR");
+        }
+        else 
+        {
+          sprintf(ti2.timeDisp,"%2d:%2d",ti2.ti_hour,ti2.ti_min);
+        }
       case 6:
       if(ti3.sr)
       {
@@ -2627,10 +2659,26 @@ void time_sr_ss()
       }
       else 
         ti3.sr=true;
+         if (ti3.sr)
+       {
+          sprintf(ti3.timeDisp,"sunrise");
+       }
+        else if (ti3.ss)
+        {
+          sprintf(ti3.timeDisp,"sunset");
+        }
+        else if (ti3.ldr)
+        {
+          sprintf(ti3.timeDisp,"LDR");
+        }
+        else 
+        {
+          sprintf(ti3.timeDisp,"%2d:%2d",ti3.ti_hour,ti3.ti_min);
+        }
     }
 
   }
-
+  menu.softUpdate();
 }
 
 void store_time_input()
