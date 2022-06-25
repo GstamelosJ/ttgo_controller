@@ -3016,18 +3016,21 @@ void serial_input_handler()
           digitalWrite(channels[i], 0);
           Blynk.virtualWrite(i,0);
           Blynk.virtualWrite(i+20,0);
+          lights&=~(1<<(received_byte-1));
           }
           if(ti2.ldr&&follow_timeinput[i]==2&&(0x01&(lights>>i))&&(0x01&(auto_light>>i)))
           {
           digitalWrite(channels[i], 0);
           Blynk.virtualWrite(i,0);
           Blynk.virtualWrite(i+20,0);
+          lights^=(1<<(received_byte-1));
           }
           if(ti3.ldr&&follow_timeinput[i]==3&&(0x01&(lights>>i))&&(0x01&(auto_light>>i)))
           {
           digitalWrite(channels[i], 0);
           Blynk.virtualWrite(i,0);
           Blynk.virtualWrite(i+20,0);
+          lights^=(1<<(received_byte-1));
           }
           delay(200);
         }
@@ -3035,22 +3038,26 @@ void serial_input_handler()
         break;
 
       default:
-        if(((auto_light>>(received_byte-1))&1)) 
-          if(!(0x01&(lights>>(received_byte-1))))
+        if(((auto_light>>(received_byte-1))&1)&&(~(0x01&(lights>>(received_byte-1))))&&((received_byte<=8)&&(received_byte>=1))) 
           event_hanler(I2C_event,(received_byte-1));
         else
         {
-          lights^=(1<<(received_byte-1));
-          digitalWrite(channels[received_byte-1], (0x01&(lights>>(received_byte-1))));
-          Blynk.virtualWrite(received_byte-1,(channels[received_byte-1]?1:0));
-          break;
+          if(((received_byte<=8)&&(received_byte>=1)))
+            {
+              lights^=(1<<(received_byte-1));
+              digitalWrite(channels[received_byte-1], (((lights>>(received_byte-1))&1)?1:0));
+              Blynk.virtualWrite(received_byte-1,(((lights>>(received_byte-1))&1)?1:0));
+              Blynk.virtualWrite((received_byte-1)+20,(((lights>>(received_byte-1))&1)?1:0));
+            }
         }
+        break;
       }
-      Serial.printf("Received_byte=%u /n",received_byte);
+      Serial.printf("Received_byte=%u \n",received_byte);
     }
     else 
       Serial.println("Nothing from serial input to parse!");
   }
+  refresh_menu();
 }
 
 //############################################
