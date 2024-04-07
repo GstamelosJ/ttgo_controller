@@ -409,7 +409,7 @@ if (isFirstConnect) {
   Blynk.syncAll();
   refresh_menu();
 
- // Blynk.notify("TIMER STARTING!!!!");
+ // //Blynk.notify("TIMER STARTING!!!!");
   isFirstConnect = false;
   delay(2000);
    restore_stop();
@@ -491,7 +491,7 @@ BLYNK_WRITE(V0)  // Manual selection
     digitalWrite(channels[0], HIGH);
     lights|=(1<<0);
     Serial.println("The CH1 set on for " + String(ch1_hours)+" hours");
-    Blynk.notify("CH1 ON!");
+    //Blynk.notify("CH1 ON!");
     delay(100);
     Blynk.virtualWrite(20,(((lights>>0)&1)?1:0));
     stop_times[0]=0;
@@ -507,7 +507,7 @@ BLYNK_WRITE(V0)  // Manual selection
     digitalWrite(channels[0], LOW);
     lights&=~(1<<0);
      Serial.println("The CH1 set off");
-    Blynk.notify("CH1 OFF!");
+    ////Blynk.notify("CH1 OFF!");
     delay(100);
     Blynk.virtualWrite(20,(((lights>>0)&1)?1:0));
     //Blynk.virtualWrite(11,255);
@@ -529,7 +529,7 @@ BLYNK_WRITE(V1)  // Manual selection
       digitalWrite(channels[1], HIGH);
       lights|=(1<<1);
       Serial.println("The CH2 set on for " + String(ch1_hours)+" hours");
-      Blynk.notify("CH1 ON!");
+      ////Blynk.notify("CH1 ON!");
       delay(100);
       Blynk.virtualWrite(21,(((lights>>1)&1)?1:0));
       stop_times[1]=0;
@@ -545,7 +545,7 @@ BLYNK_WRITE(V1)  // Manual selection
     digitalWrite(channels[1], LOW);
     lights&=~(1<<1);
      Serial.println("The CH2 set off");
-    Blynk.notify("CH2 OFF!");
+    ////Blynk.notify("CH2 OFF!");
     delay(100);
     Blynk.virtualWrite(21,(((lights>>1)&1)?1:0));
    // Blynk.virtualWrite(11,0);
@@ -567,7 +567,7 @@ BLYNK_WRITE(V2)  // Manual selection
     digitalWrite(channels[2], HIGH);
     lights|=(1<<2);
     Serial.println("The CH3 set on for " + String(ch1_hours)+" hours");
-    Blynk.notify("CH3 ON!");
+    ////Blynk.notify("CH3 ON!");
     delay(100);
     Blynk.virtualWrite(22,(((lights>>2)&1)?1:0));
     stop_times[2]=0;
@@ -584,7 +584,7 @@ BLYNK_WRITE(V2)  // Manual selection
     digitalWrite(channels[2], LOW);
     lights&=~(1<<2);
      Serial.println("The CH3 set off");
-    Blynk.notify("CH3 OFF!");
+    ////Blynk.notify("CH3 OFF!");
     delay(100);
     Blynk.virtualWrite(22,(((lights>>2)&2)?1:0));
    // Blynk.virtualWrite(12,0);
@@ -606,7 +606,7 @@ BLYNK_WRITE(V3)  // Manual selection
     digitalWrite(channels[3], HIGH);
     lights|=(1<<3);
     Serial.println("The CH4 set on for " + String(ch1_hours)+" hours");
-    Blynk.notify("CH4 ON!");
+    //Blynk.notify("CH4 ON!");
     delay(100);
     Blynk.virtualWrite(23,(((lights>>3)&1)?1:0));
     stop_times[3]=0;
@@ -622,7 +622,7 @@ BLYNK_WRITE(V3)  // Manual selection
     digitalWrite(channels[3], LOW);
     lights&=~(1<<3);
      Serial.println("The CH4 set off");
-    Blynk.notify("CH4 OFF!");
+    //Blynk.notify("CH4 OFF!");
     delay(100);
     Blynk.virtualWrite(23,(((lights>>3)&1)?1:0));
    // Blynk.virtualWrite(13,0);
@@ -644,7 +644,7 @@ BLYNK_WRITE(V4)  // Manual selection
     digitalWrite(channels[4], HIGH);
     lights|=(1<<4);
     Serial.println("The CH5 set on for " + String(ch1_hours)+" hours");
-    Blynk.notify("CH5 ON!");
+    //Blynk.notify("CH5 ON!");
     delay(100);
     Blynk.virtualWrite(24,(((lights>>4)&1)?1:0));
     stop_times[4]=0;
@@ -660,7 +660,7 @@ BLYNK_WRITE(V4)  // Manual selection
     digitalWrite(channels[4], LOW);
     lights&=~(1<<4);
      Serial.println("The CH5 set off");
-    Blynk.notify("CH5 OFF!");
+    //Blynk.notify("CH5 OFF!");
     delay(100);
     Blynk.virtualWrite(24,(((lights>>4)&1)?1:0));
     //Blynk.virtualWrite(14,0);
@@ -682,7 +682,7 @@ BLYNK_WRITE(V5)  // Manual selection
     digitalWrite(channels[5], HIGH);
     lights|=(1<<5);
     Serial.println("The CH6 set on for " + String(ch1_hours)+" hours");
-    Blynk.notify("CH6 ON!");
+    //Blynk.notify("CH6 ON!");
     delay(100);
     Blynk.virtualWrite(25,(((lights>>5)&1)?1:0));
     stop_times[5]=0;
@@ -698,7 +698,7 @@ BLYNK_WRITE(V5)  // Manual selection
     digitalWrite(channels[5], LOW);
     lights&=~(1<<5);
      Serial.println("The CH6 set off");
-    Blynk.notify("CH6 OFF!");
+    //Blynk.notify("CH6 OFF!");
     delay(100);
     Blynk.virtualWrite(25,(((lights>>5)&1)?1:0));
     //Blynk.virtualWrite(15,0);
@@ -720,7 +720,7 @@ BLYNK_WRITE(V6)  // Manual selection
     digitalWrite(channels[6], HIGH);
     lights|=(1<<6);
     Serial.println("The CH7 set on for " + String(ch1_hours)+" hours");
-    Blynk.notify("CH7 ON!");
+    //Blynk.notify("CH7 ON!");
     delay(100);
     Blynk.virtualWrite(26,(((lights>>6)&1)?1:0));
     stop_times[6]=0;
@@ -736,7 +736,7 @@ BLYNK_WRITE(V6)  // Manual selection
     digitalWrite(channels[6], LOW);
     lights&=~(1<<6);
      Serial.println("The CH7 set off");
-    Blynk.notify("CH7 OFF!");
+    //Blynk.notify("CH7 OFF!");
     delay(100);
     Blynk.virtualWrite(26,(((lights>>6)&1)?1:0));
    // Blynk.virtualWrite(16,0);
@@ -758,7 +758,7 @@ BLYNK_WRITE(V7)  // Manual selection
     digitalWrite(channels[7], HIGH);
     lights|=(1<<7);
     Serial.println("The CH8 set on for " + String(ch1_hours)+" hours");
-    Blynk.notify("CH8 ON!");
+    //Blynk.notify("CH8 ON!");
     delay(100);
     Blynk.virtualWrite(27,(((lights>>7)&1)?1:0));
     stop_times[7]=0;
@@ -774,7 +774,7 @@ BLYNK_WRITE(V7)  // Manual selection
     digitalWrite(channels[7], LOW);
     lights&=~(1<<7);
      Serial.println("The CH8 set off");
-    Blynk.notify("CH8 OFF!");
+    //Blynk.notify("CH8 OFF!");
     delay(100);
     Blynk.virtualWrite(27,(((lights>>7)&1)?1:0));
     //Blynk.virtualWrite(17,0);
@@ -794,7 +794,7 @@ BLYNK_WRITE(V8)  // Manual selection
    // digitalWrite(channels[0], HIGH);
     auto_light|=(1<<0);
     Serial.println("The CH1 set on for " + String(ch1_hours)+" hours");
-    Blynk.notify("CH1 ON!");
+    //Blynk.notify("CH1 ON!");
     delay(100);
     Blynk.virtualWrite(35,((auto_light>>0)&1?1:0));
     //msg1="The CH1 set on";
@@ -807,7 +807,7 @@ BLYNK_WRITE(V8)  // Manual selection
     //digitalWrite(channels[1], LOW);
     auto_light&=~(1<<0);
      Serial.println("The CH1 set off");
-    Blynk.notify("CH1 OFF!");
+    //Blynk.notify("CH1 OFF!");
     delay(100);
     Blynk.virtualWrite(35,((auto_light>>0)&1?1:0));
     //msg1="The CH1 set off";
@@ -827,7 +827,7 @@ BLYNK_WRITE(V9)  // Manual selection
     //digitalWrite(channels[1], HIGH);
     auto_light|=(1<<1);
     Serial.println("The CH2 set on for " + String(ch1_hours)+" hours");
-    Blynk.notify("CH1 ON!");
+    //Blynk.notify("CH1 ON!");
     delay(100);
     Blynk.virtualWrite(36,((auto_light>>1)&1?1:0));
     //msg1="The CH2 set on";
@@ -840,7 +840,7 @@ BLYNK_WRITE(V9)  // Manual selection
     //digitalWrite(channels[1], LOW);
     auto_light&=~(1<<1);
      Serial.println("The CH2 set off");
-    Blynk.notify("CH2 OFF!");
+    //Blynk.notify("CH2 OFF!");
     delay(100);
     Blynk.virtualWrite(36,((auto_light>>1)&1?1:0));
     //msg1="The CH2 set off";
@@ -860,7 +860,7 @@ BLYNK_WRITE(V18)  // Manual selection
     //digitalWrite(channels[2], HIGH);
     auto_light|=(1<<2);
     Serial.println("The CH3 set on for " + String(ch1_hours)+" hours");
-    Blynk.notify("CH3 ON!");
+    //Blynk.notify("CH3 ON!");
     delay(100);
     Blynk.virtualWrite(37,((auto_light>>2)&1?1:0));
     //msg1="The CH3 set on";
@@ -873,7 +873,7 @@ BLYNK_WRITE(V18)  // Manual selection
     //digitalWrite(channels[2], LOW);
     auto_light&=~(1<<2);
      Serial.println("The CH3 set off");
-    Blynk.notify("CH3 OFF!");
+    //Blynk.notify("CH3 OFF!");
     delay(100);
     Blynk.virtualWrite(37,((auto_light>>2)&1?1:0));
     //msg1="The CH3 set off";
@@ -893,7 +893,7 @@ BLYNK_WRITE(V19)  // Manual selection
     //digitalWrite(channels[3], HIGH);
     auto_light|=(1<<3);
     Serial.println("The CH4 set on for " + String(ch1_hours)+" hours");
-    Blynk.notify("CH4 ON!");
+    //Blynk.notify("CH4 ON!");
     delay(100);
     Blynk.virtualWrite(38,((auto_light>>3)&1?1:0));
     //msg1="The CH4 set on";
@@ -906,7 +906,7 @@ BLYNK_WRITE(V19)  // Manual selection
     //digitalWrite(channels[1], LOW);
     auto_light&=~(1<<3);
      Serial.println("The CH4 set off");
-    Blynk.notify("CH4 OFF!");
+    //Blynk.notify("CH4 OFF!");
     delay(100);
     Blynk.virtualWrite(38,((auto_light>>3)&1?1:0));
     //msg1="The CH4 set off";
@@ -926,7 +926,7 @@ BLYNK_WRITE(V28)  // Manual selection
     //digitalWrite(channels[4], HIGH);
     auto_light|=(1<<4);
     Serial.println("The CH5 set on for " + String(ch1_hours)+" hours");
-    Blynk.notify("CH5 ON!");
+    //Blynk.notify("CH5 ON!");
     delay(100);
     Blynk.virtualWrite(39,((auto_light>>4)&1?1:0));
     //msg1="The CH5 set on";
@@ -939,7 +939,7 @@ BLYNK_WRITE(V28)  // Manual selection
     //digitalWrite(channels[4], LOW);
     auto_light&=~(1<<4);
      Serial.println("The CH5 set off");
-    Blynk.notify("CH5 OFF!");
+    //Blynk.notify("CH5 OFF!");
     delay(100);
     Blynk.virtualWrite(39,((auto_light>>4)&1?1:0));
     //msg1="The CH5 set off";
@@ -959,7 +959,7 @@ BLYNK_WRITE(V29)  // Manual selection
     //digitalWrite(channels[5], HIGH);
     auto_light|=(1<<5);
     Serial.println("The CH6 set on for " + String(ch1_hours)+" hours");
-    Blynk.notify("CH6 ON!");
+    //Blynk.notify("CH6 ON!");
     delay(100);
     Blynk.virtualWrite(40,((auto_light>>5)&1?1:0));
     //msg1="The CH6 set on";
@@ -972,7 +972,7 @@ BLYNK_WRITE(V29)  // Manual selection
     //digitalWrite(channels[5], LOW);
     auto_light&=~(1<<5);
      Serial.println("The CH6 set off");
-    Blynk.notify("CH6 OFF!");
+    //Blynk.notify("CH6 OFF!");
     delay(100);
     Blynk.virtualWrite(40,((auto_light>>5)&1?1:0));
     //msg1="The CH6 set off";
@@ -992,7 +992,7 @@ BLYNK_WRITE(V33)  // Manual selection
     //digitalWrite(channels[6], HIGH);
     auto_light|=(1<<6);
     Serial.println("The CH7 set on for " + String(ch1_hours)+" hours");
-    Blynk.notify("CH7 ON!");
+    //Blynk.notify("CH7 ON!");
     delay(100);
     Blynk.virtualWrite(41,((auto_light>>6)&1?1:0));
     //msg1="The CH7 set on";
@@ -1005,7 +1005,7 @@ BLYNK_WRITE(V33)  // Manual selection
     //digitalWrite(channels[6], LOW);
     auto_light&=~(1<<6);
      Serial.println("The CH7 set off");
-    Blynk.notify("CH7 OFF!");
+    //Blynk.notify("CH7 OFF!");
     delay(100);
     Blynk.virtualWrite(41,((auto_light>>6)&1?1:0));
     //msg1="The CH7 set off";
@@ -1025,7 +1025,7 @@ BLYNK_WRITE(V34)  // Manual selection
     //digitalWrite(channels[7], HIGH);
     auto_light|=(1<<7);
     Serial.println("The CH8 set on for " + String(ch1_hours)+" hours");
-    Blynk.notify("CH8 ON!");
+    //Blynk.notify("CH8 ON!");
     delay(100);
     Blynk.virtualWrite(42,((auto_light>>7)&1?1:0));
     //msg1="The CH8 set on";
@@ -1038,7 +1038,7 @@ BLYNK_WRITE(V34)  // Manual selection
     //digitalWrite(channels[7], LOW);
     auto_light&=~(1<<7);
      Serial.println("The CH8 set off");
-    Blynk.notify("CH8 OFF!");
+    //Blynk.notify("CH8 OFF!");
     delay(100);
     Blynk.virtualWrite(42,((auto_light>>7)&1?1:0));
     //msg1="The CH8 set off";
