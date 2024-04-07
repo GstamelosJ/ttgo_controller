@@ -5,7 +5,10 @@
 
 //#define BLYNK_PRINT Serial // Defines the object that is used for printing
 #define BLYNK_TEMPLATE_ID "TMPLcobjXTat"
-#define BLYNK_DEVICE_NAME "TTGOlights"
+#define BLYNK_TEMPLATE_NAME "TTGOlights"
+#define BLYNK_AUTH_TOKEN "QlAhqepp7Trb57enFlHT5LreNeXNTNkS"
+//#define BLYNK_TEMPLATE_ID "TMPLcobjXTat"
+//#define BLYNK_DEVICE_NAME "TTGOlights"
 char auth[]= "QlAhqepp7Trb57enFlHT5LreNeXNTNkS";
 //#define DUMP_AT_COMMANDS
 // Select your modem:
