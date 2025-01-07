@@ -81,16 +81,21 @@ char user[] = "";
 char pass[] = "";
 uint8_t button_msg;
 uint8_t lights=0x03;
-char * light_stat[8] = {"off","off","off","off","off","off","off","off"};
+//char * light_stat[8] = {"off","off","off","off","off","off","off","off"};
+char light_stat[8][4] = {"off","off","off","off","off","off","off","off"};
 uint8_t auto_light=0;
-char * light_aut_stat[8];
-char* light_disp=(char*)malloc(9);
-char* auto_light_disp = (char*) malloc(9);
+//char * light_aut_stat[8];
+char light_aut_stat[8][4];
+//char* light_disp=(char*)malloc(9);
+//char* auto_light_disp = (char*) malloc(9);
+char light_disp[9];
+char auto_light_disp[9];
 void LCDwrite(String msg1, String msg2 );
 bool setPowerBoostKeepOn(int en);
 void scan_buttons(uint8_t * buttons);
 void day_night_check(int ldr_value);
-char* date_timebuf=(char*)malloc(24);
+//char* date_timebuf=(char*)malloc(24);
+char date_timebuf[24];
 void restore_stop();
 void calculation_sr_ss();
 
@@ -131,9 +136,12 @@ struct time_input {
    bool sr;
    bool ldr;
    uint8_t days_flag[7];
-   char * days_blynk=(char*)malloc(20);
-   char * daysDisp=(char*)malloc(20);
-   char * timeDisp=(char*)malloc(10);
+   //char * days_blynk=(char*)malloc(20);
+   //char * daysDisp=(char*)malloc(20);
+   //char * timeDisp=(char*)malloc(10);
+   char days_blynk[20];
+   char daysDisp[20];
+   char timeDisp[10];
 };
 time_input ti1;
 time_input ti2;
@@ -400,8 +408,10 @@ void refresh_menu()
   else auto_light_disp[i]='X';*/
   light_disp[i]=(((lights>>i)&0x01)?'I':'X');
   auto_light_disp[i]=(((auto_light>>i)&0x01)?'I':'X');
-  light_stat[i]=(char*)(((lights>>i)&0x01)?"On ":"Off");
-  light_aut_stat[i]=(char*)(((auto_light>>i)&0x01)?"On ":"Off");
+  //light_stat[i]=(char*)(((lights>>i)&0x01)?"On ":"Off");
+  //light_aut_stat[i]=(char*)(((auto_light>>i)&0x01)?"On ":"Off");
+  (((lights>>i)&0x01)?strcpy(light_stat[i], "On"):strcpy(light_stat[i], "Off"));
+  (((auto_light>>i)&0x01)?strcpy(light_aut_stat[i],"On"):strcpy(light_aut_stat[i],"Off"));
  }
   menu.softUpdate();
 }
@@ -1555,7 +1565,8 @@ void toggle_lights()
    // Blynk.virtualWrite(channel+9,(0x01&(lights>>channel))?255:0);
 
   }
-  light_stat[channel]=(char*)(((lights>>channel)&0x01)?"On ":"Off");
+  //light_stat[channel]=(char*)(((lights>>channel)&0x01)?"On ":"Off");
+  (((lights>>channel)&0x01)?strcpy(light_stat[channel],"On"):strcpy(light_stat[channel],"Off"));
   for (uint8_t i = 0; i<8; i++)
  {
     if((lights>>i)&0x01) light_disp[i]='I';
@@ -1611,7 +1622,8 @@ void toggle_lights_auto()
   //prefs.begin("values_store",false);
   prefs.putUChar("auto_light", auto_light);
   //prefs.end();
-  light_aut_stat[channel]=(char*)(((auto_light>>channel)&0x01)?"On ":"Off");
+  //light_aut_stat[channel]=(char*)(((auto_light>>channel)&0x01)?"On ":"Off");
+  (((auto_light>>channel)&0x01)?strcpy(light_aut_stat[channel],"On"):strcpy(light_aut_stat[channel],"Off"));
  for (uint8_t i = 0; i<8; i++)
  {
     if((auto_light>>i)&0x01) auto_light_disp[i]='I';
@@ -3219,8 +3231,10 @@ void setup() {
   else auto_light_disp[i]='X';*/
   light_disp[i]=(((lights>>i)&0x01)?'I':'X');
   auto_light_disp[i]=(((auto_light>>i)&0x01)?'I':'X');
-  light_stat[i]=(char*)(((lights>>i)&0x01)?"On ":"Off");
-  light_aut_stat[i]=(char*)(((auto_light>>i)&0x01)?"On ":"Off");
+  //light_stat[i]=(char*)(((lights>>i)&0x01)?"On ":"Off");
+  //light_aut_stat[i]=(char*)(((auto_light>>i)&0x01)?"On ":"Off");
+  (((lights>>i)&0x01)?strcpy(light_stat[i],"On"):strcpy(light_stat[i],"Off"));
+  (((auto_light>>i)&0x01)?strcpy(light_aut_stat[i],"On"):strcpy(light_aut_stat[i],"Off"));
  }
   ti1.daysDisp[7]='\0';
   ti2.daysDisp[7]='\0';
