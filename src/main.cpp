@@ -81,6 +81,7 @@ char user[] = "";
 char pass[] = "";
 uint8_t button_msg;
 uint8_t lights=0x03;
+//dynamic text structure should change
 char * light_stat[8] = {"off","off","off","off","off","off","off","off"};
 uint8_t auto_light=0;
 char * light_aut_stat[8];
